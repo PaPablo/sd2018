@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
     char buffer[256];
     char answer[256];
     struct sockaddr_in serv_addr, cli_addr;
-    int n;
 
 
     // Chequear nro de argumentos
@@ -59,27 +58,21 @@ int main(int argc, char *argv[])
         newsockfd = accept(sockfd,
                 (struct sockaddr *) &cli_addr, 
                 &clilen);
-        do {
 
-            if (newsockfd < 0) 
-                error("ERROR on accept");
+        if (newsockfd < 0) 
+            error("ERROR on accept");
 
-            // Limpiamos buffer y leemos
-            bzero(buffer,256);
-
-            n = read(newsockfd,buffer,255);
-
-            if (n < 0) error("ERROR reading from socket");
-
-            snprintf(answer, sizeof(answer), "Respuesta: %s", buffer);
-
-            n = write(newsockfd,"I got your message",18);
-
-            if (n < 0)
-                error("ERROR writing to socket");
-
-        } while(strlen(buffer) != 0);
-
+        while ((recv(newsockfd, buffer, 256, 0)) > 0){
+            printf("Mensaje recibido: %s", buffer);
+            /*Armamos la respuesta*/
+            sprintf(answer, "SERVIDOR DICE: %s", buffer);
+            send(newsockfd, answer, strlen(answer), 0);
+            /*Limpiamos los buffers*/
+            bzero(buffer, 256);
+            bzero(answer, 256);
+        }
+        /*Cuando se desconecta el cliente, cerramos su socket*/
+        close(newsockfd);
     }
 
 
