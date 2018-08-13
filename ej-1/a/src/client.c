@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     // Pedimos el mensaje
     printf("Please enter the message: ");
     bzero(buffer,BUFFER_SIZE);
+
     while(fgets(buffer, BUFFER_SIZE-1, stdin) != NULL){
 
         // Escribimos el mensaje en el socket
