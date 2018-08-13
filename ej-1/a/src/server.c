@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <netinet/in.h>
 
+#define BUFFER_SIZE 256
+
 void error(char *msg)
 {
     perror(msg);
@@ -17,8 +19,8 @@ void error(char *msg)
 int main(int argc, char *argv[])
 {
     int sockfd, newsockfd, portno, clilen;
-    char buffer[256];
-    char answer[256];
+    char buffer[BUFFER_SIZE];
+    char answer[BUFFER_SIZE];
     struct sockaddr_in serv_addr, cli_addr;
 
 
@@ -64,14 +66,14 @@ int main(int argc, char *argv[])
         if (newsockfd < 0) 
             error("ERROR on accept");
 
-        while ((recv(newsockfd, buffer, 256, 0)) > 0){
+        while ((recv(newsockfd, buffer, BUFFER_SIZE, 0)) > 0){
             printf("Mensaje recibido: %s", buffer);
             /*Armamos la respuesta*/
             sprintf(answer, "SERVIDOR DICE: %s", buffer);
             send(newsockfd, answer, strlen(answer), 0);
             /*Limpiamos los buffers*/
-            bzero(buffer, 256);
-            bzero(answer, 256);
+            bzero(buffer, BUFFER_SIZE);
+            bzero(answer, BUFFER_SIZE);
         }
         /*Cuando se desconecta el cliente, cerramos su socket*/
         close(newsockfd);
