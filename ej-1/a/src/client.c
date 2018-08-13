@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     char buffer[BUFFER_SIZE];
 
     if (argc < 3) {
-        fprintf(stderr,"usage %s hostname port\n", argv[0]);
+        fprintf(stderr,"Usage %s: <hostname> <port>\n", argv[0]);
         exit(0);
     }
 
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     // Hostname
     server = gethostbyname(argv[1]);
     if (server == NULL) {
-        fprintf(stderr,"ERROR, no such host\n");
+        fprintf(stderr,"ERROR - no such host\n");
         exit(0);
     }
 

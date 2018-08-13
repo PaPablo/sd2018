@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
     // Chequear nro de argumentos
     if (argc < 2) {
-        fprintf(stderr,"ERROR, no port provided\n");
+        fprintf(stderr,"ERROR - no port provided\n");
         exit(1);
     }
 
