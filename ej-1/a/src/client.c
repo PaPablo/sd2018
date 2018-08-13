@@ -7,6 +7,8 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 
+#define BUFFER_SIZE 256
+
 void error(char *msg)
 {
     perror(msg);
@@ -19,7 +21,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
-    char buffer[256];
+    char buffer[BUFFER_SIZE];
 
     if (argc < 3) {
         fprintf(stderr,"usage %s hostname port\n", argv[0]);
@@ -52,8 +54,8 @@ int main(int argc, char *argv[])
 
     // Pedimos el mensaje
     printf("Please enter the message: ");
-    bzero(buffer,256);
-    while(fgets(buffer, 255, stdin) != NULL){
+    bzero(buffer,BUFFER_SIZE);
+    while(fgets(buffer, BUFFER_SIZE-1, stdin) != NULL){
 
         // Escribimos el mensaje en el socket
         n = write(sockfd,buffer,strlen(buffer));
@@ -62,16 +64,16 @@ int main(int argc, char *argv[])
             error("ERROR writing to socket");
 
         // Recibimos la respuesta del servidor
-        bzero(buffer,256);
-        n = read(sockfd,buffer,255);
+        bzero(buffer, BUFFER_SIZE);
+        n = read(sockfd, buffer, BUFFER_SIZE-1);
 
         if (n < 0) 
             error("ERROR reading from socket");
 
         // Mostramos en pantalla la respuesta
-        printf("%s\n",buffer);
+        printf("%s\n", buffer);
 
-        bzero(buffer, 256);
+        bzero(buffer, BUFFER_SIZE);
 
     }
 
