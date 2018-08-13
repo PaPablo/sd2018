@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -45,13 +47,13 @@ int main(int argc, char *argv[])
     serv_addr.sin_port = htons(portno);
 
     // Conexión
-    if (connect(sockfd,&serv_addr,sizeof(serv_addr)) < 0) 
+    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
         error("ERROR connecting");
 
     // Pedimos el mensaje
     printf("Please enter the message: ");
     bzero(buffer,256);
-    while(fgets(buffer,255,stdin) != NULL){
+    while(fgets(buffer, 255, stdin) != NULL){
 
         // Escribimos el mensaje en el socket
         n = write(sockfd,buffer,strlen(buffer));
