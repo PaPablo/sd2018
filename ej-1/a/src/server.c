@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <unistd.h>
@@ -15,6 +16,8 @@ void error(char *msg)
     perror(msg);
     exit(1);
 }
+
+char *strupper(char *);
 
 int main(int argc, char *argv[])
 {
@@ -70,7 +73,7 @@ int main(int argc, char *argv[])
             printf("Mensaje recibido: %s", buffer);
             /*Armamos la respuesta*/
             sprintf(answer, "SERVIDOR DICE: %s", buffer);
-            send(newsockfd, answer, strlen(answer), 0);
+            send(newsockfd, strupper(answer), strlen(answer), 0);
             /*Limpiamos los buffers*/
             bzero(buffer, BUFFER_SIZE);
             bzero(answer, BUFFER_SIZE);
@@ -81,4 +84,12 @@ int main(int argc, char *argv[])
 
 
     return 0; 
+}
+
+char *strupper(char *str) {
+    /*Pasa a mayúsculas una cadena*/
+    for (int i = 0; str[i]; i++) {
+        str[i] = toupper(str[i]);
+    }
+    return str;
 }
