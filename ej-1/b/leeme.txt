@@ -1,0 +1,27 @@
+Este conjunto fué editado, compilado y ejecutado exitosamente en linux kubuntu 9.04
+
+
+Para compilar,
+
+cliente: gcc client.c  -o client
+servidor: gcc server.c  -o server
+
+Para ejecutar
+1. server: Ejecutar el server en una consola, indicando el puerto (./server 8888)
+2. client: Ejecutar el cliente en otra consola, indicando el server y el puerto
+   (./client localhost 8888)
+3. Si la conexión cliente-servidor es exitosa se requiere un mensaje que se presenta en el servidor.
+
+Para ejecutar
+1. server2: Ejecutar el server en una consola, indicando el puerto y tamaño del buffer
+   en bytes (./server 8888 100000)
+2. client2: Ejecutar el cliente en otra consola, indicando el server, el puerto y tamaño del buffer
+   en bytes   (./client2 localhost 8888 100000)
+
+3. Si la conexión cliente-servidor es exitosa se devuelve:
+ - La cantidad de bytes escritos
+ - la cantidad devuelta por la función write en el server
+ - la cantidad de bytes leidos por la función read en el cliente.
+
+
+R.López 7/08/2011

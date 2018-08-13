@@ -7,7 +7,7 @@ clean:
 	rm -f $(OBJ) $(BIN)
 
 bin/client: src/client.c
-	$(CC) -o bin/client src/client.c src/clstub.c
+	$(CC) -o bin/client src/client.c
 
 bin/server: src/server.c
-	$(CC) -o bin/server src/server.c src/svstub.c
+	$(CC) -o bin/server src/server.c
