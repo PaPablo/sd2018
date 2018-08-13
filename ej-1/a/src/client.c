@@ -58,20 +58,20 @@ int main(int argc, char *argv[])
     while(fgets(buffer, BUFFER_SIZE-1, stdin) != NULL){
 
         // Escribimos el mensaje en el socket
-        n = write(sockfd,buffer,strlen(buffer));
+        n = send(sockfd, buffer, strlen(buffer), 0);
 
         if (n < 0) 
             error("ERROR writing to socket");
 
         // Recibimos la respuesta del servidor
         bzero(buffer, BUFFER_SIZE);
-        n = read(sockfd, buffer, BUFFER_SIZE-1);
+        n = recv(sockfd, buffer, BUFFER_SIZE-1, 0);
 
         if (n < 0) 
             error("ERROR reading from socket");
 
         // Mostramos en pantalla la respuesta
-        printf("%s\n", buffer);
+        printf("%s", buffer);
 
         bzero(buffer, BUFFER_SIZE);
 
