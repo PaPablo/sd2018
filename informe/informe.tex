@@ -27,6 +27,18 @@
 
 \emph{Los siguientes códigos fuente se pueden encontrar en el directorio ej-1/a/.} 
 
+El código fuente del servidor fue modificado para que se mantenga vivo (siga corriendo después de desconectarse el cliente), y para que reciba el mensaje del cliente, y devuelva ese mismo mensaje, todo en mayúsculas (para ello se definió la función \texttt{strupper}). El servidor recibe por parámetro en qué puerto escuchar por conexiones entrantes.
+
+El cliente recibe dos parámetros: el nombre del servidor (se obtiene su dirección utilizando la función \texttt{gethostbyname}), y el puerto de escucha. Una vez conectado, imprime un mensaje por pantalla pidiendo un texto para enviar al servidor, y luego imprime la respuesta recibida del servidor. El cliente manda todos los mensajes que se le ingresan, hasta cerrar la conexión con un \texttt{EOF}. 
+
+\subsection{Inciso \emph{b}}
+
+
+
+Al igual que en el ejercicio anterior, el servidor recibe un puerto sobre el cual escuchar, y el cliente recibe un nombre de servidor al cual intentar conectarse y un puerto. Cada uno recibe además una cantidad; este valor indica cuántos \emph{bytes} escribir en el \emph{socket} de conexión (cliente), y cuántos \emph{bytes} leer del \emph{socket} de conexión (servidor).   
+
+
+
 
 
 
