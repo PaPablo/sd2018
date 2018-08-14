@@ -58,10 +58,8 @@ int main(int argc, char *argv[])
     // listen 
     clilen = sizeof(cli_addr);
 
-    // Ya tiene el cliente y le crea un socket para
-    // poder hablarle
-    // Error catch incluído
     while(1){
+        // Espera a que se conecte un cliente
         newsockfd = accept(sockfd,
                 (struct sockaddr *) &cli_addr, 
                 &clilen);
@@ -72,8 +70,8 @@ int main(int argc, char *argv[])
         while ((recv(newsockfd, buffer, BUFFER_SIZE, 0)) > 0){
             printf("Mensaje recibido: %s", buffer);
             /*Armamos la respuesta*/
-            sprintf(answer, "SERVIDOR DICE: %s", buffer);
-            send(newsockfd, strupper(answer), strlen(answer), 0);
+            sprintf(answer, "SERVIDOR DICE: %s", strupper(buffer));
+            send(newsockfd, answer, strlen(answer), 0);
             /*Limpiamos los buffers*/
             bzero(buffer, BUFFER_SIZE);
             bzero(answer, BUFFER_SIZE);
