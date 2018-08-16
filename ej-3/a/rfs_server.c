@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define UMASK 0755
+#define UMASK 0644
 
 int *
 rfs_open_1_svc(open_record *argp, struct svc_req *rqstp)
