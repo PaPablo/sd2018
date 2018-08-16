@@ -23,6 +23,7 @@ rfs_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		open_record rfs_open_1_arg;
 		read_record rfs_read_1_arg;
 		int rfs_close_1_arg;
+		write_record rfs_write_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -49,6 +50,12 @@ rfs_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_argument = (xdrproc_t) xdr_int;
 		_xdr_result = (xdrproc_t) xdr_int;
 		local = (char *(*)(char *, struct svc_req *)) rfs_close_1_svc;
+		break;
+
+	case RFS_WRITE:
+		_xdr_argument = (xdrproc_t) xdr_write_record;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (char *(*)(char *, struct svc_req *)) rfs_write_1_svc;
 		break;
 
 	default:

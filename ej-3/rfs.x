@@ -12,10 +12,16 @@ struct read_record {
     int count;
 };
 
+struct write_record {
+    file_data buf;
+    int fd;
+};
+
 program RFS {
     version RFS_VERS_1 {
         int RFS_OPEN(open_record r) = 1;
         file_data RFS_READ(read_record r) = 2;
         int RFS_CLOSE(int fd) = 3;
+        int RFS_WRITE(write_record r) = 4;
     } = 1;
 } = 0x20000001;

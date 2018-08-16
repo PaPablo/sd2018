@@ -31,6 +31,12 @@ struct read_record {
 };
 typedef struct read_record read_record;
 
+struct write_record {
+	file_data buf;
+	int fd;
+};
+typedef struct write_record write_record;
+
 #define RFS 0x20000001
 #define RFS_VERS_1 1
 
@@ -44,6 +50,9 @@ extern  file_data * rfs_read_1_svc(read_record *, struct svc_req *);
 #define RFS_CLOSE 3
 extern  int * rfs_close_1(int *, CLIENT *);
 extern  int * rfs_close_1_svc(int *, struct svc_req *);
+#define RFS_WRITE 4
+extern  int * rfs_write_1(write_record *, CLIENT *);
+extern  int * rfs_write_1_svc(write_record *, struct svc_req *);
 extern int rfs_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -56,6 +65,9 @@ extern  file_data * rfs_read_1_svc();
 #define RFS_CLOSE 3
 extern  int * rfs_close_1();
 extern  int * rfs_close_1_svc();
+#define RFS_WRITE 4
+extern  int * rfs_write_1();
+extern  int * rfs_write_1_svc();
 extern int rfs_1_freeresult ();
 #endif /* K&R C */
 
@@ -65,11 +77,13 @@ extern int rfs_1_freeresult ();
 extern  bool_t xdr_file_data (XDR *, file_data*);
 extern  bool_t xdr_open_record (XDR *, open_record*);
 extern  bool_t xdr_read_record (XDR *, read_record*);
+extern  bool_t xdr_write_record (XDR *, write_record*);
 
 #else /* K&R C */
 extern bool_t xdr_file_data ();
 extern bool_t xdr_open_record ();
 extern bool_t xdr_read_record ();
+extern bool_t xdr_write_record ();
 
 #endif /* K&R C */
 

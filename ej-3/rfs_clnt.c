@@ -53,3 +53,18 @@ rfs_close_1(int *argp, CLIENT *clnt)
 	}
 	return (&clnt_res);
 }
+
+int *
+rfs_write_1(write_record *argp, CLIENT *clnt)
+{
+	static int clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, RFS_WRITE,
+		(xdrproc_t) xdr_write_record, (caddr_t) argp,
+		(xdrproc_t) xdr_int, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}

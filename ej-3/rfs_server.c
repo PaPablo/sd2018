@@ -10,18 +10,23 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int * rfs_open_1_svc(open_record *argp, struct svc_req *rqstp) {
-    static int result;
+#define UMASK 0755
+
+int *
+rfs_open_1_svc(open_record *argp, struct svc_req *rqstp)
+{
+	static int  result;
 
     printf("llamada open\n");
-    result = open(argp->file_name, argp->flags);
+    result = open(argp->file_name, argp->flags, UMASK);
 
-    return &result;
+	return &result;
 }
 
-file_data * rfs_read_1_svc(read_record *argp, struct svc_req *rqstp) {
+file_data *
+rfs_read_1_svc(read_record *argp, struct svc_req *rqstp)
+{
     static file_data result;
-    int n;
 
     printf("llamada read\n");
     result.file_data_val = (char *) malloc(argp->count);
@@ -29,16 +34,34 @@ file_data * rfs_read_1_svc(read_record *argp, struct svc_req *rqstp) {
     if (result.file_data_val == 0)
         result.file_data_len = 0;
     else
-        result.file_data_len = read(argp->fd, result.file_data_val, argp->count);
+        result.file_data_len = read(
+                argp->fd, 
+                result.file_data_val, 
+                argp->count);
 
     return &result;
 }
 
-int * rfs_close_1_svc(int *argp, struct svc_req *rqstp) {
+int *
+rfs_close_1_svc(int *argp, struct svc_req *rqstp)
+{
     static int result;
 
     printf("llamada close\n");
     result = close(*argp);
 
     return &result;
+}
+
+int *
+rfs_write_1_svc(write_record *argp, struct svc_req *rqstp)
+{
+	static int  result;
+    /*ssize_t write(int fd, const void *buf, size_t count);*/
+    printf("llamada write\n");
+    result = write(
+            argp->fd, 
+            (void *) argp->buf.file_data_val, 
+            argp->buf.file_data_len);
+	return &result;
 }
