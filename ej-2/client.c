@@ -17,7 +17,7 @@ static void leer(char *from, int binicio, int cbytes )    // char *to,
 	FILE *f;
 	int qty,c_restantes,p_actual;
 	char buffer[ LARGOBUF ], *to;
-	to = "alfa.txt";   //defino destino local de datos
+	to = "alfa.pdf";   //defino destino local de datos
 
 	printf( "transfiriendo %s remoto al %s local\n", from, to );
 	//Aperturas
@@ -34,7 +34,7 @@ static void leer(char *from, int binicio, int cbytes )    // char *to,
 	  //Determinar bytes a leer
 	  c_restantes = cbytes;
 	  p_actual = binicio;
-	  while (c_restantes > 0) {
+	  while (c_restantes > 0 && qty != 0) {
 	    if (c_restantes < sizeof( buffer ))
 		  qty = c_restantes;
 	    else
@@ -75,7 +75,7 @@ static void escribir( const char *to,  int cbytes)
 	  desde el inicio del file.*/ 
 	  c_restantes = cbytes;
 	  p_actual = 0;
-	  while (c_restantes > 0) {
+	  while (c_restantes > 0 && qty != 0) {
 	    if (c_restantes < sizeof( buffer ))
 		  qty = c_restantes;
 	    else
