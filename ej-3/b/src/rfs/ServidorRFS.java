@@ -2,6 +2,8 @@ package rfs;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -47,7 +49,6 @@ public class ServidorRFS extends ServidorTCP {
 					
 //					Mientras sigan llegando datos para escribir, vamos escribiendo al archivo
 					while((count = inputStream.read(fileBuffer)) > 0) {
-						System.out.println("ServidorRFS: RECIBI DATOS");
 						System.out.println(
 								String.format(
 										"ServidorRFS: recibido [%s]",
@@ -63,6 +64,41 @@ public class ServidorRFS extends ServidorTCP {
 									"Hay que leer [%s]",
 									file));
 					
+//					Armamos la ruta absoluta del archivo
+//					OJO QUE CAPAZ QUE ESTO NO ANDA EN WINDOR
+					String filepath = String.format(
+							"%s/%s",
+							System.getProperty("user.dir"),
+							file);
+					
+					File fileToSend = new File(filepath);
+					
+//					Si el archivo no existe, le avisamos al cliente
+					if(!fileToSend.exists()) {
+						System.out.println(String.format(
+								"ServidorRFS: No existe [%s]",
+								filepath));
+						outputStream.write("NO OK".getBytes());
+						return;
+					}
+					
+					outputStream.write("OK".getBytes());
+					
+					byte[] fileBuffer = new byte[1024];
+					
+					FileInputStream fileStream = 
+							new FileInputStream(fileToSend);
+					
+					int count = 0;
+//					Mientras se sigan leyendo datos del archivo, seguimos mandando
+					while((count = fileStream.read(fileBuffer)) > 0) { 
+						System.out.println(String.format(
+								"ServidorRFS: mandando [%s]",
+								new String(fileBuffer).trim()));
+						outputStream.write(fileBuffer, 0, count);
+					}
+					
+					fileStream.close();
 					
 				} else {
 					System.out.println("CUALQUIERA EL COMANDO");

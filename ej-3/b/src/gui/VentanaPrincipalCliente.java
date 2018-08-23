@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import rfs.ClienteRFS;
 
 import javax.swing.JButton;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -19,13 +20,17 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.JMenuBar;
 import javax.swing.JFileChooser;
 import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class VentanaPrincipalCliente extends JFrame {
 	private JPanel contentPane;
@@ -52,7 +57,16 @@ public class VentanaPrincipalCliente extends JFrame {
 		JButton leerBtn = new JButton("Leer archivo");
 		leerBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("LEER");
+				String file = JOptionPane.showInputDialog("Ingrese el nombre del archivo a leer");
+				try {
+					ClienteRFS cliente = new ClienteRFS("localhost", 8080);
+					cliente.connect();
+					cliente.readRemoteFile(file);
+					cliente.disconnect();
+				} catch (Exception e) {
+					System.out.println("VentanaPrincipalCliente: pincho");
+					System.out.println(e);
+				} 
 			}
 		});
 		panelCentral.add(leerBtn);
@@ -108,6 +122,32 @@ public class VentanaPrincipalCliente extends JFrame {
 		menuBar.add(menuPropiedades);
 		
 		JMenuItem menuItemServidor = new JMenuItem("Servidor");
+		menuItemServidor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			      PanelSettingsServidorCliente panelSettingsServidor = new PanelSettingsServidorCliente();
+
+			      int result = JOptionPane.showConfirmDialog(
+			    		  null, 
+			    		  panelSettingsServidor, 
+			    		  "Conexión con el servidor", 
+			    		  JOptionPane.OK_CANCEL_OPTION);
+			      
+			      if (result == JOptionPane.OK_OPTION) {
+			    	  try {
+						int port = panelSettingsServidor.getPort();
+						String host = panelSettingsServidor.getHost();
+					} catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(
+								null, 
+								"Debe ingresar un puerto válido", 
+								"Error en el puerto", 
+								JOptionPane.ERROR_MESSAGE);
+					}
+			      }
+//				String name = JOptionPane.showInputDialog("Type your name please");
+//				JOptionPane.showMessageDialog(null, "Hello " + name);
+			}
+		});
 		menuPropiedades.add(menuItemServidor);
 		
 		JMenuItem menuItemSalir = new JMenuItem("Salir");
