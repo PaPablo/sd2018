@@ -1,5 +1,7 @@
 package rfs;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 
@@ -25,11 +27,17 @@ public abstract class ServidorTCP {
 		ServerSocket listeningSocket = new ServerSocket(this.getPort());
 		
 		while(true) {
-			Socket clientSocket = listeningSocket.accept();
-			
-			this.handleClient(clientSocket);
-			
-			listeningSocket.close();
+			try {
+				Socket clientSocket = listeningSocket.accept();
+				
+				this.handleClient(clientSocket);
+				
+				clientSocket.close();
+				
+			} catch (IOException e) {
+				System.out.println("ServidorTCP: listen");
+				System.out.println(e);
+			}
 		}
 	}
 	

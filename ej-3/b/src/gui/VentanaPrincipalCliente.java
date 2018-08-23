@@ -28,7 +28,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 public class VentanaPrincipalCliente extends JFrame {
-
 	private JPanel contentPane;
 
 	/**
@@ -61,7 +60,6 @@ public class VentanaPrincipalCliente extends JFrame {
 		JButton escribirBtn = new JButton("Escribir archivo");
 		escribirBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("ESCRIBIR");
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 				int result = fileChooser.showOpenDialog(panelCentral);
@@ -74,7 +72,8 @@ public class VentanaPrincipalCliente extends JFrame {
 						cliente.sendFile(selectedFile);
 						cliente.disconnect();
 					} catch (Exception e) {
-						System.out.println("NO SE PUDO ENVIAR");
+						System.out.println("VentanaPrincipalCliente: NO SE PUDO ENVIAR");
+						System.out.println(e);
 					}
 
 

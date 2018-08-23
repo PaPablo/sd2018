@@ -1,5 +1,7 @@
 package rfs;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,26 +26,49 @@ public class ClienteRFS extends ClienteTCP {
 	 */
 	public void sendFile(File fileToSend) throws IOException {
 		
-		this.sendRFSWriteHeader(fileToSend.getName());
+		this.send(this.makeRFSWriteHeader(fileToSend));
+		System.out.println(String.format(
+				"ClientRFS: Antes de recv()"));
 		
-		if (this.recv() != "OK") {
-			System.out.println("No se pudo enviar el archivo");
+		DataInputStream in = new DataInputStream(
+				this.getSocket().getInputStream());
+		
+		byte[] buffer = new byte[1024];
+		
+		in.read(buffer);
+		
+		String response = new String(buffer).trim();
+		System.out.println(String.format(
+				"ClientRFS: response = %s", response));
+		
+		if (!response.equals("OK")) {
+			System.out.println(String.format(
+					"ClientRFS: No se recibió un 'OK', se recibió un %s",
+					response));
 			return;
 		}
 		
-		FileInputStream inputStream = 
-				new FileInputStream(fileToSend);
-		byte [] buffer = new byte[1024];
+		System.out.println("ClientRFS: Se recibió un OK. Mandamos archivo...");
 		
-		while(inputStream.read(buffer) != -1) {
-			this.send(buffer);
+		FileInputStream fileStream = 
+				new FileInputStream(fileToSend);
+		
+		int count = 0;
+//		Mientras se sigan leyendo datos del archivo, seguimos mandando
+		while((count = fileStream.read(buffer)) > 0) { 
+			System.out.println(String.format(
+					"ClientRFS: mandando [%s]",
+					new String(buffer)));
+			this.send(buffer, 0, count);
 		}
 		
-		inputStream.close();
+		fileStream.close();
 	}
 	
-	public void sendRFSWriteHeader(String fileName) throws IOException {
-		this.send(String.format("ESCRIBIR %s", fileName));
+	
+	public String makeRFSWriteHeader(File file) {
+		return String.format("ESCRIBIR %s",
+				file.getName());
 	}
 
 }

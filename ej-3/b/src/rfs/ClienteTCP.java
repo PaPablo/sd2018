@@ -56,17 +56,25 @@ public class ClienteTCP {
 				this.getSocket().getOutputStream());
 		output.write(toSend);
 	}
+	
+	public void send(byte[] toSend, int offset, int count) throws IOException {
+		DataOutputStream output = new DataOutputStream(
+				this.getSocket().getOutputStream());
+		output.write(toSend, offset, count);
+	}
 	/**
 	 * 
 	 * @return cadena de datos UTF leída del socket
 	 * @throws IOException
 	 */
-	public String recv() throws IOException {
+	public byte[] recv() throws IOException {
 		DataInputStream input = new DataInputStream(
 				this.getSocket().getInputStream());
-		return input.readUTF();
+		byte[] buffer = new byte[1024];
+		while(input.read(buffer) > 0);
+		
+		return buffer;
 	}
-	
 	/**
 	 * Cierra la conexión establecida con el servidor
 	 * @throws IOException
