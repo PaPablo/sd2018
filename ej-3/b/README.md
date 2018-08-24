@@ -1,5 +1,9 @@
 ## Implementación de RFS en Java
 
+### 24/8/2018
+
+Todo lo que estaba hecho, tanto el cliente, el servidor, como el protocolo, fue al pedo. La onda era desarrollar la capa de middleware (y además el cliente y el servidor) que se tenía en C (ejercicio 3-a), pero en Java, sin inventar nada nuevo :cry:.
+
 ### 20/8/2018
 
 Lo que se me ocurre para implementar el RFS en Java es diseñar un pequeño protocolo de capa de aplicación, con dos comandos:
