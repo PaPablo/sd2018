@@ -7,6 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import exceptions.CouldNotReadFileException;
+import exceptions.CouldNotWriteFileException;
+import rfs.Client;
 import rfs.ClienteRFS;
 
 import javax.swing.JButton;
@@ -57,14 +60,19 @@ public class VentanaPrincipalCliente extends JFrame {
 		JButton leerBtn = new JButton("Leer archivo");
 		leerBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String file = JOptionPane.showInputDialog("Ingrese el nombre del archivo a leer");
+				String filename = JOptionPane
+						.showInputDialog(
+								"Ingrese el nombre del archivo a leer"
+								);
 				try {
-					ClienteRFS cliente = new ClienteRFS("localhost", 8080);
-					cliente.connect();
-					cliente.readRemoteFile(file);
-					cliente.disconnect();
-				} catch (Exception e) {
-					System.out.println("VentanaPrincipalCliente: pincho");
+					Client client = new Client();
+					client.readFile(filename);
+				} catch (CouldNotReadFileException e) {
+					JOptionPane.showMessageDialog(
+							null,
+							String.format(
+									"No se pudo leer el archivo %s",
+									filename));
 					System.out.println(e);
 				} 
 			}
@@ -81,12 +89,14 @@ public class VentanaPrincipalCliente extends JFrame {
 				    // user selects a file
 					File selectedFile = fileChooser.getSelectedFile();
 					try {
-						ClienteRFS cliente = new ClienteRFS("localhost", 8080);
-						cliente.connect();
-						cliente.sendFile(selectedFile);
-						cliente.disconnect();
-					} catch (Exception e) {
-						System.out.println("VentanaPrincipalCliente: NO SE PUDO ENVIAR");
+						Client client = new Client();
+						client.writeFile(selectedFile);
+					} catch (CouldNotWriteFileException e) {
+						JOptionPane.showMessageDialog(
+								null,
+								String.format(
+										"No se pudo escribir el archivo %s",
+										selectedFile.getName()));
 						System.out.println(e);
 					}
 
