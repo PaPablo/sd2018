@@ -57,10 +57,15 @@ public class Client {
 		try {
 			File openedFile = this.fileSystem.open(filename);
 			
+			if(!openedFile.exists()) {
+				throw new CouldNotReadFileException("Archivo no existe");
+			}
+			
 			String filepath = String.format(
 					"%s/%s",
 					System.getProperty("user.home"),
 					filename);
+			
 			FileOutputStream fileStream = 
 					new FileOutputStream(
 							new File(filepath));
@@ -70,11 +75,11 @@ public class Client {
 			StringBuilder fileContent = new StringBuilder();
 			
 			while((count = this.fileSystem.read(
-					openedFile, 1024, fileBuffer)) > 0) {
-				fileContent.append(new String(fileBuffer));
-//				fileStream.write(fileBuffer, 0, count);
+					openedFile, fileBuffer)) > 0) {
+				fileContent.append(new String(fileBuffer).trim());
+				fileStream.write(fileBuffer);
 			}
-			
+
 			System.out.println(String.format(
 					"Client: recibi [%s]",
 					fileContent.toString().trim()));
@@ -82,9 +87,11 @@ public class Client {
 			this.fileSystem.close(openedFile);
 			fileStream.close();
 		} catch (FileNotFoundException e) {
-			throw new CouldNotReadFileException();
+			throw new CouldNotReadFileException("FileNotFound");
 		} catch (IOException e) {
-			throw new CouldNotReadFileException();
+			throw new CouldNotReadFileException("IOException");
+		} catch (NullPointerException e) {
+			throw new CouldNotReadFileException("Null pointer exception");
 		}
 	}
 }

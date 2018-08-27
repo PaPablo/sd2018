@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 
 public interface IFileSystem {
 	public File open(String filename);
-	public int read(File file, int count, byte[] buffer);
+	public int read(File file, byte[] buffer);
 	public int write(File file, byte[] data);
-	public int close(File file);
+	public boolean close(File file);
 }

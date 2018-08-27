@@ -7,9 +7,12 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import exceptions.CouldNotReadFileException;
 import rfsArguments.RFSArgument;
+import rfsArguments.RFSCloseArgument;
 import rfsArguments.RFSOpenArgument;
 import rfsArguments.RFSReadArgument;
+import rfsArguments.RFSWriteArgument;
 
 public class RFSClientStub implements IFileSystem {
 	
@@ -58,7 +61,7 @@ public class RFSClientStub implements IFileSystem {
 			File file = (File) in.readObject();
 			
 			System.out.println(String.format(
-					"RFSClientStub: recibido [%s]",
+					"RFSClientStub: recibido OPEN [%s]",
 					file.getAbsolutePath().trim()));
 			
 			return file;
@@ -81,18 +84,7 @@ public class RFSClientStub implements IFileSystem {
 
 	@Override
 	public int write(File file, byte[] data) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	@Override
-	public int close(File file) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int read(File file, int count, byte[] buffer) {
 		Socket socket = null;
 		ObjectOutputStream out = null;
 		ObjectInputStream in = null;
@@ -103,16 +95,107 @@ public class RFSClientStub implements IFileSystem {
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 			
-			out.writeObject(new RFSReadArgument(file, count));
+			RFSWriteArgument arg = new RFSWriteArgument(file, data);
+			arg.setCount(data.length);
 			
-			RFSReadArgument readArg = (RFSReadArgument) in.readObject();
-			buffer = readArg.getData();
+			out.writeObject(arg);
+			
+			RFSWriteArgument writeArg = (RFSWriteArgument) in.readObject();
+
+//			if (readArg.getFile() == null) {
+//				return -1;
+//			}
+			
+			return writeArg.getCount();
+		} catch (UnknownHostException e) {
+			return -1;
+		} catch (ClassNotFoundException e) {
+			return -1;
+		} catch (IOException e) {
+			return -1;
+		} finally {
+			try {
+				in.close();
+				out.close();
+				socket.close();
+			} catch (IOException e) {
+			}
+		}
+
+	
+	}
+
+	@Override
+	public boolean close(File file) {
+
+		Socket socket = null;
+		ObjectOutputStream out = null;
+		ObjectInputStream in = null;
+		try {
+			socket = this.connect();
+			
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
+			
+			out.writeObject(new RFSCloseArgument(file));
+			
+			boolean result = (boolean) in.readObject();
 			
 			System.out.println(String.format(
-					"RFSClientStub: recibido [%s]",
-					new String(readArg.getData())));
+					"RFSClientStub: recibido CLOSE [%s]",
+					result));
 			
-			return readArg.getData().length;
+			return result;
+		} catch (UnknownHostException e) {
+			return false;
+		} catch (ClassNotFoundException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		} finally {
+			try {
+				in.close();
+				out.close();
+				socket.close();
+			} catch (IOException e) {
+			}
+		}
+	
+	}
+
+	@Override
+	public int read(File file, byte[] buffer) {
+		Socket socket = null;
+		ObjectOutputStream out = null;
+		ObjectInputStream in = null;
+		
+		try {
+			socket = this.connect();
+			
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
+			
+			RFSReadArgument arg = new RFSReadArgument(file, buffer);
+			arg.setCount(buffer.length);
+			
+			out.writeObject(arg);
+			
+			RFSReadArgument readArg = (RFSReadArgument) in.readObject();
+			
+//			if (readArg.getFile() == null) {
+//				return -1;
+//			}
+			
+			//Copiamos los datos a buffer
+			for (int i = 0; i < readArg.getData().length; i++) {
+				buffer[i] = readArg.getData()[i];
+			}
+			
+//			System.out.println(String.format(
+//					"RFSClientStub: recibido READ [%s]",
+//					new String(buffer).trim()));
+			
+			return readArg.getCount();
 		} catch (UnknownHostException e) {
 			return -1;
 		} catch (ClassNotFoundException e) {

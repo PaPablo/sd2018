@@ -71,8 +71,9 @@ public class VentanaPrincipalCliente extends JFrame {
 					JOptionPane.showMessageDialog(
 							null,
 							String.format(
-									"No se pudo leer el archivo %s",
-									filename));
+									"No se pudo leer el archivo %s [%s]",
+									filename,
+									e.getMessage()));
 					System.out.println(e);
 				} 
 			}
