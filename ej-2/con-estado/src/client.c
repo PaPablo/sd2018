@@ -9,6 +9,9 @@
 #include "prototipo.h"
 
 #define LARGOBUF  16
+#define MAX_FILE_NAME_LENGTH 50
+#define MAX_BYTES 9
+
 int s;	//nro de socket
 
 typedef struct {
@@ -20,6 +23,7 @@ typedef struct {
 R_FILE files[100];
 int last_file = 0;
 
+// Get remote file from local array
 R_FILE *get_rd(R_FILE *files, char *filename){
     for(int i = 0; i <= last_file; i++){
         if (strncmp(files[i].filename, filename, strlen(filename)) == 0){
@@ -31,6 +35,7 @@ R_FILE *get_rd(R_FILE *files, char *filename){
 
 static void leer(char *from, int binicio, int cbytes )    // char *to, 
 {
+    printf("%s %d %d\n", from, binicio, cbytes);
     R_FILE *r_file;
     FILE *f;
     int qty=-1,c_restantes,p_actual;
@@ -58,6 +63,7 @@ static void leer(char *from, int binicio, int cbytes )    // char *to,
         }
 
         //Determinar bytes a leer
+        
         c_restantes = cbytes;
         p_actual = binicio;
         while (c_restantes > 0 && qty != 0) {
@@ -90,9 +96,9 @@ static void escribir( const char *to,  int cbytes)
 
     if (r_file == -1) {
         printf("No se puede abrir remoto \"%s\"\n", to);
-
     }
     else {
+
         printf( "Abrió el remoto: %d\n", r_file->rd );
         f = fopen( from, "r" );
         if( f == NULL || r_file->rd < 0 )  //Hay error en aperturas
@@ -171,16 +177,94 @@ int cerrar(const char* file){
 
 }
 
+char *get_filename(){
+    char temp[MAX_FILE_NAME_LENGTH], *nombrearchivo;
+    printf("Nombre de archivo: ");
+    bzero(temp, MAX_FILE_NAME_LENGTH);
+    nombrearchivo =  malloc(MAX_FILE_NAME_LENGTH);
+
+    fgets(nombrearchivo, MAX_FILE_NAME_LENGTH, stdin);
+    strncpy(temp, nombrearchivo, strlen(nombrearchivo)-1);
+    strcpy(nombrearchivo, temp);
+
+    return nombrearchivo;
+}
+
+int get_cant_bytes(){
+    char *cantidadbytes;
+    printf("Cantidad de bytes a leer: ");
+    cantidadbytes = malloc(MAX_BYTES);
+    fgets(cantidadbytes, MAX_BYTES, stdin);
+
+    return atoi(cantidadbytes);
+}
+
+int get_initial_byte(){
+    char *byteinicial;
+    printf("Byte de origen: ");
+    byteinicial = malloc(MAX_BYTES);
+    fgets(byteinicial, MAX_BYTES, stdin);
+
+    return atoi(byteinicial);
+}
+
 void handle_leer (){
 
+    char *nombrearchivo = get_filename();
+
+    int cantidadbytes = get_cant_bytes();
+
+    int byteinicial = get_initial_byte();
+
+    printf("%s %d %d\n", nombrearchivo, byteinicial, cantidadbytes);
+
+    leer(nombrearchivo, byteinicial, cantidadbytes);
 }
 
 void handle_escribir (){
 
+    char *nombrearchivo = get_filename();
+
+    int cantidadbytes = get_cant_bytes();
+
+    escribir(nombrearchivo, cantidadbytes);
+
+}
+
+short get_flags(){
+    char *flags;
+    printf("Ingrese modo de apertura del archivo: ");
+    flags = malloc(3);
+    fgets(flags, 2, stdin);
+
+    if (strcmp("r",flags) == 0){
+        return O_RDONLY;
+    }
+    else if(strcmp("w", flags) == 0){
+        return O_WRONLY | O_CREAT | O_TRUNC;
+    }
+    else if(strcmp("a", flags) == 0){
+        return O_WRONLY | O_CREAT | O_APPEND;
+    }
+    else if(strcmp("r+", flags) == 0){
+        return O_RDWR;
+    }
+    else if(strcmp("w+", flags) == 0){
+        return O_RDWR | O_CREAT | O_TRUNC;
+    }
+    else if(strcmp("a+", flags) == 0){
+        return O_RDWR | O_CREAT | O_APPEND;
+    }
+
+    return -1;
 }
 
 void handle_abrir (){
+    char *nombrearchivo = get_filename();
 
+    short flags = get_flags();
+
+    abrir(nombrearchivo, flags);
 }
 
 void handle_cerrar (){
@@ -188,8 +272,9 @@ void handle_cerrar (){
 }
 
 void handle_otro(){
-    print("No hay opcion con dicho número");
+    printf("No hay opcion con dicho número");
 }
+
 void handle_orden(int orden){
     switch (orden) {
         case 1:
@@ -230,10 +315,14 @@ void main( void ){
         printf("2 - Leer archivo\n");
         printf("3 - Escribir archivo\n");
         printf("4 - Cerrar archivo\n");
+        printf("Ingrese su opción: ");
 
         bzero(orden,20);  
+        fflush(stdin);
         fgets(orden,20,stdin);
         int i_orden = atoi(orden);
+
+        handle_orden(i_orden);
 
     }
 }
