@@ -25,6 +25,9 @@ int last_file = 0;
 
 // Get remote file from local array
 R_FILE *get_rd(R_FILE *files, char *filename){
+    if (last_file == 0) {
+        return -1;
+    }
     for(int i = 0; i <= last_file; i++){
         if (strncmp(files[i].filename, filename, strlen(filename)) == 0){
             return &files[i];
@@ -33,9 +36,43 @@ R_FILE *get_rd(R_FILE *files, char *filename){
     return -1;
 }
 
+R_FILE *abrir(const char* file, short flags){
+
+    RD rd;
+
+    // Get remote descriptor from file
+    
+    printf("RMTOPEN\n");
+    rd = rmtopen(s, flags, file);
+
+    if (rd < 0) {
+        printf("No pudo abrirse %s\n", file);
+        return -1;
+    }
+
+    // Remote file
+    R_FILE *r_file = malloc(sizeof(R_FILE));
+
+    printf("fill\n");
+    // Fill r_file structure
+    r_file->filename = malloc(strlen(file));
+    strncpy(r_file->filename, file, strlen(file));
+
+    printf("rd\n");
+    // asign rd
+    r_file->rd = rd;
+    // mark as opened
+    r_file->open = 1;
+
+    printf("place\n");
+    //place in local array
+    files[last_file++] = *r_file;
+
+    return r_file;
+}
+
 static void leer(char *from, int binicio, int cbytes )    // char *to, 
 {
-    printf("%s %d %d\n", from, binicio, cbytes);
     R_FILE *r_file;
     FILE *f;
     int qty=-1,c_restantes,p_actual;
@@ -43,12 +80,12 @@ static void leer(char *from, int binicio, int cbytes )    // char *to,
     to = "alfa.pdf";   //defino destino local de datos
 
     printf( "transfiriendo %s remoto al %s local\n", from, to );
+
     //Aperturas
-    
     r_file = get_rd(files, from);
 
     if (r_file == -1){
-        printf("No pudo abrirse el remoto \"%s\"\n", from);
+        printf("No pudo leerse el remoto \"%s\"\n", from);
     }
     else {
 
@@ -92,10 +129,12 @@ static void escribir( const char *to,  int cbytes)
 
     printf( "transfiriendo %s local al %s remoto\n", from, to );
     //Aperturas
-    r_file = get_rd(files, to);
+    r_file = abrir(to, O_WRONLY | O_CREAT | O_TRUNC);
+
+    printf("Se Abrió\n");
 
     if (r_file == -1) {
-        printf("No se puede abrir remoto \"%s\"\n", to);
+        printf("No se puede escribir el remoto \"%s\"\n", to);
     }
     else {
 
@@ -128,34 +167,6 @@ static void escribir( const char *to,  int cbytes)
     }
 }
 
-R_FILE *abrir(const char* file, short flags){
-    RD rd;
-
-    // Get remote descriptor from file
-    rd = rmtopen(s, flags, file);
-
-    if (rd < 0) {
-        printf("No pudo abrirse %s\n", file);
-        return -1;
-    }
-
-    // Remote file
-    R_FILE *r_file;
-
-    // Fill r_file structure
-    r_file->filename = malloc(strlen(file));
-    strncpy(r_file->filename, file, strlen(file));
-
-    // asign rd
-    r_file->rd = rd;
-    // mark as opened
-    r_file->open = 1;
-
-    //place in local array
-    files[last_file++] = *r_file;
-
-    return r_file;
-}
 
 int cerrar(const char* file){
 
@@ -215,8 +226,6 @@ void handle_leer (){
     int cantidadbytes = get_cant_bytes();
 
     int byteinicial = get_initial_byte();
-
-    printf("%s %d %d\n", nombrearchivo, byteinicial, cantidadbytes);
 
     leer(nombrearchivo, byteinicial, cantidadbytes);
 }
