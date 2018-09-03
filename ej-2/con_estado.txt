@@ -1,0 +1,9 @@
+Para lograr una implementación sin estados cada operación que se envíe al servidor debe ser autocontenida. De la forma:
+
+rmtread(archivo, buffer, cant_bytes, pos_actual)
+
+rmtwrite(archivo, buffer, cant_bytes, pos_actual)
+
+y con respecto a la implementación de lado del servidor, cada primitiva ofrecida debería abrir el archivo, posicionarse en la pos_actual, leer o escribir (según la primitiva que se haya invocado) y cerrar. De forma tal que ante una caída del servidor, pueda reanudar sin problemas su funcionamiento.
+
+
