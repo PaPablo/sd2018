@@ -11,13 +11,12 @@ import exceptions.CouldNotWriteFileException;
 
 public class Client {
 	private IFileSystem fileSystem;
+	private static final int BUFFER_SIZE = 1024;
 	
 	/**
 	 * Cliente para leer/escribir archivos
 	 */
-	public Client() {
-		String host = "localhost";
-		int port = 8080;
+	public Client(String host, int port) {
 		this.fileSystem = new RFSClientStub(host, port);
 	}
 	
@@ -33,7 +32,7 @@ public class Client {
 			
 			FileInputStream fileStream = 
 					new FileInputStream(file);
-			byte[] fileBuffer = new byte[1024];
+			byte[] fileBuffer = new byte[BUFFER_SIZE];
 			
 			while(fileStream.read(fileBuffer) > 0) {
 				this.fileSystem.write(openedFile, fileBuffer);
@@ -71,7 +70,7 @@ public class Client {
 							new File(filepath));
 			
 			int count = 0;
-			byte[] fileBuffer = new byte[1024];
+			byte[] fileBuffer = new byte[BUFFER_SIZE];
 			StringBuilder fileContent = new StringBuilder();
 			
 			while((count = this.fileSystem.read(
