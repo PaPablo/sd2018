@@ -64,6 +64,7 @@ public class VentanaPrincipalCliente extends JFrame {
 						.showInputDialog(
 								"Ingrese el nombre del archivo a leer"
 								);
+				if (filename == null) return;
 				try {
 					Client client = new Client();
 					client.readFile(filename);
