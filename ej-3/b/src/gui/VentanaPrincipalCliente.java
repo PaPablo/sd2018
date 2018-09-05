@@ -184,6 +184,11 @@ public class VentanaPrincipalCliente extends JFrame {
 		menuPropiedades.add(menuItemServidor);
 		
 		JMenuItem menuItemSalir = new JMenuItem("Salir");
+		menuItemSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		menuPropiedades.add(menuItemSalir);
 		
 		JPanel panelDescripcion = new JPanel();
