@@ -4,14 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
-public class RFSOpenedFile {
+public class OpenedFile {
 	
 	private File file;
 	private FileInputStream inputStream;
 	private FileOutputStream outputStream;
 
-	public RFSOpenedFile(String filename){
+	public OpenedFile(String filename){
 		File f = new File(filename);
 		this.setFile(f);
 	}
@@ -52,6 +53,23 @@ public class RFSOpenedFile {
 
 	public void setOutputStream(FileOutputStream outputStream) {
 		this.outputStream = outputStream;
+	}
+	
+	public void close() {
+		try {
+			FileInputStream in = 
+					this.inputStream;
+			FileOutputStream out = 
+					this.outputStream;
+			
+			if(in != null) {
+				in.close();
+			}
+			if(out != null) {
+				out.close();
+			}
+		} catch (IOException e) {
+		}
 	}
 	
 	@Override
