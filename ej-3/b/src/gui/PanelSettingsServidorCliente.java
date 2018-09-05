@@ -6,11 +6,16 @@ import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
+import java.awt.Panel;
+
 import javax.swing.SwingConstants;
 
 public class PanelSettingsServidorCliente extends JPanel {
 	private JTextField textFieldHost;
 	private JTextField textFieldPort;
+	
+	private static String host = "localhost";
+	private static int port = 8080;
 
 	/**
 	 * Create the panel.
@@ -37,12 +42,11 @@ public class PanelSettingsServidorCliente extends JPanel {
 		labelHost.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		textFieldHost = new JTextField();
-		textFieldHost.setText("localhost");
+		textFieldHost.setText(host);
 		panelHost.add(textFieldHost);
 		textFieldHost.setColumns(10);
 		
 		JPanel panelPort = new JPanel();
-		panelPort.setToolTipText("8080");
 		FlowLayout flowLayout_1 = (FlowLayout) panelPort.getLayout();
 		flowLayout_1.setVgap(30);
 		flowLayout_1.setHgap(10);
@@ -53,18 +57,24 @@ public class PanelSettingsServidorCliente extends JPanel {
 		labelPort.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		textFieldPort = new JTextField();
-		textFieldPort.setText("8080");
+		textFieldPort.setText(String.format("%d", port));
 		panelPort.add(textFieldPort);
 		textFieldPort.setColumns(10);
 
 	}
 	
-	public int getPort() throws NumberFormatException{
-		return Integer.parseInt(this.textFieldPort.getText());
+	public void update() throws NumberFormatException{
+		port = Integer.parseInt(this.textFieldPort.getText());
+		host = this.textFieldHost.getText();
 	}
 	
-	public String getHost() {
-		return this.textFieldHost.getText();
+	public static int getPort(){
+		return port;
 	}
+	
+	public static String getHost() {
+		return host;
+	}
+	
 
 }

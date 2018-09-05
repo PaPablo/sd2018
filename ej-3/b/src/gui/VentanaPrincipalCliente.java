@@ -66,7 +66,11 @@ public class VentanaPrincipalCliente extends JFrame {
 								);
 				if (filename == null) return;
 				try {
-					Client client = new Client();
+					String host = 
+							PanelSettingsServidorCliente.getHost();
+					int port = 
+							PanelSettingsServidorCliente.getPort();
+					Client client = new Client(host, port);
 					client.readFile(filename);
 					JOptionPane.showMessageDialog(
 							null,
@@ -94,7 +98,11 @@ public class VentanaPrincipalCliente extends JFrame {
 				    // user selects a file
 					File selectedFile = fileChooser.getSelectedFile();
 					try {
-						Client client = new Client();
+						String host = 
+								PanelSettingsServidorCliente.getHost();
+						int port = 
+								PanelSettingsServidorCliente.getPort();
+						Client client = new Client(host, port);
 						client.writeFile(selectedFile);
 						JOptionPane.showMessageDialog(
 								null,
@@ -121,7 +129,9 @@ public class VentanaPrincipalCliente extends JFrame {
 		flowLayout_1.setVgap(10);
 		panelPrincipal.add(panelInferior, BorderLayout.SOUTH);
 		
-		JLabel lblNewLabel_1 = new JLabel("Desarrollado por Luciano Serruya Aloisi y Pablo Toledo Margalef");
+		JLabel lblNewLabel_1 = 
+				new JLabel(
+						"Desarrollado por Luciano Serruya Aloisi y Pablo Toledo Margalef");
 		panelInferior.add(lblNewLabel_1);
 		
 		JPanel panelSuperior = new JPanel();
@@ -142,7 +152,8 @@ public class VentanaPrincipalCliente extends JFrame {
 		JMenuItem menuItemServidor = new JMenuItem("Servidor");
 		menuItemServidor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-			      PanelSettingsServidorCliente panelSettingsServidor = new PanelSettingsServidorCliente();
+			      PanelSettingsServidorCliente panelSettingsServidor = 
+			    		  new PanelSettingsServidorCliente();
 
 			      int result = JOptionPane.showConfirmDialog(
 			    		  null, 
@@ -152,8 +163,16 @@ public class VentanaPrincipalCliente extends JFrame {
 			      
 			      if (result == JOptionPane.OK_OPTION) {
 			    	  try {
-						int port = panelSettingsServidor.getPort();
-						String host = panelSettingsServidor.getHost();
+						
+			    		  panelSettingsServidor.update();
+			    		  
+			    		  String msg = String.format(
+			    				  "HOST: %s\nPORT: %d",
+			    				  PanelSettingsServidorCliente.getHost(),
+			    				  PanelSettingsServidorCliente.getPort());
+			    		  
+			    		  JOptionPane.showMessageDialog(null, msg);
+						
 					} catch (NumberFormatException e) {
 						JOptionPane.showMessageDialog(
 								null, 
@@ -162,8 +181,6 @@ public class VentanaPrincipalCliente extends JFrame {
 								JOptionPane.ERROR_MESSAGE);
 					}
 			      }
-//				String name = JOptionPane.showInputDialog("Type your name please");
-//				JOptionPane.showMessageDialog(null, "Hello " + name);
 			}
 		});
 		menuPropiedades.add(menuItemServidor);
