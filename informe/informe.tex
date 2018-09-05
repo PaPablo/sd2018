@@ -38,6 +38,41 @@ El cliente recibe dos parámetros: el nombre del servidor (se obtiene su direcci
 Al igual que en el ejercicio anterior, el servidor recibe un puerto sobre el cual escuchar, y el cliente recibe un nombre de servidor al cual intentar conectarse y un puerto. Cada uno recibe además una cantidad; este valor indica cuántos \emph{bytes} escribir en el \emph{socket} de conexión (cliente), y cuántos \emph{bytes} leer del \emph{socket} de conexión (servidor).   
 
 
+\section{Ejercico 2}
+
+\section{Ejercicio 3 - RFS}
+
+\subsection{Inciso a - RPC}
+
+La implementación de la operación \texttt{RFS\_WRITE} se puede encontrar en el directorio \emph{ej-3/a}, con su correspondiente \texttt{Makefile} para compilar el código. Se implementó también una pequeña aplicación que utiliza los stubs generados con \emph{rpcgen} que permite leer/escribir un archivo remoto.
+
+Para correr la aplicación, primero verificar que todas las dependencias de \emph{rpcgen} están corriendo correctamente. Para ello, ejecutar el comando \texttt{rpcinfo}; en caso de que su ejecución devuelva un código de error, ejecutar el comando \texttt{sudo rpcbind} y probar nuevamente. Una vez finalizado, correr el servidor RPC en una terminal, con el comando \texttt{./rfs\_server}, y en otra terminal el cliente, pasando los parámetros adecuados (\texttt{./rfs\_client} <HOST\_SERVIDOR> <COMANDO> <ARCHIVO> [ARCHIVO\_ESCRITO]). En caso de una invocación incorrecta del cliente, imprimirá una ayuda sobre cómo ejecutarlo.
+
+\subsection{Inciso b - Implentación en Java}
+
+La implementación en Java requerida se puede encontar en el directorio \emph{ej-3/b}. Para correr la aplicación, cambiarse al directorio \emph{bin}, y desde allí, ejecutar el comando \texttt{java rfs.MainServidor} para correr el servidor (por defecto escucha en el puerto 8080, para cambiarlo modificar el archivo \emph{src/rfs/MainServidor.java}). Luego, ejecutar el cliente (estando en la carpeta \emph{bin}) con el comando \texttt{java rfs.MainCliente}.
+
+La aplicación cliente consiste en una ventana con dos botones principales, \textbf{Leer archivo} y \textbf{Escribir archivo}. El primero mostrará un cuadro de texto para ingresar el archivo que se desee leer; dicho archivo debe existir \textbf{en el directorio donde se ejecutó el servidor}. Si existe, lo leerá completamente y lo escribirá en el \emph{HOME} del usuario. La función de escritura de archivos mostrará una ventana para eligir un archivo a escribir, y será escrito en el directorio donde se ejecutó el servidor. 
+
+Para replicar el \emph{stub} generado automáticamente con \emph{rpcgen}, se crearon las siguientes clases en Java:
+\begin{itemize}
+    \item \texttt{Client}: implementa métodos para leer/escribir un archivo completo a través de sucesivas llamadas a las funciones de la interfase \texttt{IFileSystem}. Es instanciada por los manejadores de eventos de la interfaz gráfica.
+    \item \texttt{Server}: implementa la interfase \texttt{IStatefullFileSystem}. Contiene la lógica para llevar a cabo un sistema de archivos con estado (mantiene archivos abiertos en memoria).
+    \item \texttt{RFSClientStub}: implementa la interfase \texttt{IFileSystem}. Permite a un cliente realizar operaciones de lectura/escritura. Encargada de llevar a cabo la comunicación con el servidor.
+    \item \texttt{RFSServerStub}: recibe los parámetros del cliente e invoca las funcionalidades de la clase \texttt{Server}.
+    \item \texttt{RFSArgument}: clase que representa los disintos argumentos que intercambiarán los \emph{stubs} cliente/servidor para implementar el sistema de archivos distribuidos (inspirado en la implementación hecha con \emph{rpcgen}).  
+    \item \texttt{OpenedFile}: modela un archivo abierto que mantendrá \texttt{Server}.
+\end{itemize}
+
+\subsection{Inciso c - Comparación de implementaciones}
+
+La principal diferencia que cabe destacar es el \textbf{la diferencia de paradigmas} entre una solución y la otra, teniendo por un lado un desarrollo procedural, mientras que el otro es más orientado a objetos.  
+
+Por otro lado, la implementación hecha en C y con \emph{rpcgen} abstrae la comunicación entre el cliente y el servidor, evitando tener que manejar sockets o preocuparse por puertos, simplemente definiendo claramente las interfaces de las funciones deseadas en el archivo \texttt{.x} para que después \emph{rpcgen} genere el código C necesario. En cambio en la implementación en Java fue necesario implementar todo ese andamiaje para que poder emular lo más fielmente posible la implementación anterior; sin embargo, la librería estándar de Java provee muchas clases para poder serializar/hidratar objetos, haciendo la transferencia de éstos mucho más fácil de programar.
+
+
+
+
 
 
 
