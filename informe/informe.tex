@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% En 'inclues.tex' se encuentran la importación de paquetes necesarios
+% En 'oSinclues.tex' se encuentran la importación de paquetes necesarios
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{project_settings}
 \input{listings_settings}
@@ -57,7 +57,7 @@ La aplicación cliente consiste en una ventana con dos botones principales, \tex
 Para replicar el \emph{stub} generado automáticamente con \emph{rpcgen}, se crearon las siguientes clases en Java:
 \begin{itemize}
     \item \texttt{Client}: implementa métodos para leer/escribir un archivo completo a través de sucesivas llamadas a las funciones de la interfase \texttt{IFileSystem}. Es instanciada por los manejadores de eventos de la interfaz gráfica.
-    \item \texttt{Server}: implementa la interfase \texttt{IStatefullFileSystem}. Contiene la lógica para llevar a cabo un sistema de archivos con estado (mantiene archivos abiertos en memoria).
+    \item \texttt{Server}: implementa la interfase \texttt{IStatefulFileSystem}. Contiene la lógica para llevar a cabo un sistema de archivos con estado (mantiene archivos abiertos en memoria).
     \item \texttt{RFSClientStub}: implementa la interfase \texttt{IFileSystem}. Permite a un cliente realizar operaciones de lectura/escritura. Encargada de llevar a cabo la comunicación con el servidor.
     \item \texttt{RFSServerStub}: recibe los parámetros del cliente e invoca las funcionalidades de la clase \texttt{Server}.
     \item \texttt{RFSArgument}: clase que representa los disintos argumentos que intercambiarán los \emph{stubs} cliente/servidor para implementar el sistema de archivos distribuidos (inspirado en la implementación hecha con \emph{rpcgen}).  
@@ -70,12 +70,27 @@ La principal diferencia que cabe destacar es el \textbf{la diferencia de paradig
 
 Por otro lado, la implementación hecha en C y con \emph{rpcgen} abstrae la comunicación entre el cliente y el servidor, evitando tener que manejar sockets o preocuparse por puertos, simplemente definiendo claramente las interfaces de las funciones deseadas en el archivo \texttt{.x} para que después \emph{rpcgen} genere el código C necesario. En cambio en la implementación en Java fue necesario implementar todo ese andamiaje para que poder emular lo más fielmente posible la implementación anterior; sin embargo, la librería estándar de Java provee muchas clases para poder serializar/hidratar objetos, haciendo la transferencia de éstos mucho más fácil de programar.
 
+\subsection{Experimentos}
 
+~\\
+\emph{Pruebe cancelar un cliente cuando se está en el medio del funcionamiento y vuelva a arrancar el cliente. Observe y documente qué ocurre} 
+~\\
 
+La aplicación intenta transmitir archivos mediante sucesivas llamadas a los métodos del objeto \emph{fileSystem} con el que cuenta. Dicho objeto implementa la lógica de un sistema de archivos remoto (con cada llamada, establece una conexión con el servidor y realiza la función); si el cliente se cae durante una operación, la operación quedaría inconclusa. Debido a que los archivos en el servidor se cierra cuando un cliente pide cerrarlo, ese archivo quedaría abierto. 
 
+Ahora bien, los archivos abiertos en el servidor no pertenecen a ningún cliente en particular, y un archivo abierto (\emph{OpenedFile}) se puede recuperar (de la lista de archivos abierto que mantiene el servidor) a partir del archivo que contiene, por lo tanto algún otro cliente podría querer leer el archivo que había abierto el cliente que se cayó, y el servidor seguiría leyendo de ese archivo abierto.
 
+~\\
+\emph{Pruebe cancelar el servidor cuando se está en el medio del funcionamiento y vuelva a arrancar el cliente.  Observe y documente qué ocurre} 
+~\\
 
+Si es el servidor el que se cae en medio de una operación de lectura/escritura, el cliente no se enteraría sino hasta que quiera hacer la siguiente llamada de lectura/escritura del archivo abierto (con el que venía trabajando), y ocurra un error en el servidor (se intenta realizar una operación con un archivo que no está abierto en el servidor). En este caso, el servidor contestaría la petición enviando un objeto \texttt{RFSError}, que es la clase que modela un error durante una operación entre el cliente y el servidor. 
 
+~\\
+\emph{Determine si es un servidor con estados o sin estados} 
+~\\
+
+Se puede notar claramente que el servidor se trata de un \textbf{servidor con estados}, ya que mantiene los archivos abiertos en memoria. Además, en caso de que el servidor se caiga, al no persistir el estado de las operaciones que se estén ejecutando, se perdería todo el progreso realizado. 
 
 
 
