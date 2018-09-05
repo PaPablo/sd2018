@@ -49,7 +49,10 @@ public class RFSServerStub {
 	 * @throws IOException
 	 */
 	public void listen() throws IOException {
-		System.out.println(String.format("RFSServerStub: escuchando en puerto %d", this.getPort()));
+		System.out.println(
+				String.format(
+						"RFSServerStub: escuchando en puerto %d",
+						this.getPort()));
 		ServerSocket socket = new ServerSocket(this.getPort());
 
 		while (true) {
@@ -72,8 +75,10 @@ public class RFSServerStub {
 	 * @throws IOException
 	 */
 	public void handleClient(Socket clientSocket) throws IOException {
-		ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-		ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+		ObjectOutputStream out = 
+				new ObjectOutputStream(clientSocket.getOutputStream());
+		ObjectInputStream in = 
+				new ObjectInputStream(clientSocket.getInputStream());
 
 		try {
 			RFSArgument arg = (RFSArgument) in.readObject();

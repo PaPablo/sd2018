@@ -14,12 +14,6 @@ public class Server implements IStatefulFileSystem {
 		this.openedFiles = new ArrayList<>();
 	}
 	
-	/**
-	 * Devuelve un archivo abierto
-	 * @param file archivo abierto a buscar
-	 * @return el archivo abierto
-	 * @throws FileNotOpenedException
-	 */
 	public OpenedFile getOpenedFile(File file){
 		for (OpenedFile openedFile : this.openedFiles) {
 			if (openedFile.getFile().equals(file)) {
@@ -36,37 +30,6 @@ public class Server implements IStatefulFileSystem {
 		openedFile.close();
 		return this.openedFiles.remove(openedFile);
 	}
-
-	/**
-	 * Crea un archivo y lo almacena en una lista de archivos abiertos
-	 * DEVUELVE NULL SI NO LO PUEDE ABRIR
-	 * @param filename nombre del archivo
-	 * @return el archivo creado
-	 */
-//	public File open(String filename) {
-//		//TODO: Qué pasa si el archivo ya estaba abierto?
-//		OpenedFile fileToAdd = new OpenedFile(filename);
-//		this.openedFiles.add(fileToAdd);
-//		return fileToAdd.getFile();
-//	}
-//
-//	@Override
-//	public int read(File file, byte[] buffer) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public int write(File file, byte[] data) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public boolean close(File file) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
 
 	@Override
 	public OpenedFile openFile(String filename) {

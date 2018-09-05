@@ -25,6 +25,11 @@ public class OpenedFile {
 		this.file = file;
 	}
 
+	/**
+	 * Crea el FileInputStream si no existe y lo devuelve
+	 * @return el FileInputStream del archivo
+	 * @throws FileNotFoundException
+	 */
 	public FileInputStream getInputStream() throws FileNotFoundException {
 		if (this.inputStream == null) {
 			FileInputStream fileStream = 
@@ -40,6 +45,11 @@ public class OpenedFile {
 		this.inputStream = inputStream;
 	}
 
+	/**
+	 * Crea el FileOutputStream si no existe y lo devuelve
+	 * @return el FileOutputStream del archivo
+	 * @throws FileNotFoundException
+	 */
 	public FileOutputStream getOutputStream() throws FileNotFoundException {
 		if (this.outputStream == null) {
 			FileOutputStream fileStream =
@@ -55,6 +65,9 @@ public class OpenedFile {
 		this.outputStream = outputStream;
 	}
 	
+	/**
+	 * Cierra el archivo y los FileStreams
+	 */
 	public void close() {
 		try {
 			FileInputStream in = 
