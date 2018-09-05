@@ -68,6 +68,9 @@ public class VentanaPrincipalCliente extends JFrame {
 				try {
 					Client client = new Client();
 					client.readFile(filename);
+					JOptionPane.showMessageDialog(
+							null,
+							"Lectura realizada con éxito");
 				} catch (CouldNotReadFileException e) {
 					JOptionPane.showMessageDialog(
 							null,
@@ -93,6 +96,9 @@ public class VentanaPrincipalCliente extends JFrame {
 					try {
 						Client client = new Client();
 						client.writeFile(selectedFile);
+						JOptionPane.showMessageDialog(
+								null,
+								"Escritura realizada con éxito");
 					} catch (CouldNotWriteFileException e) {
 						JOptionPane.showMessageDialog(
 								null,
