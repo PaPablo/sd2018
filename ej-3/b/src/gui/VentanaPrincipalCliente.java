@@ -10,8 +10,6 @@ import javax.swing.border.EmptyBorder;
 import exceptions.CouldNotReadFileException;
 import exceptions.CouldNotWriteFileException;
 import rfs.Client;
-import rfs.ClienteRFS;
-
 import javax.swing.JButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
