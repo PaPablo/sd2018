@@ -15,6 +15,7 @@ import com.sun.jdi.connect.Connector.Argument;
 import exceptions.FileNotOpenedException;
 import rfsArguments.RFSArgument;
 import rfsArguments.RFSCloseArgument;
+import rfsArguments.RFSError;
 import rfsArguments.RFSOpenArgument;
 import rfsArguments.RFSReadArgument;
 import rfsArguments.RFSWriteArgument;
@@ -171,8 +172,10 @@ public class RFSServerStub {
 //								closeArg.getFile().getName().trim()));
 				out.writeObject(success);
 			}
-		} catch (ClassNotFoundException | FileNotFoundException e) {
-			out.writeObject(new RFSReadArgument(null));
+		} catch (ClassNotFoundException 
+				| NullPointerException
+				| FileNotFoundException e) {
+			out.writeObject(new RFSError());
 		} finally {
 			in.close();
 			out.close();
