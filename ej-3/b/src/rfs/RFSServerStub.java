@@ -120,13 +120,11 @@ public class RFSServerStub {
 						.readOpenedFile(
 								openedFile,
 								readArg.getData());
-				// FileInputStream fileStream = openedFile.getInputStream();
-				// int count = fileStream.read(readArg.getData());
 
-				// System.out.println(
-				// String.format(
-				// "RFSServerStub: leido [%s]",
-				// new String(readArg.getData()).trim()));
+//				 System.out.println(
+//						 String.format(
+//								 "RFSServerStub: leido [%s]",
+//								 new String(readArg.getData()).trim()));
 				readArg.setCount(count);
 				out.writeObject(readArg);
 			} else if (arg instanceof RFSWriteArgument) {
@@ -147,9 +145,6 @@ public class RFSServerStub {
 								writeArg.getData());
 
 				writeArg.setCount(count);
-//				FileOutputStream fileStream = openedFile.getOutputStream();
-//				fileStream.write(writeArg.getData());
-
 				out.writeObject(writeArg);
 			} else if (arg instanceof RFSCloseArgument) {
 				// CERRAR ARCHIVO
@@ -166,9 +161,9 @@ public class RFSServerStub {
 				boolean success = 
 						this.fileSystem.closeOpenedFile(openedFile);
 
-				System.out.println(
-						String.format("RFSServerStub: cerrado [%s]",
-								closeArg.getFile().getName().trim()));
+//				System.out.println(
+//						String.format("RFSServerStub: cerrado [%s]",
+//								closeArg.getFile().getName().trim()));
 				out.writeObject(success);
 			}
 		} catch (ClassNotFoundException | FileNotFoundException e) {
