@@ -102,10 +102,6 @@ public class RFSClientStub implements IFileSystem {
 			
 			RFSWriteArgument writeArg = (RFSWriteArgument) in.readObject();
 
-//			if (readArg.getFile() == null) {
-//				return -1;
-//			}
-			
 			return writeArg.getCount();
 		} catch (UnknownHostException e) {
 			return -1;
@@ -181,10 +177,6 @@ public class RFSClientStub implements IFileSystem {
 			out.writeObject(arg);
 			
 			RFSReadArgument readArg = (RFSReadArgument) in.readObject();
-			
-//			if (readArg.getFile() == null) {
-//				return -1;
-//			}
 			
 			//Copiamos los datos a buffer
 			for (int i = 0; i < readArg.getData().length; i++) {
