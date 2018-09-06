@@ -6,8 +6,8 @@ all: $(BIN)
 clean:
 	rm -f $(OBJ) $(BIN)
 
-bin/client: src/client.c
+bin/client:
 	$(CC) -o bin/client src/client.c src/clstub.c
 
-bin/server: src/server.c
+bin/server: 
 	$(CC) -o bin/server src/server.c src/svstub.c

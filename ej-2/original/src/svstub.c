@@ -139,27 +139,27 @@ static int process_server( CLSVBUFF *p, int qty )
     }
 
 
-static void do_server( void )
+static void do_server( sCliente )
     {
     int qty;
 
-    qty = receive_packet( s, &clsvbuff, sizeof( clsvbuff ) );
+    qty = receive_packet( sCliente, &clsvbuff, sizeof( clsvbuff ) );
     qty = process_server( &clsvbuff, qty );
-    send_packet( s, &clsvbuff, qty );
+    send_packet( sCliente, &clsvbuff, qty );/*aca me quede*/
     }
 
 
 void main( void )
     {
-	//int s;
-	s = socksv_init( "8888" ); 
-	if (s < 0) {
+	int sCliente;
+	sCliente = socksv_init( "8888" ); 
+	if (sCliente < 0) {
 	    fprintf(stderr,"No abrió el Socket\n");
 	    exit(0);
 	}
 
     for(;;)
-      do_server();
+      do_server(sCliente);
     }
 
 
