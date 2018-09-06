@@ -28,8 +28,7 @@ public class RFSServerStub implements IClientHandler{
 	/**
 	 * Capa de middleware del servidor de RFS
 	 * 
-	 * @param port
-	 *            puerto en el cuál escuchará conexiones
+	 * @param port puerto en el cuál escuchará conexiones
 	 */
 	public RFSServerStub(int port) {
 		this.setPort(port);
@@ -59,9 +58,10 @@ public class RFSServerStub implements IClientHandler{
 		while (true) {
 			try {
 				Socket clientSocket = socket.accept();
-//				this.handleClient(clientSocket);
-				new RFSClientConnection(clientSocket, this).start();
-//				clientSocket.close();
+				new RFSClientConnection(
+						clientSocket,
+						this)
+				.start();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
