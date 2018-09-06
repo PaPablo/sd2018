@@ -92,6 +92,25 @@ Si es el servidor el que se cae en medio de una operación de lectura/escritura,
 
 Se puede notar claramente que el servidor se trata de un \textbf{servidor con estados}, ya que mantiene los archivos abiertos en memoria. Además, en caso de que el servidor se caiga, al no persistir el estado de las operaciones que se estén ejecutando, se perdería todo el progreso realizado. 
 
+\section{Ejercicio 5 - Hilos}
+
+\emph{La versión concurrente del servidor se puede hallar en el directorio ej-3/b/concurrente} 
+~\\
+
+La clase \texttt{RFSServerStub} cuenta con un método \texttt{listen} el cual se encarga de aceptar conexiones entrantes de clientes, atenderlos, y por último cerrar el socket.
+
+Para que el manejo de clientes sea concurrente, se debería manejar en un nuevo hilo al cliente y cerrar el socket. Para ello, se definió la interfase \texttt{IClientHandler} que tiene el método \texttt{handleCliente(Socket clientSocket)}; la clase \texttt{RFSServerStub} ya implementaría dicha interfase. 
+
+Ahora bien, también se agregó la clase \texttt{RFSClientConnection} que hereda de \texttt{Thread}. Un objeto de esta clase necesitará un \emph{socket} y un \emph{manejador de clientes} para ser creado.   
+
+Cuando se recibe la conexión de un nuevo cliente, se instancia un nuevo objeto \texttt{RFSClientConnection} pasándole el socket, y el manejador de clientes (el mismo \texttt{RFSServerStub}), y se lo ejecuta con el método \texttt{start()}.
+
+\section{Ejercicio 6 - Concurrencia}
+
+
+
+
+
 
 
 
