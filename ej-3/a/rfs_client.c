@@ -143,7 +143,7 @@ int main (int argc, char *argv[]) {
             return 1; 
         }
 
-        FILE *file = fopen(file_name, "r");
+        FILE *file = fopen(file_name, "rb");
         if (file == NULL) {
             printf("No se pudo escribir el archivo %s\n", file_name);
             return 1;
