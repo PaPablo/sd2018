@@ -18,6 +18,7 @@ import rfsArguments.RFSCloseArgument;
 import rfsArguments.RFSError;
 import rfsArguments.RFSOpenArgument;
 import rfsArguments.RFSReadArgument;
+import rfsArguments.RFSReadArgumentServer;
 import rfsArguments.RFSWriteArgument;
 
 public class RFSServerStub {
@@ -112,27 +113,31 @@ public class RFSServerStub {
 				out.writeObject(openedFile);
 			} else if (arg instanceof RFSReadArgument) {
 				// LEER ARCHIVO ABIERTO
-				RFSReadArgument readArg = (RFSReadArgument) arg;
+				RFSReadArgument readArgIn = (RFSReadArgument) arg;
+				
 
 				System.out.println(
 						String.format(
 								"RFSServerStub: hay que leer [%s]", 
-								readArg.getFile()));
+								readArgIn.getFile()));
 
 				OpenedFile openedFile = 
-						this.fileSystem.getOpenedFile(readArg.getFile());
-
+						this.fileSystem.getOpenedFile(readArgIn.getFile());
+				
+				RFSReadArgumentServer readArgOut = new RFSReadArgumentServer(new byte[Client.BUFFER_SIZE]);
+				
 				int count = this.fileSystem
 						.readOpenedFile(
 								openedFile,
-								readArg.getData());
+								readArgOut.getData()
+								);
 
 //				 System.out.println(
 //						 String.format(
 //								 "RFSServerStub: leido [%s]",
 //								 new String(readArg.getData()).trim()));
-				readArg.setCount(count);
-				out.writeObject(readArg);
+				readArgOut.setCount(count);
+				out.writeObject(readArgOut);
 			} else if (arg instanceof RFSWriteArgument) {
 				// ESCRIBIR ARCHIVO ABIERTO
 				RFSWriteArgument writeArg = (RFSWriteArgument) arg;
@@ -151,8 +156,7 @@ public class RFSServerStub {
 								openedFile,
 								writeArg.getData());
 
-				writeArg.setCount(count);
-				out.writeObject(writeArg);
+				out.writeObject(count);
 			} else if (arg instanceof RFSCloseArgument) {
 				// CERRAR ARCHIVO
 				RFSCloseArgument closeArg = (RFSCloseArgument) arg;
