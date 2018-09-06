@@ -137,10 +137,11 @@ public class RFSServerStub {
 				// ESCRIBIR ARCHIVO ABIERTO
 				RFSWriteArgument writeArg = (RFSWriteArgument) arg;
 
-				System.out.println(
-						String.format(
-								"RFSServerStub: hay que escribir [%s]", 
-								new String(writeArg.getData()).trim()));
+				System.out.println("RFSServerStub: hay que escribir\n");
+//				System.out.println(
+//						String.format(
+//								"RFSServerStub: hay que escribir [%s]", 
+//								new String(writeArg.getData()).trim()));
 
 				OpenedFile openedFile = 
 						this.fileSystem.getOpenedFile(writeArg.getFile());
