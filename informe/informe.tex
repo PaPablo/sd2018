@@ -33,12 +33,25 @@ El cliente recibe dos parámetros: el nombre del servidor (se obtiene su direcci
 
 \subsection{Inciso \emph{b}}
 
-
-
 Al igual que en el ejercicio anterior, el servidor recibe un puerto sobre el cual escuchar, y el cliente recibe un nombre de servidor al cual intentar conectarse y un puerto. Cada uno recibe además una cantidad; este valor indica cuántos \emph{bytes} escribir en el \emph{socket} de conexión (cliente), y cuántos \emph{bytes} leer del \emph{socket} de conexión (servidor).   
 
 
-\section{Ejercicio 2 - Servidores con estado y sin estado}
+\section{Ejercicio 2 - Servidores con y sin estado}
+
+Un servidor \textbf{con estados} se trata de un servidor que \dq{recuerda} información de los clientes entre una petición y otra \autocite{StatefulStateless}. En cambio, un servidor sin estado es \textbf{idempotente} - siempre responderá de la misma forma para la misma petición. 
+
+~\\
+
+Como el servidor implementado en \textbf{p12} es un \textbf{servidor con estados}, para lograr una implementación sin estados cada operación que se envíe al servidor debe ser autocontenida. De la forma:
+
+\begin{itemize}
+    \item \texttt{rmtread(archivo, buffer, cantidad\_bytes, pos\_actual)} 
+    \item \texttt{rmtwrite(archivo, buffer, cant\_bytes, pos\_actual)} 
+\end{itemize}
+
+Con respecto a la implementación de lado del servidor, cada primitiva ofrecida debería abrir el archivo, posicionarse en la posición actual (\texttt{pos\_actual}), leer o escribir (según la función que se haya invocado) y cerrar el archivo. De esta manera, ante una caída del servidor se podría reanudar sin problemas su funcionamiento.
+
+
 
 \section{Ejercicio 3 - RFS}
 
@@ -68,7 +81,7 @@ Para replicar el \emph{stub} generado automáticamente con \emph{rpcgen}, se cre
 
 La principal diferencia que cabe destacar es el \textbf{la diferencia de paradigmas} entre una solución y la otra, teniendo por un lado un desarrollo procedural, mientras que el otro es más orientado a objetos.  
 
-Por otro lado, la implementación hecha en C y con \emph{rpcgen} abstrae la comunicación entre el cliente y el servidor, evitando tener que manejar sockets o preocuparse por puertos, simplemente definiendo claramente las interfaces de las funciones deseadas en el archivo \texttt{.x} para que después \emph{rpcgen} genere el código C necesario. En cambio en la implementación en Java fue necesario implementar todo ese andamiaje para que poder emular lo más fielmente posible la implementación anterior; sin embargo, la librería estándar de Java provee muchas clases para poder serializar/hidratar objetos, haciendo la transferencia de éstos mucho más fácil de programar.
+Por otro lado, la implementación hecha en C y con \emph{rpcgen} abstrae la comunicación entre el cliente y el servidor, evitando tener que manejar sockets o preocuparse por puertos, simplemente definiendo claramente las interfaces de las funciones deseadas en el archivo \texttt{.x} para que después \emph{rpcgen} genere el código C necesario. En cambio en la implementación en Java, fue necesario implementar todo ese andamiaje para poder emular lo más fielmente posible la implementación anterior; sin embargo, la librería estándar de Java provee muchas clases para poder serializar/hidratar objetos, haciendo la transferencia de éstos mucho más fácil de programar.
 
 \subsection{Experimentos}
 
@@ -78,7 +91,7 @@ Por otro lado, la implementación hecha en C y con \emph{rpcgen} abstrae la comu
 
 La aplicación intenta transmitir archivos mediante sucesivas llamadas a los métodos del objeto \emph{fileSystem} con el que cuenta. Dicho objeto implementa la lógica de un sistema de archivos remoto (con cada llamada, establece una conexión con el servidor y realiza la función); si el cliente se cae durante una operación, la operación quedaría inconclusa. Debido a que los archivos en el servidor se cierra cuando un cliente pide cerrarlo, ese archivo quedaría abierto. 
 
-Ahora bien, los archivos abiertos en el servidor no pertenecen a ningún cliente en particular, y un archivo abierto (\emph{OpenedFile}) se puede recuperar (de la lista de archivos abierto que mantiene el servidor) a partir del archivo que contiene, por lo tanto algún otro cliente podría querer leer el archivo que había abierto el cliente que se cayó, y el servidor seguiría leyendo de ese archivo abierto.
+Ahora bien, los archivos abiertos en el servidor no pertenecen a ningún cliente en particular, y un archivo abierto (\texttt{OpenedFile}) se puede recuperar (de la lista de archivos abierto que mantiene el servidor) a partir del archivo que contiene, por lo tanto algún otro cliente podría querer leer el archivo que había abierto el cliente que se cayó, y el servidor seguiría leyendo de ese archivo abierto.
 
 ~\\
 \emph{Pruebe cancelar el servidor cuando se está en el medio del funcionamiento y vuelva a arrancar el cliente.  Observe y documente qué ocurre} 
@@ -173,6 +186,12 @@ Esta diferencia abismal de velocidades se debe principalmente al \textbf{tamaño
     \includegraphics[scale=0.45]{transferencia-java-buffer-grande.png}
     \caption{Archivo transferido en \textbf{3 minutos y medio} }
 \end{figure}
+
+
+\section{\emph{Pool} de hilos}
+
+Poner lo de coso acá, del pool de hilos.
+
 
 
 
