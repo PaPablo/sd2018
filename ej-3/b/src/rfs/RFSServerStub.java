@@ -20,7 +20,7 @@ import rfsArguments.RFSOpenArgument;
 import rfsArguments.RFSReadArgument;
 import rfsArguments.RFSWriteArgument;
 
-public class RFSServerStub {
+public class RFSServerStub implements IClientHandler{
 
 	private int port;
 	private IStatefulFileSystem fileSystem;
@@ -59,8 +59,9 @@ public class RFSServerStub {
 		while (true) {
 			try {
 				Socket clientSocket = socket.accept();
-				this.handleClient(clientSocket);
-				clientSocket.close();
+//				this.handleClient(clientSocket);
+				new RFSClientConnection(clientSocket, this).start();
+//				clientSocket.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -75,13 +76,13 @@ public class RFSServerStub {
 	 *            socket de la conexión
 	 * @throws IOException
 	 */
-	public void handleClient(Socket clientSocket) throws IOException {
-		ObjectOutputStream out = 
-				new ObjectOutputStream(clientSocket.getOutputStream());
-		ObjectInputStream in = 
-				new ObjectInputStream(clientSocket.getInputStream());
-
+	public void handleClient(Socket clientSocket) {
+		ObjectOutputStream out = null;
+		ObjectInputStream in = null;
 		try {
+			out = new ObjectOutputStream(clientSocket.getOutputStream());
+			in = new ObjectInputStream(clientSocket.getInputStream());
+
 			RFSArgument arg = (RFSArgument) in.readObject();
 
 			if (arg instanceof RFSOpenArgument) {
@@ -174,11 +175,15 @@ public class RFSServerStub {
 			}
 		} catch (ClassNotFoundException 
 				| NullPointerException
-				| FileNotFoundException e) {
-			out.writeObject(new RFSError());
+				| IOException e) {
+			try {
+				out.writeObject(new RFSError());
+			} catch (IOException e1) {}
 		} finally {
-			in.close();
-			out.close();
+			try {
+				in.close();
+				out.close();
+			} catch (IOException e) {}
 		}
 
 	}
