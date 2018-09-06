@@ -38,7 +38,7 @@ El cliente recibe dos parámetros: el nombre del servidor (se obtiene su direcci
 Al igual que en el ejercicio anterior, el servidor recibe un puerto sobre el cual escuchar, y el cliente recibe un nombre de servidor al cual intentar conectarse y un puerto. Cada uno recibe además una cantidad; este valor indica cuántos \emph{bytes} escribir en el \emph{socket} de conexión (cliente), y cuántos \emph{bytes} leer del \emph{socket} de conexión (servidor).   
 
 
-\section{Ejercico 2}
+\section{Ejercicio 2 - Servidores con estado y sin estado}
 
 \section{Ejercicio 3 - RFS}
 
@@ -137,8 +137,42 @@ Para demostrar que cada cliente se atiende en un hilo distinto, se llevó a cabo
 
 Cuando el servidor acepta una conexión entrante, crea un hilo para atenderla; por lo tanto se podría decir que la implementación del servidor concurrentemente maneja \textbf{un hilo por conexión}. Sin embargo, en cada conexión se realiza \textbf{una única operación} (abrir un archivo, leer un archivo abierto, escribir en un archivo abierto, o cerrar un archivo abierto), así que se podría argumentar que el hilo es \textbf{por requerimiento}. 
 
+~\\
+\emph{Comparación en la transferencia de archivos grandes} 
+~\\
 
+Comparando ambas implementaciones con un archivo de 3.9GB, los rendimientos cambian considerablemente. Cabe destacar que toda la comunicación que se lleva a cabo con la implementación en C es resuelta por \emph{rpcgen}, por lo tanto se podría suponer que es más performante que la versión de Java. La primer versión comunica el cliente con el servidor mediante UDP, mientras que la segunda versión (Java) trabaja con TCP.
 
+Trabajando con un tamaño de buffer de aproximadamente 8KB, la implementación con RPC transfiere el archivo en \textbf{alrededor de 17 minutos} 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{transferencia-rpc.png}
+    \caption{3.9GB transferidos en 17 minutos}
+\end{figure}
+
+Por otro lado, la implementación en Java demora una cantidad de tiempo cuantiosamente mayor. No estaría demás comentar que esta versión transporta a través de la red varios datos innecesarios (debido a una simplificación en el código). Por ejemplo, cuando se ejecuta una función de lectura, el cliente crea el arreglo de \texttt{bytes} y lo envía al servidor; el servidor se encarga de llenar ese arreglo y devolverlo al cliente. 
+
+En un intento de transferir el mismo archivo, en aproximadamente 37 minutos se transfirieron \textbf{400MB de un archivo de 3.9GB}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.47]{transferencia-java.png}
+    \caption{Transferencia cancelada}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.7]{archivo-transferido-java.png}
+    \caption{Sólo se transfirieron 400MB en 37 minutos}
+\end{figure}
+
+Esta diferencia abismal de velocidades se debe principalmente al \textbf{tamaño del buffer}. Otro experimento realizado fue hacer la misma transferencia (con la versión en Java), pero con un buffer de transferencia de 1MB. Con este cambio, esta versión termina prevalenciendo por sobre la de RPC.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.45]{transferencia-java-buffer-grande.png}
+    \caption{Archivo transferido en \textbf{3 minutos y medio} }
+\end{figure}
 
 
 
