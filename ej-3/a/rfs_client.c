@@ -18,7 +18,7 @@ void imprimir_ayuda(char *[]);
 
 #define READ_CLI_CMD "leer"
 #define WRITE_CLI_CMD "escribir"
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 8096
 
 /* Handle para las llamadas remotas (creado/asignado en rfs_1() */
 CLIENT *clnt;
