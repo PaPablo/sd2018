@@ -11,7 +11,7 @@ import exceptions.CouldNotWriteFileException;
 
 public class Client {
 	private IFileSystem fileSystem;
-	private static final int BUFFER_SIZE = 1024 * 1024;
+	private static final int BUFFER_SIZE = 8096;
 	
 	/**
 	 * Cliente para leer/escribir archivos
