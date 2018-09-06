@@ -107,6 +107,29 @@ Cuando se recibe la conexión de un nuevo cliente, se instancia un nuevo objeto 
 
 \section{Ejercicio 6 - Concurrencia}
 
+~\\
+\emph{Disparar dos clientes a la vez y verificar (documentar) si las solicitudes de ambos clientes son atendidas por el mismo o por distintos hilos en el servidor} 
+~\\
+
+Para llevar a cabo este experimento, se decidió mostrar un mensaje (\texttt{JOptionPane}) justo después de que el cliente se haya conectado con el servidor para abrir un archivo. De esta forma, la ejecución del cliente se detendrá hasta que no se cierre el mensaje.
+
+En el lado del servidor, se agregó una impresión por consola cada vez que se cree un hilo, indicando el número de hilo, y qué cliente tiene asociado.
+
+Para demostrar que cada cliente se atiende en un hilo distinto, se llevó a cabo el siguiente experimento:
+
+\begin{itemize}
+    \item Levantar el servidor
+    \item Correr primero un cliente, y luego otro
+    \item Intentar leer un archivo con un cliente - se mostrará el mensaje de \dq{CONECTADO}.
+    \item Repetir el paso anterior con el otro cliente
+    \item Verificar el manejo de dos hilos distintos en la consola del servidor
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{hilo_por_operacion.png}
+\end{figure}
+
 
 
 
