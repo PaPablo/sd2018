@@ -127,8 +127,15 @@ Para demostrar que cada cliente se atiende en un hilo distinto, se llevó a cabo
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{hilo_por_operacion.png}
+    \includegraphics[width=0.8\linewidth]{hilo-por-operacion.png}
+    \caption{Consola del servidor, atendiendo varios clientes concurrentemente}
 \end{figure}
+
+~\\
+\emph{Determine si la implementación del ejercicio 3.- tiene un thread por requerimiento, por conexión, o por recurso} 
+~\\
+
+Cuando el servidor acepta una conexión entrante, crea un hilo para atenderla; por lo tanto se podría decir que la implementación del servidor concurrentemente maneja \textbf{un hilo por conexión}. Sin embargo, en cada conexión se realiza \textbf{una única operación} (abrir un archivo, leer un archivo abierto, escribir en un archivo abierto, o cerrar un archivo abierto), así que se podría argumentar que el hilo es \textbf{por requerimiento}. 
 
 
 
