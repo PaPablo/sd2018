@@ -18,8 +18,7 @@ void imprimir_ayuda(char *[]);
 
 #define READ_CLI_CMD "leer"
 #define WRITE_CLI_CMD "escribir"
-#define READ_BUFFER_SIZE 256
-#define RFS_READ_MAX 256
+#define BUFFER_SIZE 1024
 
 /* Handle para las llamadas remotas (creado/asignado en rfs_1() */
 CLIENT *clnt;
@@ -127,7 +126,7 @@ int main (int argc, char *argv[]) {
             return 1;
         }
         do {
-            remote_file_read = wrap_rfs_read(fd, RFS_READ_MAX);
+            remote_file_read = wrap_rfs_read(fd, BUFFER_SIZE);
             for (int i=0; i < remote_file_read->file_data_len; i++)
                 printf("%c", remote_file_read->file_data_val[i]);
         } while (remote_file_read->file_data_len != 0);
@@ -150,9 +149,9 @@ int main (int argc, char *argv[]) {
             return 1;
         }
 
-        char buff[READ_BUFFER_SIZE];
+        char buff[BUFFER_SIZE];
         wr.fd = fd;
-        while(fgets(buff, READ_BUFFER_SIZE, file) != 0) {
+        while(fgets(buff, BUFFER_SIZE, file) != 0) {
             wr.buf.file_data_val = buff;
             wr.buf.file_data_len = strlen(buff);
             if(wrap_rfs_write(&wr) == -1) {
