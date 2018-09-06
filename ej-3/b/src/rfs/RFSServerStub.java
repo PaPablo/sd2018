@@ -20,7 +20,7 @@ import rfsArguments.RFSOpenArgument;
 import rfsArguments.RFSReadArgument;
 import rfsArguments.RFSWriteArgument;
 
-public class RFSServerStub implements IClientHandler{
+public class RFSServerStub {
 
 	private int port;
 	private IStatefulFileSystem fileSystem;
@@ -28,7 +28,8 @@ public class RFSServerStub implements IClientHandler{
 	/**
 	 * Capa de middleware del servidor de RFS
 	 * 
-	 * @param port puerto en el cuál escuchará conexiones
+	 * @param port
+	 *            puerto en el cuál escuchará conexiones
 	 */
 	public RFSServerStub(int port) {
 		this.setPort(port);
@@ -58,10 +59,8 @@ public class RFSServerStub implements IClientHandler{
 		while (true) {
 			try {
 				Socket clientSocket = socket.accept();
-				new RFSClientConnection(
-						clientSocket,
-						this)
-				.start();
+				this.handleClient(clientSocket);
+				clientSocket.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -76,13 +75,13 @@ public class RFSServerStub implements IClientHandler{
 	 *            socket de la conexión
 	 * @throws IOException
 	 */
-	public void handleClient(Socket clientSocket) {
-		ObjectOutputStream out = null;
-		ObjectInputStream in = null;
-		try {
-			out = new ObjectOutputStream(clientSocket.getOutputStream());
-			in = new ObjectInputStream(clientSocket.getInputStream());
+	public void handleClient(Socket clientSocket) throws IOException {
+		ObjectOutputStream out = 
+				new ObjectOutputStream(clientSocket.getOutputStream());
+		ObjectInputStream in = 
+				new ObjectInputStream(clientSocket.getInputStream());
 
+		try {
 			RFSArgument arg = (RFSArgument) in.readObject();
 
 			if (arg instanceof RFSOpenArgument) {
@@ -175,15 +174,11 @@ public class RFSServerStub implements IClientHandler{
 			}
 		} catch (ClassNotFoundException 
 				| NullPointerException
-				| IOException e) {
-			try {
-				out.writeObject(new RFSError());
-			} catch (IOException e1) {}
+				| FileNotFoundException e) {
+			out.writeObject(new RFSError());
 		} finally {
-			try {
-				in.close();
-				out.close();
-			} catch (IOException e) {}
+			in.close();
+			out.close();
 		}
 
 	}
