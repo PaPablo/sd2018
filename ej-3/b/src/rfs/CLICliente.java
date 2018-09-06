@@ -3,7 +3,7 @@ package rfs;
 import java.io.File;
 import exceptions.CouldNotReadFileException;
 import exceptions.CouldNotWriteFileException;
-public class MainCliente {
+public class CLICliente {
 
 	private static final String WRITE_CMD = "escribir";
 	private static final String READ_CMD = "leer";
