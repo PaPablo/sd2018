@@ -4,7 +4,6 @@
 \input{project_settings}
 \input{listings_settings}
 
-
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -164,7 +163,7 @@ Trabajando con un tamaño de buffer de aproximadamente 8KB, la implementación c
     \caption{3.9GB transferidos en 17 minutos}
 \end{figure}
 
-Por otro lado, la implementación en Java demora una cantidad de tiempo cuantiosamente mayor. No estaría demás comentar que esta versión transporta a través de la red varios datos innecesarios (debido a una simplificación en el código). Por ejemplo, cuando se ejecuta una función de lectura, el cliente crea el arreglo de \texttt{bytes} y lo envía al servidor; el servidor se encarga de llenar ese arreglo y devolverlo al cliente. 
+Por otro lado, la implementación en Java demora una cantidad de tiempo cuantiosamente mayor. No estaría demás comentar que esta versión transporta a través de la red varios datos innecesarios (debido a una simplificación en el código). Por ejemplo, cuando se ejecuta una función de lectura, el cliente crea el arreglo de \texttt{byte} y lo envía al servidor; el servidor se encarga de llenar ese arreglo y devolverlo al cliente. 
 
 En un intento de transferir el mismo archivo, en aproximadamente 37 minutos se transfirieron \textbf{400MB de un archivo de 3.9GB}.
 
@@ -186,6 +185,8 @@ Esta diferencia abismal de velocidades se debe principalmente al \textbf{tamaño
     \includegraphics[scale=0.45]{transferencia-java-buffer-grande.png}
     \caption{Archivo transferido en \textbf{3 minutos y medio} }
 \end{figure}
+
+Por último, la tercer versión (directorio \emph{comunicación\_performante}), modifica la forma en la que se comunica el cliente con el servidor, únicamente enviando los datos necesarios. Por ejemplo, cuando se desea leer un archivo, el cliente envía el archivo que desea leer (que es el archivo que le devolvió el servidor cuando lo quiso abrir) y la cantidad de bytes; el servidor devuelve un arreglo de \texttt{byte} con los datos pedidos.
 
 
 \section{\emph{Pool} de hilos}
