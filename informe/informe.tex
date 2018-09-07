@@ -190,7 +190,9 @@ Esta diferencia abismal de velocidades se debe principalmente al \textbf{tamaño
 
 \section{\emph{Pool} de hilos}
 
-Poner lo de coso acá, del pool de hilos.
+Implementando el manejo concurrente de clientes con un \emph{pool} de \emph{n} hilos (cantidad fija de hilos previamente creados), se podrá atender hasta \emph{n} de forma concurrente; los \emph{n+1} clientes siguientes serán encolados hasta que se libere uno de los hilos. 
+
+Utilizando esta alternativa, se establece de antemano una cantidad máxima de clientes concurrentes que se podrán manejar. Si se decidiese no hacerlo, una cantidad infinita de clientes podría querer conectarse con el servidor, logrando que se le agote la memoria o que deje de brindar servicio.
 
 
 
