@@ -34,7 +34,6 @@ El cliente recibe dos parámetros: el nombre del servidor (se obtiene su direcci
 
 Al igual que en el ejercicio anterior, el servidor recibe un puerto sobre el cual escuchar, y el cliente recibe un nombre de servidor al cual intentar conectarse y un puerto. Cada uno recibe además una cantidad; este valor indica cuántos \emph{bytes} escribir en el \emph{socket} de conexión (cliente), y cuántos \emph{bytes} leer del \emph{socket} de conexión (servidor).   
 
-
 \section{Ejercicio 2 - Servidores con y sin estado}
 
 Un servidor \textbf{con estados} se trata de un servidor que \dq{recuerda} información de los clientes entre una petición y otra \autocite{StatefulStateless}. En cambio, un servidor sin estado es \textbf{idempotente} - siempre responderá de la misma forma para la misma petición. 
@@ -50,8 +49,6 @@ Como el servidor implementado en \textbf{p12} es un \textbf{servidor con estados
 
 Con respecto a la implementación de lado del servidor, cada primitiva ofrecida debería abrir el archivo, posicionarse en la posición actual (\texttt{pos\_actual}), leer o escribir (según la función que se haya invocado) y cerrar el archivo. De esta manera, ante una caída del servidor se podría reanudar sin problemas su funcionamiento.
 
-
-
 \section{Ejercicio 3 - RFS}
 
 \subsection{Inciso a - RPC}
@@ -62,7 +59,16 @@ Para correr la aplicación, primero verificar que todas las dependencias de \emp
 
 \subsection{Inciso b - Implentación en Java}
 
-La implementación en Java requerida se puede encontar en el directorio \emph{ej-3/b}. Para correr la aplicación, cambiarse al directorio \emph{bin}, y desde allí, ejecutar el comando \texttt{java rfs.MainServidor} para correr el servidor (por defecto escucha en el puerto 8080, para cambiarlo modificar el archivo \emph{src/rfs/MainServidor.java}). Luego, ejecutar el cliente (estando en la carpeta \emph{bin}) con el comando \texttt{java rfs.MainCliente}.
+Dentro del directorio del ejercicio, se encontrarán cuatro versiones distintas de la implementación en Java:
+
+\begin{itemize}
+    \item \emph{no-concurrente}: primer versión, el servidor atiende clientes secuencialmente.
+    \item \emph{no-concurrente-performante}: igual que la anterior, sólo que la comunicación entre el cliente y el servidor es más performante en cuanto a que no viajan datos innecesarios por la red.
+    \item \emph{concurrente}: versión concurrente con \texttt{Threads} de Java.  
+    \item \emph{threads-pool}: versión concurrente con \emph{pool} de hilos.  
+\end{itemize}
+
+La implementación en Java requerida se puede encontar en el directorio \emph{ej-3/b}. Para correr la aplicación, cambiarse al directorio \emph{bin}, y desde allí, ejecutar el comando \texttt{java rfs.MainServidor} para correr el servidor (por defecto escucha en el puerto 8080, para cambiarlo modificar el archivo \emph{src/rfs/MainServidor.java}). Luego, ejecutar el cliente (estando en la carpeta \emph{bin}) con el comando \texttt{java rfs.MainCliente} (versión con interfaz gráfica, para correr la versión de consola ejecutar el comando \texttt{java rfs.CLICliente}).
 
 La aplicación cliente consiste en una ventana con dos botones principales, \textbf{Leer archivo} y \textbf{Escribir archivo}. El primero mostrará un cuadro de texto para ingresar el archivo que se desee leer; dicho archivo debe existir \textbf{en el directorio donde se ejecutó el servidor}. Si existe, lo leerá completamente y lo escribirá en el \emph{HOME} del usuario. La función de escritura de archivos mostrará una ventana para eligir un archivo a escribir, y será escrito en el directorio donde se ejecutó el servidor. 
 
@@ -80,7 +86,7 @@ Para replicar el \emph{stub} generado automáticamente con \emph{rpcgen}, se cre
 
 La principal diferencia que cabe destacar es el \textbf{la diferencia de paradigmas} entre una solución y la otra, teniendo por un lado un desarrollo procedural, mientras que el otro es más orientado a objetos.  
 
-Por otro lado, la implementación hecha en C y con \emph{rpcgen} abstrae la comunicación entre el cliente y el servidor, evitando tener que manejar sockets o preocuparse por puertos, simplemente definiendo claramente las interfaces de las funciones deseadas en el archivo \texttt{.x} para que después \emph{rpcgen} genere el código C necesario. En cambio en la implementación en Java, fue necesario implementar todo ese andamiaje para poder emular lo más fielmente posible la implementación anterior; sin embargo, la librería estándar de Java provee muchas clases para poder serializar/hidratar objetos, haciendo la transferencia de éstos mucho más fácil de programar.
+Por otro lado, la implementación hecha en C y con \emph{rpcgen} abstrae la comunicación entre el cliente y el servidor, evitando tener que manejar sockets o preocuparse por puertos, simplemente definiendo claramente las interfaces de las funciones deseadas en el archivo \texttt{.x} para que después \emph{rpcgen} genere el código C necesario. En cambio en la implementación en Java (versión no concurrente y no tan performante), fue necesario implementar todo ese andamiaje para poder emular lo más fielmente posible la implementación anterior; sin embargo, la librería estándar de Java provee muchas clases para poder serializar/hidratar objetos, haciendo la transferencia de éstos mucho más fácil de programar.
 
 \subsection{Experimentos}
 
@@ -186,7 +192,7 @@ Esta diferencia abismal de velocidades se debe principalmente al \textbf{tamaño
     \caption{Archivo transferido en \textbf{3 minutos y medio} }
 \end{figure}
 
-Por último, la tercer versión (directorio \emph{comunicación\_performante}), modifica la forma en la que se comunica el cliente con el servidor, únicamente enviando los datos necesarios. Por ejemplo, cuando se desea leer un archivo, el cliente envía el archivo que desea leer (que es el archivo que le devolvió el servidor cuando lo quiso abrir) y la cantidad de bytes; el servidor devuelve un arreglo de \texttt{byte} con los datos pedidos.
+Por último, la tercer versión (directorio \emph{no-concurrente-performante}), modifica la forma en la que se comunica el cliente con el servidor, únicamente enviando los datos necesarios. Por ejemplo, cuando se desea leer un archivo, el cliente envía el archivo que desea leer (que es el archivo que le devolvió el servidor cuando lo quiso abrir) y la cantidad de bytes; el servidor devuelve un arreglo de \texttt{byte} con los datos pedidos.
 
 
 \section{\emph{Pool} de hilos}
