@@ -69,5 +69,7 @@ int main(int argc, char *argv[])
     printf("Paso 2: La función write devolvió %d bytes.\n",n);
     printf("--\n");
     if (n < 0) error("ERROR writing to socket");
+    close(newsockfd);
+    close(sockfd);
     return 0; 
 }

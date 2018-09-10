@@ -80,5 +80,6 @@ int main(int argc, char *argv[])
     n = read(sockfd,buffer,cant);
     printf("Paso 2: La función read devolvió %d bytes.\n",n);
     //printf("%s\n",buffer);
+    close(sockfd);
     return 0;
 }
