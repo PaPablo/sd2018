@@ -4,23 +4,19 @@ import java.io.File;
 
 public class RFSReadArgument extends RFSArgument {
 	private File file;
-	private int count;
-	private byte[] data;
+	private int qty;
 	
-	public RFSReadArgument(File file) {
-		this(file, null);
-	}
-
-	public RFSReadArgument(File file, byte[] buffer) {
+	public RFSReadArgument(File file, int qty) {
 		this.setFile(file);
-		this.setData(buffer);
+		this.setQty(qty);
 	}
-	public byte[] getData() {
-		return data;
+	
+	public int getQty() {
+		return this.qty;
 	}
-
-	public void setData(byte[] data) {
-		this.data = data;
+	
+	public void setQty(int qty) {
+		this.qty = qty;
 	}
 
 	public File getFile() {
@@ -31,11 +27,4 @@ public class RFSReadArgument extends RFSArgument {
 		this.file = file;
 	}
 
-	public int getCount() {
-		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
-	}
 }
