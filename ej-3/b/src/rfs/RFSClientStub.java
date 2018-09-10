@@ -101,9 +101,11 @@ public class RFSClientStub implements IFileSystem {
 			
 			out.writeObject(arg);
 			
-			int writeArg = (int) in.readObject();
+//			RFSWriteArgument writeArg = (RFSWriteArgument) in.readObject();
+			int count = (int) in.readObject();
+			
+			return count;
 
-			return writeArg;
 		} catch (UnknownHostException e) {
 			return -1;
 		} catch (ClassNotFoundException e) {
@@ -172,10 +174,9 @@ public class RFSClientStub implements IFileSystem {
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 			
-
 			RFSReadArgument arg = new RFSReadArgument(file, buffer.length);
 			arg.setQty(buffer.length);
-			
+
 			out.writeObject(arg);
 			
 			RFSReadArgumentServer readArg = (RFSReadArgumentServer) in.readObject();
