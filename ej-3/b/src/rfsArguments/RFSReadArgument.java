@@ -4,7 +4,6 @@ import java.io.File;
 
 public class RFSReadArgument extends RFSArgument {
 	private File file;
-	private int count;
 	private int qty;
 	
 	public RFSReadArgument(File file, int qty) {
@@ -28,11 +27,4 @@ public class RFSReadArgument extends RFSArgument {
 		this.file = file;
 	}
 
-	public int getCount() {
-		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
-	}
 }

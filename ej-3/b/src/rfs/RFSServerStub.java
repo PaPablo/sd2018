@@ -24,7 +24,7 @@ import rfsArguments.RFSWriteArgument;
 public class RFSServerStub {
 
 	private int port;
-	private IStatefulFileSystem fileSystem;
+	private IFileSystem fileSystem;
 
 	/**
 	 * Capa de middleware del servidor de RFS
@@ -99,11 +99,10 @@ public class RFSServerStub {
 				File openedFile = 
 						this
 						.fileSystem
-						.openFile(
+						.open(
 								openArg
 								.getFilename()
-								.trim())
-						.getFile();
+								.trim());
 
 				System.out.println(
 						String.format(
@@ -121,22 +120,16 @@ public class RFSServerStub {
 								"RFSServerStub: hay que leer [%s]", 
 								readArgIn.getFile()));
 
-				OpenedFile openedFile = 
-						this.fileSystem.getOpenedFile(readArgIn.getFile());
+				byte[] buffer = new byte[readArgIn.getQty()];
 				
-				RFSReadArgumentServer readArgOut = new RFSReadArgumentServer(new byte[Client.BUFFER_SIZE]);
+				int count = this.fileSystem.read(readArgIn.getFile(), buffer);
 				
-				int count = this.fileSystem
-						.readOpenedFile(
-								openedFile,
-								readArgOut.getData()
-								);
-
-//				 System.out.println(
-//						 String.format(
-//								 "RFSServerStub: leido [%s]",
-//								 new String(readArg.getData()).trim()));
+				
+				System.out.println(String.format("buffer: [%s], count: [%d]", new String(buffer).trim(), count));
+				RFSReadArgumentServer readArgOut = new RFSReadArgumentServer(buffer);
+				
 				readArgOut.setCount(count);
+				
 				out.writeObject(readArgOut);
 			} else if (arg instanceof RFSWriteArgument) {
 				// ESCRIBIR ARCHIVO ABIERTO
@@ -148,13 +141,7 @@ public class RFSServerStub {
 //								"RFSServerStub: hay que escribir [%s]", 
 //								new String(writeArg.getData()).trim()));
 
-				OpenedFile openedFile = 
-						this.fileSystem.getOpenedFile(writeArg.getFile());
-
-				int count = 
-						this.fileSystem.writeOpenedFile(
-								openedFile,
-								writeArg.getData());
+				int count = this.fileSystem.write(writeArg.getFile(), writeArg.getData());
 
 				out.writeObject(count);
 			} else if (arg instanceof RFSCloseArgument) {
@@ -166,11 +153,8 @@ public class RFSServerStub {
 								"RFSServerStub: hay que cerrar [%s]",
 								closeArg.getFile().getName().trim()));
 
-				OpenedFile openedFile = 
-						this.fileSystem.getOpenedFile(closeArg.getFile());
-
 				boolean success = 
-						this.fileSystem.closeOpenedFile(openedFile);
+						this.fileSystem.close(closeArg.getFile());
 
 //				System.out.println(
 //						String.format("RFSServerStub: cerrado [%s]",

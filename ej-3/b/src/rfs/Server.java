@@ -7,13 +7,14 @@ import java.util.ArrayList;
 
 import exceptions.FileNotOpenedException;
 
-public class Server implements IStatefulFileSystem {
+public class Server implements IFileSystem {
 
 	private ArrayList<OpenedFile> openedFiles;
 	public Server() {
 		this.openedFiles = new ArrayList<>();
 	}
 	
+
 	public OpenedFile getOpenedFile(File file){
 		for (OpenedFile openedFile : this.openedFiles) {
 			if (openedFile.getFile().equals(file)) {
@@ -31,7 +32,7 @@ public class Server implements IStatefulFileSystem {
 		return this.openedFiles.remove(openedFile);
 	}
 
-	@Override
+
 	public OpenedFile openFile(String filename) {
 		//TODO: Qué pasa si el archivo ya estaba abierto?
 		OpenedFile fileToAdd = new OpenedFile(filename);
@@ -39,7 +40,6 @@ public class Server implements IStatefulFileSystem {
 		return fileToAdd;
 	}
 
-	@Override
 	public int readOpenedFile(OpenedFile openedFile, byte[] buffer) {
 		try {
 			return openedFile
@@ -52,7 +52,6 @@ public class Server implements IStatefulFileSystem {
 		}
 	}
 
-	@Override
 	public int writeOpenedFile(OpenedFile openedFile, byte[] data) {
 		try {
 			openedFile
@@ -65,6 +64,50 @@ public class Server implements IStatefulFileSystem {
 			return -1;
 		}
 		
+	}
+
+
+	@Override
+	public File open(String filename) {
+		OpenedFile f = new OpenedFile(filename);
+		this.openedFiles.add(f);
+		return f.getFile();
+	}
+
+
+	@Override
+	public int read(File file, byte[] buffer) {
+		OpenedFile f = this.getOpenedFile(file);
+		
+		try {
+			return f.getInputStream().read(buffer);
+		} catch (FileNotFoundException e) {
+			return -1;
+		} catch (IOException e) {
+			return -1;
+		}
+	}
+
+
+	@Override
+	public int write(File file, byte[] data) {
+		// TODO Auto-generated method stub
+		
+		OpenedFile f = this.getOpenedFile(file);
+		
+		try {
+			f.getOutputStream().write(data);
+		} catch (IOException e) {
+			return -1;
+		}
+		
+		return data.length;
+	}
+
+
+	@Override
+	public boolean close(File file) {
+		return this.closeOpenedFile(this.getOpenedFile(file));
 	}
 
 }
