@@ -32,7 +32,37 @@ El cliente recibe dos parámetros: el nombre del servidor (se obtiene su direcci
 
 \subsection{Inciso \emph{b}}
 
-Al igual que en el ejercicio anterior, el servidor recibe un puerto sobre el cual escuchar, y el cliente recibe un nombre de servidor al cual intentar conectarse y un puerto. Cada uno recibe además una cantidad; este valor indica cuántos \emph{bytes} escribir en el \emph{socket} de conexión (cliente), y cuántos \emph{bytes} leer del \emph{socket} de conexión (servidor).   
+Al igual que en el ejercicio anterior, el servidor recibe un puerto sobre el cual escuchar, y el cliente recibe un nombre de servidor al cual intentar conectarse y un puerto. Cada uno recibe además una cantidad; este valor indica cuántos \emph{bytes} escribir en el \emph{socket} de conexión (cliente), y cuántos \emph{bytes} leer del \emph{socket} de conexión (servidor).
+
+Invocando tanto el cliente como el servidor con distintos valores para escritura/lectura del socket, se puede ver que el lenguaje establece un límite para realizar una sola lectura de un \emph{socket}.
+
+Realizando distintas pruebas, ambos programas funcionan correctamente con valores de hasta 100000 bytes. Con valores mayores a 100000, el cliente no puede leer en una única operación de lectura toda la información devuelta por el servidor.
+
+Si primero se ejecuta el servidor de la siguiente manera:
+
+\begin{lstlisting}
+    ./bin/server 9000 1000000
+\end{lstlisting}
+
+Y luego el cliente de la siguiente manera:
+
+\begin{lstlisting}
+   ./bin/client 9000 1000000 
+\end{lstlisting}
+
+Se obtiene la siguiente salida:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{ej1b-server}
+    \caption{Salida del servidor}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{ej1b-client}
+    \caption{Salida del cliente}
+\end{figure}
 
 \section{Ejercicio 2 - Servidores con y sin estado}
 
@@ -197,12 +227,9 @@ Por último, la tercer versión (directorio \emph{no-concurrente-performante}), 
 
 \section{\emph{Pool} de hilos}
 
-Implementando el manejo concurrente de clientes con un \emph{pool} de \emph{n} hilos (cantidad fija de hilos previamente creados), se podrá atender hasta \emph{n} de forma concurrente; los \emph{n+1} clientes siguientes serán encolados hasta que se libere uno de los hilos. 
+Implementando el manejo concurrente de peticiones con un \emph{pool} de \emph{n} hilos (cantidad fija de hilos previamente creados), se podrá atender hasta \emph{n} de forma concurrente; las \emph{n+1} peticiones siguientes serán encoladas hasta que se libere uno de los hilos. 
 
-Utilizando esta alternativa, se establece de antemano una cantidad máxima de clientes concurrentes que se podrán manejar. Si se decidiese no hacerlo, una cantidad infinita de clientes podría querer conectarse con el servidor, logrando que se le agote la memoria o que deje de brindar servicio.
-
-
-
+Utilizando esta alternativa, se establece de antemano una cantidad máxima de requerimientos concurrentes que se podrán atender. Si se decidiese no hacerlo, una cantidad infinita de clientes podría querer conectarse con el servidor, logrando que se le agote la memoria o que deje de brindar servicio.
 
 
 
