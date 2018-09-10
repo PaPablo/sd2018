@@ -105,12 +105,25 @@ La aplicación cliente consiste en una ventana con dos botones principales, \tex
 Para replicar el \emph{stub} generado automáticamente con \emph{rpcgen}, se crearon las siguientes clases en Java:
 \begin{itemize}
     \item \texttt{Client}: implementa métodos para leer/escribir un archivo completo a través de sucesivas llamadas a las funciones de la interfase \texttt{IFileSystem}. Es instanciada por los manejadores de eventos de la interfaz gráfica.
-    \item \texttt{Server}: implementa la interfase \texttt{IStatefulFileSystem}. Contiene la lógica para llevar a cabo un sistema de archivos con estado (mantiene archivos abiertos en memoria).
-    \item \texttt{RFSClientStub}: implementa la interfase \texttt{IFileSystem}. Permite a un cliente realizar operaciones de lectura/escritura. Encargada de llevar a cabo la comunicación con el servidor.
+    \item \texttt{Server}: implementa la interfase \texttt{IFileSystem}. Contiene la lógica para llevar a cabo un sistema de archivos con estado (mantiene archivos abiertos en memoria).
+    \item \texttt{RFSClientStub}: implementa la interfase \texttt{IFileSystem}. Permite a un cliente realizar operaciones de lectura/escritura. Encargada de llevar a cabo la comunicación con el \emph{stub} del servidor.
     \item \texttt{RFSServerStub}: recibe los parámetros del cliente e invoca las funcionalidades de la clase \texttt{Server}.
-    \item \texttt{RFSArgument}: clase que representa los disintos argumentos que intercambiarán los \emph{stubs} cliente/servidor para implementar el sistema de archivos distribuidos (inspirado en la implementación hecha con \emph{rpcgen}).  
+    \item \texttt{RFSArgument}: clase que representa los distintos argumentos que intercambiarán los \emph{stubs} cliente/servidor para implementar el sistema de archivos distribuidos (inspirado en la implementación hecha con \emph{rpcgen}).  
     \item \texttt{OpenedFile}: modela un archivo abierto que mantendrá \texttt{Server}.
 \end{itemize}
+
+\subsubsection{Protocolo de \emph{middleware}}
+
+A continuación se detalla cómo es la comunicación entre los \emph{stubs} del cliente y del servidor 
+
+\begin{itemize}
+    \item \texttt{Open}: el cliente envía un argumento \texttt{RFSOpenArgument}, indicando el nombre del archivo a abrir (en el servidor). El servidor devuelve un \texttt{File}   
+    \item \texttt{Read}: el cliente envía un argumento \texttt{RFSReadArgument}, indicand el archivo del cual leer y la cantidad de \emph{bytes}. El servidor contesta con un \texttt{RFSOpenArgumentServer}, llevando el arreglo de \emph{bytes} con los datos leídos del archivo.
+    \item \texttt{Write}: el cliente envía un argumento \texttt{RFSWriteArgument}, indicando el nombre del archivo en el cual escribir, y un arreglo de \emph{bytes} con los datos para escribir. El servidor devuelve un entero indicando la cantidad de \emph{bytes} escrita.
+    \item \texttt{Close}: el cliente envía un argumento \texttt{RFSCloseArgument} con el archivo que desea cerrar. El servidor devuelve un valor booleano. 
+\end{itemize}
+
+
 
 \subsection{Inciso c - Comparación de implementaciones}
 
