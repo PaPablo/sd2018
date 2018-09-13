@@ -17,13 +17,6 @@ public class Servidor
     /** Crea nueva instancia de Servidor rmi */
     public Servidor() {
         try {
-		// Se indica a rmiregistry d�nde est�n las clases.
-		// Cambiar el paht al sitio en el que est�. Es importante
-		// mantener la barra al final.
-	/*	System.setProperty(
-			"java.rmi.server.codebase",
-			"file:/D:/users/javier/java/rmi_simple/src_servidor/");
-	*/	
             // Se publica el objeto remoto
             ISumaResta sumaresta = new SumaResta();
             IMultiplicacionDivision multidiv = new MultiplicacionDivision();
