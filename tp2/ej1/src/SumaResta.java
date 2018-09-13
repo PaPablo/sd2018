@@ -14,7 +14,7 @@ import java.rmi.server.UnicastRemoteObject;
  * @author  Javier Abell�n
  */
 public class SumaResta extends UnicastRemoteObject 
-    implements InterfaceRemota
+    implements ISumaResta
 {
     /**
      * Construye una instancia de ObjetoRemoto
@@ -30,12 +30,12 @@ public class SumaResta extends UnicastRemoteObject
      */
     public int suma(int a, int b) 
     {
-	    System.out.println (String.fomat("Sumando %d + %d...", a,b));
+	    System.out.println (String.format("Sumando %d + %d...", a,b));
         return a+b;
     }
     public int resta(int a, int b) 
     {
-	    System.out.println (String.fomat("Restando %d - %d...", a,b));
+	    System.out.println (String.format("Restando %d - %d...", a,b));
         return a-b;
     }
     
