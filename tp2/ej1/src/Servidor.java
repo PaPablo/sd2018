@@ -26,9 +26,12 @@ public class Servidor
 			"file:/D:/users/javier/java/rmi_simple/src_servidor/");
 	*/	
             // Se publica el objeto remoto
-            InterfaceRemota objetoRemoto = new ObjetoRemoto();
-	    String rname = "//localhost:" + Registry.REGISTRY_PORT  + "/ObjetoRemoto";
-            Naming.rebind (rname, objetoRemoto);
+            ISumaResta sumaresta = new SumaResta();
+            IMultiplicacionDivision multidiv = new MultiplicacionDivision();
+            String sumaname = "//localhost:" + Registry.REGISTRY_PORT  + "/SumaResta";
+            String mname = "//localhost:" + Registry.REGISTRY_PORT  + "/MultiplicacionDivision";
+            Naming.rebind (sumaname, sumaresta);
+            Naming.rebind (mname, multidiv);
             
         }
         catch (Exception e)
