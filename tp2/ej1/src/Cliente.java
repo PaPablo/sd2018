@@ -1,21 +1,9 @@
-/*
- * Cliente.java
- *
- * Ejemplo de muy simple de rmi
- */
-
-import java.rmi.Naming;                    /* lookup         */
-import java.rmi.registry.Registry;         /* REGISTRY_PORT  */
-
-import java.net.MalformedURLException;     /* Exceptions...  */
+import java.rmi.Naming;
+import java.rmi.registry.Registry;
+import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-/**
- * Ejemplo de cliente rmi nocivo, para aprovecharse de un servidor sin
- * SecurityManager.
- * @author  Javier Abell�n
- */
 public class Cliente {
     
     private String host;
@@ -24,39 +12,85 @@ public class Cliente {
      * Crea nueva instancia de Cliente 
      * */
     public Cliente(String host) {
-
         this.setHost(host);
-        try {
-            String rname = 
-                "//" + host + ":" + Registry.REGISTRY_PORT + "/ObjetoRemoto";
-            InterfaceRemota objetoRemoto = 
-                (InterfaceRemota) Naming.lookup (rname);
-            System.out.print ("2 + 3 = ");
-            System.out.println (objetoRemoto.suma(2,3));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        }
     }
 
+    /**
+     * Devuelve el nombre del objeto remoto necesario para completar la operación
+     */
     public String getRemoteByOp(String op) {
         return op == "+" || op == "-" ? "SumaResta"
             : "MultiplicacionDivision";
     }
+
+    /**
+     * Devuelve el URI del objeto remoto necesario
+     */
+    public String getRname(String op) {
+        return String.format("//%s:%d/%s",
+                this.getHost(),
+                Registry.REGISTRY_PORT,
+                this.getRemoteByOp(op));
+    }
+
+    /**
+     * Realiza una suma
+     *
+     * throws NoSePudoCompletarLaOperacionException
+     */
     public int sumar(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
-        return -1;
+        try {
+            ISumaResta calc = 
+                (ISumaResta) Naming.lookup(this.getRname("+"));
+            return calc.suma(n1, n2);
+        } catch (Exception e) {
+            throw new NoSePudoCompletarLaOperacionException();
+        }
     }
+
+    /**
+     * Realiza una resta
+     *
+     * throws NoSePudoCompletarLaOperacionException
+     */
     public int restar(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
-        return -1;
+        try {
+            ISumaResta calc = 
+                (ISumaResta) Naming.lookup(this.getRname("-"));
+            return calc.resta(n1, n2);
+        } catch (Exception e) {
+            throw new NoSePudoCompletarLaOperacionException();
+        }
     }
+
+    /**
+     * Realiza una multiplicación
+     *
+     * throws NoSePudoCompletarLaOperacionException
+     */
     public int multiplicar(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
-        return -1;
+        try {
+            IMultiplicacionDivision calc = 
+                (IMultiplicacionDivision) Naming.lookup(this.getRname("*"));
+            return calc.multiplicacion(n1, n2);
+        } catch (Exception e) {
+            throw new NoSePudoCompletarLaOperacionException();
+        }
     }
+
+    /**
+     * Realiza una división
+     *
+     * throws NoSePudoCompletarLaOperacionException
+     */
     public int dividir(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
-        return -1;
+        try {
+            IMultiplicacionDivision calc = 
+                (IMultiplicacionDivision) Naming.lookup(this.getRname("/"));
+            return calc.division(n1, n2);
+        } catch (Exception e) {
+            throw new NoSePudoCompletarLaOperacionException();
+        }
     }
 
     
