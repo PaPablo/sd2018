@@ -18,36 +18,53 @@ import java.rmi.RemoteException;
  */
 public class Cliente {
     
-    /** Crea nueva instancia de Cliente */
-    public Cliente(String alfa) 
-    {
-        try
-        {
-		// Lugar en el que est� el objeto remoto.
-		// Debe reemplazarse "localhost" por el nombre o ip donde
-		// est� corriendo "rmiregistry".
-		// Naming.lookup() obtiene el objeto remoto
-            String rname = "//" + alfa + ":" + Registry.REGISTRY_PORT + "/ObjetoRemoto";
+    private String host;
+
+    /**
+     * Crea nueva instancia de Cliente 
+     * */
+    public Cliente(String host) {
+
+        this.setHost(host);
+        try {
+            String rname = 
+                "//" + host + ":" + Registry.REGISTRY_PORT + "/ObjetoRemoto";
             InterfaceRemota objetoRemoto = 
-                (InterfaceRemota)Naming.lookup (rname);
-            
-            // Se realiza la suma remota.
+                (InterfaceRemota) Naming.lookup (rname);
             System.out.print ("2 + 3 = ");
             System.out.println (objetoRemoto.suma(2,3));
         } catch (MalformedURLException e) {
-	    e.printStackTrace();
-	} catch (RemoteException e) {
-	    e.printStackTrace();
-	} catch (NotBoundException e) {
-	    e.printStackTrace();
-	}
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        }
     }
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        new Cliente(args[0]);
+
+    public String getRemoteByOp(String op) {
+        return op == "+" || op == "-" ? "SumaResta"
+            : "MultiplicacionDivision";
     }
+    public int sumar(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
+        return -1;
+    }
+    public int restar(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
+        return -1;
+    }
+    public int multiplicar(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
+        return -1;
+    }
+    public int dividir(int n1, int n2) throws NoSePudoCompletarLaOperacionException {
+        return -1;
+    }
+
     
+
+    public String getHost() {
+        return host;
+    }
+    public void setHost(String host) {
+        this.host = host;
+    }
 }

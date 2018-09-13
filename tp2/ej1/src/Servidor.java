@@ -16,8 +16,7 @@ public class Servidor
     
     /** Crea nueva instancia de Servidor rmi */
     public Servidor() {
-        try 
-        {
+        try {
 		// Se indica a rmiregistry d�nde est�n las clases.
 		// Cambiar el paht al sitio en el que est�. Es importante
 		// mantener la barra al final.
