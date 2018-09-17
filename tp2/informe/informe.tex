@@ -20,6 +20,31 @@
 
 \lstset{style=cstyle}
 
+\section{Ejercicio 1 - Calcucladora implementada con RMI}
+
+\emph{El código fuente y las capturas de paquetes se pueden encontrar en los directorios \dq{src} y \dq{pcaps}, respectivamente} 
+
+~\\
+
+El servidor de la presente aplicación publica dos servicios distintos, con el fin de emular una calculadora: \emph{SumaResta}, y \emph{MultiplicacionDivision}; el primero implementa la interfase \texttt{ISumaResta} y el segundo \texttt{IMultiplicacionDivision} (ambas interfases extienden la interfase \texttt{Remote}). 
+
+El cliente (clase \texttt{Cliente}) consiste en un intermediario entre la aplicación de consola (clase \texttt{CLICliente}) y el servidor; el \emph{parser} de línea de comandos toma los argumentos y según el operador ingresado llama a alguno de los métods del \emph{Cliente} (\texttt{sumar}, \texttt{restar}, \texttt{multiplicar}, \texttt{dividir}). Estas operaciones son realizadas por el \textbf{servidor}, y no por el \textbf{cliente}.
+
+A partir de las capturas realizadas con el analizador de protocolos \emph{Wireshark}, se puede deducir lo siguiente:
+
+\begin{itemize}
+    \item Las interacciones tanto del servidor (para publicar servicios) como del cliente (para consumir esos servicios) se hace a través del \textbf{RMIregistry} 
+    \item RMIregistry escucha en un puerto bien conocido para ambas partes - escucha peticiones en el puerto \textbf{1099}
+    \item El cliente recupera un \emph{objeto remoto} invocando el método \texttt{lookup} de la clase \texttt{Naming} indicándole el \emph{URI} del objeto
+    \item El \emph{URI} se compone de la dirección donde se encuentra el servidor, el puerto de escucha de RMIregistry, y el nombre del servicio publicado por el servidor
+    \item Toda la comunicación de RMIregistry es a través de \textbf{TCP} 
+\end{itemize}
+
+En el archivo \emph{rmisumaresta.pcapng} se pueden identificar los paquetes en los cuales el cliente le pide a RMIregistry el objeto remoto que implementa la interfase \texttt{ISumaResta}; estos paquetes son el 34, 36, 38, y 39. Este último en particular es en el cual se puede ver que se le está pidiendo dicho objeto.  
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
