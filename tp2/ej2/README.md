@@ -1,0 +1,4 @@
+- Compilar con `make`
+- Ejecutar servidor con `java -cp bin/ rfs.MainServidor`
+- Ejecutar cliente con `java -cp bin/ rfs.MainCliente`
+- Limpiar `bin/` con `make clean`
