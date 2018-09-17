@@ -1,4 +1,5 @@
 - Compilar con `make`
+- Levantar RMIregistry con `rmiregistry -J--class-path=bin/`
 - Ejecutar servidor con `java -cp bin/ rfs.MainServidor`
 - Ejecutar cliente con `java -cp bin/ rfs.MainCliente`
 - Limpiar `bin/` con `make clean`
