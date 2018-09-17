@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-public interface IFileSystem {
-	public File open(String filename);
-	public int read(File file, byte[] buffer);
-	public int write(File file, byte[] data);
-	public boolean close(File file);
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface IFileSystem extends Remote {
+	public File open(String filename) throws RemoteException;
+	public int read(File file, byte[] buffer) throws RemoteException;
+	public int write(File file, byte[] data) throws RemoteException;
+	public boolean close(File file) throws RemoteException;
 }
