@@ -5,12 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 import exceptions.FileNotOpenedException;
 
-public class Server implements IFileSystem {
+public class Server extends UnicastRemoteObject 
+    implements IFileSystem {
 
 	private ArrayList<OpenedFile> openedFiles;
-	public Server() {
+	public Server() throws RemoteException {
+        super(); 
+
 		this.openedFiles = new ArrayList<>();
 	}
 	
@@ -18,9 +24,9 @@ public class Server implements IFileSystem {
 	public OpenedFile getOpenedFile(File file){
 		for (OpenedFile openedFile : this.openedFiles) {
 			if (openedFile.getFile().equals(file)) {
-				System.out.println(String.format(
-						"Server: archivo encontrado [%s]",
-						openedFile));
+				//System.out.println(String.format(
+						//"Server: archivo encontrado [%s]",
+						//openedFile));
 				return openedFile;
 			}
 		}
@@ -69,6 +75,9 @@ public class Server implements IFileSystem {
 
 	@Override
 	public File open(String filename) {
+        System.out.println(String.format(
+                    "Server: open [%s]", filename));
+
 		OpenedFile f = new OpenedFile(filename);
 		this.openedFiles.add(f);
 		return f.getFile();
@@ -76,25 +85,34 @@ public class Server implements IFileSystem {
 
 
 	@Override
-	public int read(File file, byte[] buffer) {
+	public byte[] read(File file, int count) {
+        System.out.println(String.format(
+                    "Server: read [%s - %d]", file, count));
+
 		OpenedFile f = this.getOpenedFile(file);
-		
 		try {
-			return f.getInputStream().read(buffer);
+            byte[] _buf = new byte[count];
+			int _count = f.getInputStream().read(_buf);
+
+            if (_count <= 0) return null;
+
+            System.out.println(String.format("Server: leí [%s]",
+                        new String(_buf).trim()));
+            return _buf;
 		} catch (FileNotFoundException e) {
-			return -1;
+			return null;
 		} catch (IOException e) {
-			return -1;
+			return null;
 		}
 	}
 
 
 	@Override
 	public int write(File file, byte[] data) {
-		// TODO Auto-generated method stub
-		
+        System.out.println(String.format(
+                    "Server: write [%s]", file));
+
 		OpenedFile f = this.getOpenedFile(file);
-		
 		try {
 			f.getOutputStream().write(data);
 		} catch (IOException e) {
@@ -107,6 +125,9 @@ public class Server implements IFileSystem {
 
 	@Override
 	public boolean close(File file) {
+        System.out.println(String.format(
+                    "Server: close [%s]", file));
+
 		return this.closeOpenedFile(this.getOpenedFile(file));
 	}
 

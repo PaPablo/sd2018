@@ -6,18 +6,32 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.rmi.Naming;
+
 import exceptions.CouldNotReadFileException;
 import exceptions.CouldNotWriteFileException;
 
 public class Client {
 	private IFileSystem fileSystem;
+    private String host;
+    private int port;
 
-	public static final int BUFFER_SIZE = 1024 * 1024;
+	public static final int BUFFER_SIZE = 1024 * 8;
+    
 		/**
 	 * Cliente para leer/escribir archivos
 	 */
 	public Client(String host, int port) {
-		this.fileSystem = new RFSClientStub(host, port);
+        try {
+            this.setHost(host);
+            this.setPort(port);
+            String rname = this.getRname();
+            System.out.println(String.format("Client rname = %s", rname));
+            this.fileSystem =
+                (IFileSystem) Naming.lookup(rname);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 	}
 	
 	/**
@@ -41,10 +55,12 @@ public class Client {
 			this.fileSystem.close(openedFile);
 			fileStream.close();
 		} catch (FileNotFoundException e) {
-			throw new CouldNotWriteFileException();
+			throw new CouldNotWriteFileException("FileNotFound");
 		} catch (IOException e) {
-			throw new CouldNotWriteFileException();
-		}
+			throw new CouldNotWriteFileException("IOException");
+        } catch (NullPointerException e) {
+			throw new CouldNotWriteFileException("NullPointerException");
+        }
 	}
 	
 	/**
@@ -69,19 +85,29 @@ public class Client {
 					new FileOutputStream(
 							new File(filepath));
 			
-			int count = 0;
-			byte[] fileBuffer = new byte[BUFFER_SIZE];
-			StringBuilder fileContent = new StringBuilder();
+			//int count = ;
+			//byte[] fileBuffer = new byte[BUFFER_SIZE];
+			//StringBuilder fileContent = new StringBuilder();
+            int count = BUFFER_SIZE;
+            byte[] fileBuffer;
+            String _recv; 
 			
-			while((count = this.fileSystem.read(
-					openedFile, fileBuffer)) > 0) {
-				fileContent.append(new String(fileBuffer).trim());
+			while(true) {
+                fileBuffer = this.fileSystem.read(openedFile, count);
+
+                if (fileBuffer == null || fileBuffer.length == 0) break;
+
+                _recv = new String(fileBuffer).trim();
+				//fileContent.append(_recv);
 				fileStream.write(fileBuffer);
+                System.out.println(String.format(
+                            "Client: _recv = %s", _recv
+                            ));
 			}
 
-			System.out.println(String.format(
-					"Client: recibi [%s]",
-					fileContent.toString().trim()));
+			//System.out.println(String.format(
+					//"Client: recibi [%s]",
+					//fileContent.toString().trim()));
 		
 			this.fileSystem.close(openedFile);
 			fileStream.close();
@@ -90,7 +116,32 @@ public class Client {
 		} catch (IOException e) {
 			throw new CouldNotReadFileException("IOException");
 		} catch (NullPointerException e) {
-			throw new CouldNotReadFileException("Null pointer exception");
+			throw new CouldNotReadFileException("NullPointerException");
 		}
-	}
+    }
+
+    public String getRname() {
+        return String.format("//%s:%d/%s",
+                this.getHost(),
+                this.getPort(),
+                this.getRemoteFSName());
+    }
+    public String getRemoteFSName() {
+        return "RFS";
+    }
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

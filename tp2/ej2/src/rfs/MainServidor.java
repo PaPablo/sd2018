@@ -1,12 +1,17 @@
 package rfs;
 
+import java.rmi.registry.Registry;
+
 public class MainServidor {
 
 	public static void main(String[] args) {
 		try {
-			RFSServerStub server = new RFSServerStub(8080);
-			
-			server.listen();
+            String host = "localhost";
+            int port = Registry.REGISTRY_PORT;
+            String serviceName = "RFS";
+
+            RFSPublisher publisher = 
+                new RFSPublisher(host, port, serviceName);
 			
 		} catch (Exception e) {
 			System.out.println("MainServidor: SE PINCHÓ TODO");
