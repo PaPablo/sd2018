@@ -15,7 +15,7 @@ public class PanelSettingsServidorCliente extends JPanel {
 	private JTextField textFieldPort;
 	
 	private static String host = "localhost";
-	private static int port = 8080;
+	private static int port = 1099;
 
 	/**
 	 * Create the panel.
