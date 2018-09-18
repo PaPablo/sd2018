@@ -22,10 +22,13 @@ public class Client {
 	 * Cliente para leer/escribir archivos
 	 */
 	public Client(String host, int port) {
-		//this.fileSystem = new RFSClientStub(host, port);
         try {
+            this.setHost(host);
+            this.setPort(port);
+            String rname = this.getRname();
+            System.out.println(String.format("Client rname = %s", rname));
             this.fileSystem =
-                (IFileSystem) Naming.lookup(this.getRname());
+                (IFileSystem) Naming.lookup(rname);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -84,17 +87,19 @@ public class Client {
 			
 			int count = 0;
 			byte[] fileBuffer = new byte[BUFFER_SIZE];
-			StringBuilder fileContent = new StringBuilder();
+			//StringBuilder fileContent = new StringBuilder();
+            String _recv; 
 			
 			while((count = this.fileSystem.read(
 					openedFile, fileBuffer)) > 0) {
-				fileContent.append(new String(fileBuffer).trim());
+                _recv = new String(fileBuffer).trim();
+				//fileContent.append(_recv);
 				fileStream.write(fileBuffer);
 			}
 
-			System.out.println(String.format(
-					"Client: recibi [%s]",
-					fileContent.toString().trim()));
+			//System.out.println(String.format(
+					//"Client: recibi [%s]",
+					//fileContent.toString().trim()));
 		
 			this.fileSystem.close(openedFile);
 			fileStream.close();
@@ -122,5 +127,13 @@ public class Client {
 
     public int getPort() {
         return port;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

@@ -24,9 +24,9 @@ public class Server extends UnicastRemoteObject
 	public OpenedFile getOpenedFile(File file){
 		for (OpenedFile openedFile : this.openedFiles) {
 			if (openedFile.getFile().equals(file)) {
-				System.out.println(String.format(
-						"Server: archivo encontrado [%s]",
-						openedFile));
+				//System.out.println(String.format(
+						//"Server: archivo encontrado [%s]",
+						//openedFile));
 				return openedFile;
 			}
 		}
@@ -75,6 +75,9 @@ public class Server extends UnicastRemoteObject
 
 	@Override
 	public File open(String filename) {
+        System.out.println(String.format(
+                    "Server: open [%s]", filename));
+
 		OpenedFile f = new OpenedFile(filename);
 		this.openedFiles.add(f);
 		return f.getFile();
@@ -83,10 +86,17 @@ public class Server extends UnicastRemoteObject
 
 	@Override
 	public int read(File file, byte[] buffer) {
+        System.out.println(String.format(
+                    "Server: read [%s]", file));
+
 		OpenedFile f = this.getOpenedFile(file);
-		
 		try {
-			return f.getInputStream().read(buffer);
+			int count = f.getInputStream().read(buffer);
+
+            System.out.println(String.format("Server: leí [%s]",
+                        new String(buffer).trim()));
+
+            return count;
 		} catch (FileNotFoundException e) {
 			return -1;
 		} catch (IOException e) {
@@ -97,10 +107,10 @@ public class Server extends UnicastRemoteObject
 
 	@Override
 	public int write(File file, byte[] data) {
-		// TODO Auto-generated method stub
-		
+        System.out.println(String.format(
+                    "Server: write [%s]", file));
+
 		OpenedFile f = this.getOpenedFile(file);
-		
 		try {
 			f.getOutputStream().write(data);
 		} catch (IOException e) {
@@ -113,6 +123,9 @@ public class Server extends UnicastRemoteObject
 
 	@Override
 	public boolean close(File file) {
+        System.out.println(String.format(
+                    "Server: close [%s]", file));
+
 		return this.closeOpenedFile(this.getOpenedFile(file));
 	}
 
