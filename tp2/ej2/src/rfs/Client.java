@@ -6,18 +6,29 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.rmi.Naming;
+
 import exceptions.CouldNotReadFileException;
 import exceptions.CouldNotWriteFileException;
 
 public class Client {
 	private IFileSystem fileSystem;
+    private String host;
+    private int port;
 
 	public static final int BUFFER_SIZE = 1024 * 1024;
+    
 		/**
 	 * Cliente para leer/escribir archivos
 	 */
 	public Client(String host, int port) {
-		this.fileSystem = new RFSClientStub(host, port);
+		//this.fileSystem = new RFSClientStub(host, port);
+        try {
+            this.fileSystem =
+                (IFileSystem) Naming.lookup(this.getRname());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 	}
 	
 	/**
@@ -41,10 +52,12 @@ public class Client {
 			this.fileSystem.close(openedFile);
 			fileStream.close();
 		} catch (FileNotFoundException e) {
-			throw new CouldNotWriteFileException();
+			throw new CouldNotWriteFileException("FileNotFound");
 		} catch (IOException e) {
-			throw new CouldNotWriteFileException();
-		}
+			throw new CouldNotWriteFileException("IOException");
+        } catch (NullPointerException e) {
+			throw new CouldNotWriteFileException("NullPointerException");
+        }
 	}
 	
 	/**
@@ -90,7 +103,24 @@ public class Client {
 		} catch (IOException e) {
 			throw new CouldNotReadFileException("IOException");
 		} catch (NullPointerException e) {
-			throw new CouldNotReadFileException("Null pointer exception");
+			throw new CouldNotReadFileException("NullPointerException");
 		}
-	}
+    }
+
+    public String getRname() {
+        return String.format("//%s:%d/%s",
+                this.getHost(),
+                this.getPort(),
+                this.getRemoteFSName());
+    }
+    public String getRemoteFSName() {
+        return "RFS";
+    }
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
 }

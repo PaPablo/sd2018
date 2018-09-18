@@ -5,12 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 import exceptions.FileNotOpenedException;
 
-public class Server implements IFileSystem {
+public class Server extends UnicastRemoteObject 
+    implements IFileSystem {
 
 	private ArrayList<OpenedFile> openedFiles;
-	public Server() {
+	public Server() throws RemoteException {
+        super(); 
+
 		this.openedFiles = new ArrayList<>();
 	}
 	
