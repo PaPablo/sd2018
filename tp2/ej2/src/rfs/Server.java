@@ -85,22 +85,24 @@ public class Server extends UnicastRemoteObject
 
 
 	@Override
-	public int read(File file, byte[] buffer) {
+	public byte[] read(File file, int count) {
         System.out.println(String.format(
-                    "Server: read [%s]", file));
+                    "Server: read [%s - %d]", file, count));
 
 		OpenedFile f = this.getOpenedFile(file);
 		try {
-			int count = f.getInputStream().read(buffer);
+            byte[] _buf = new byte[count];
+			int _count = f.getInputStream().read(_buf);
+
+            if (_count <= 0) return null;
 
             System.out.println(String.format("Server: leí [%s]",
-                        new String(buffer).trim()));
-
-            return count;
+                        new String(_buf).trim()));
+            return _buf;
 		} catch (FileNotFoundException e) {
-			return -1;
+			return null;
 		} catch (IOException e) {
-			return -1;
+			return null;
 		}
 	}
 

@@ -16,7 +16,7 @@ public class Client {
     private String host;
     private int port;
 
-	public static final int BUFFER_SIZE = 1024 * 1024;
+	public static final int BUFFER_SIZE = 1024 * 8;
     
 		/**
 	 * Cliente para leer/escribir archivos
@@ -85,16 +85,24 @@ public class Client {
 					new FileOutputStream(
 							new File(filepath));
 			
-			int count = 0;
-			byte[] fileBuffer = new byte[BUFFER_SIZE];
+			//int count = ;
+			//byte[] fileBuffer = new byte[BUFFER_SIZE];
 			//StringBuilder fileContent = new StringBuilder();
+            int count = BUFFER_SIZE;
+            byte[] fileBuffer;
             String _recv; 
 			
-			while((count = this.fileSystem.read(
-					openedFile, fileBuffer)) > 0) {
+			while(true) {
+                fileBuffer = this.fileSystem.read(openedFile, count);
+
+                if (fileBuffer == null || fileBuffer.length == 0) break;
+
                 _recv = new String(fileBuffer).trim();
 				//fileContent.append(_recv);
 				fileStream.write(fileBuffer);
+                System.out.println(String.format(
+                            "Client: _recv = %s", _recv
+                            ));
 			}
 
 			//System.out.println(String.format(
