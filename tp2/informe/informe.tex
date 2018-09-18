@@ -1,6 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% En 'oSinclues.tex' se encuentran la importación de paquetes necesarios
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{project_settings}
 \input{listings_settings}
 
@@ -41,6 +38,43 @@ A partir de las capturas realizadas con el analizador de protocolos \emph{Wiresh
 \end{itemize}
 
 En el archivo \emph{rmisumaresta.pcapng} se pueden identificar los paquetes en los cuales el cliente le pide a RMIregistry el objeto remoto que implementa la interfase \texttt{ISumaResta}; estos paquetes son el 34, 36, 38, y 39. Este último en particular es en el cual se puede ver que se le está pidiendo dicho objeto.  
+
+\section{Ejercicio 2 - RFS implementado con RMI}
+
+Utilizando RMI, se puede implementar un \emph{sistema de archivos remotos} fácilmente. Para ello, se tomó como proyecto base la implementación realizada en el trabajo de laboratorio anterior y se lo modificó acordemente para que utilice RMI.
+
+En esta nueva versión, la estructura del proyecto se vio fuertemente alterada; en la versión implementada con \emph{sockets}, toda la infraestructura de comunicación entre cliente y servidor fue desarrollada desde cero, enviando objetos \texttt{RFSArgument} y reaccionando según el tipo de argumento del que se trate. De esta forma se lograba transmitir alrededor de 400 MB de un archivo en 37 minutos, aproximadamente.
+
+Utilizando RMI, el desarrollo tanto del cliente como del servidor no tiene que preocuparse por la comunicación entre estos, ya que RMI se encarga de ello. La primer modificación que se puede ver es que \textbf{las clases de \emph{stub} desaparecieron} (ya no son necesarias para esta versión). Cuando se instancia la clase \texttt{Client} (encargada de hacer las llamadas al \texttt{fileSystem}), solicita el objeto remoto publicado por el servidor a través de la clase \texttt{Naming}.
+
+Ejecutando la misma prueba que en las versiones de RPC y la de \emph{sockets} (transferir un archivo de texto de 3.9 GB, utilizando un buffer de transferencia de 8 KB), la implementación con RMI es considerablemente superior - la transferencia del archivo demoró \textbf{solamente 33 segudos}, frente a 17 minutos de la versión de RPC y aproximadamente 37 minutos para transferir 400 MB con la versión de \emph{sockets}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{archivo-transferido-rmi.png}
+    \caption{Transferencia del archivo de texto con la versión de RMI}
+\end{figure}
+
+Por otro lado, los servicios publicados con RMI no permiten trabajar con funciones que utilicen argumentos de salida o entrada/salida. Por lo tanto, la interfase \texttt{IFileSystem} tuvo que ser modificada (la operación \texttt{read}, en particular) para eliminar los argumentos de salida. En esta versión, la operación \texttt{read} recibe un archivo del cual leer y una cantidad de bytes, y devuelve un \emph{arreglo de bytes} con los datos leídos.   
+
+
+\section{Ejercicio 3 - Servidores concurrentes - Comparación RPC y RMI}
+
+El principal problema con el que tienen que lidiar los servidores concurrentes es el del \textbf{acceso a los recursos}. Este problema consiste en administrar los recursos disponbiles para que los clientes los puedan solicitar y que mantengan un estado consistente. 
+
+Para trabajar con una situación de este tipo en un sistema distribuido implementado con Java y RMI, el lenguaje provee de la palabra reservada \texttt{synchronized}. Cuando un hilo está ejectuando un método definido como \emph{sincronizado}, todos los otros hilos que quieran ejectuar ese método \textbf{del mismo objeto} serán bloqueados (se suspende su ejecución) hasta que finalice la ejecución del primer hilo \autocite{SynchronizedMethods}
+
+RPC y RMI son comparable en cuanto a que ambos implementan una capa de \emph{middleware} que resulta transparente para el programador. Utilizando estas herramientas, se logra desarrollar un sistema distribuido trabajando con objetos (RMI) o llamadas a funciones y registros (RPC) de forma que parecen ser locales, pero realmente se están ejectuando de forma remota. Todo el \dq{andamiaje} necesario para comunicar un cliente con un servdior (como el implementado en el trabajo de laboratorio anterior) ya es implementado por la herramienta.
+
+Sin embargo, no se podría decir que trabajan en \emph{exactamente el mismo nivel de abstracción}, pero la diferencia no se debe a la herramienta, sino al \textbf{lenguaje para el cual están implementados} (C en el caso de RPC, y Java para RMI).  
+
+Algunas diferencias entre RPC y RMI son las siguientes:
+
+\begin{itemize}
+    \item RMI no utiliza un lenguaje propio para definir las interfaces de las funciones y las estructuras de datos, sino que se definen como interfases de Java
+    \item En RPC no se publican los servicios bajo una \emph{URL}; \texttt{rpcgen} genera el archivo \texttt{.h} con las firmas de las funciones remotas para llamarlas desde algún cliente  
+    \item RMI publica objetos (que implementan la funcionalidad del servicio), los cuales serán requeridos por los clientes y las funciones remotas serán invocadas a través de los métodos del objeto remoto.
+\end{itemize}
 
 
 
