@@ -17,7 +17,7 @@
 
 \lstset{style=cstyle}
 
-\section{Ejercicio 1 - Calcucladora implementada con RMI}
+\section{Ejercicio 1 - Calculadora implementada con RMI}
 
 \emph{El código fuente y las capturas de paquetes se pueden encontrar en los directorios \dq{src} y \dq{pcaps}, respectivamente} 
 
@@ -32,12 +32,23 @@ A partir de las capturas realizadas con el analizador de protocolos \emph{Wiresh
 \begin{itemize}
     \item Las interacciones tanto del servidor (para publicar servicios) como del cliente (para consumir esos servicios) se hace a través del \textbf{RMIregistry} 
     \item RMIregistry escucha en un puerto bien conocido para ambas partes - escucha peticiones en el puerto \textbf{1099}
-    \item El cliente recupera un \emph{objeto remoto} invocando el método \texttt{lookup} de la clase \texttt{Naming} indicándole el \emph{URI} del objeto
+    \item Para recuperar el objeto remoto, el cliente primero se comunica con el RMIregistry (éste último le indica en qué puerto está escuchando el objeto remoto)
+    \item El cliente recupera un \emph{objeto remoto} invocando el método \texttt{lookup} de la clase \texttt{Naming} indicándole el \emph{URI} del objeto - envía una petición al puerto de escucha que le indicó RMIregistry
     \item El \emph{URI} se compone de la dirección donde se encuentra el servidor, el puerto de escucha de RMIregistry, y el nombre del servicio publicado por el servidor
     \item Toda la comunicación de RMIregistry es a través de \textbf{TCP} 
 \end{itemize}
 
-En el archivo \emph{rmisumaresta.pcapng} se pueden identificar los paquetes en los cuales el cliente le pide a RMIregistry el objeto remoto que implementa la interfase \texttt{ISumaResta}; estos paquetes son el 34, 36, 38, y 39. Este último en particular es en el cual se puede ver que se le está pidiendo dicho objeto.  
+\subsection{Numeración de paquetes de la captura \emph{pcapng}}
+
+\emph{El archivo de la captura es \dq{rmi-sumaresta.pcapng} - abrir con Wireshark o con \texttt{tcpdump}} 
+
+A continuación se enumeran los distintos paquetes que fluyen por la red entre el servidor y el RMIregistry en el momento en el que el primero publica los servicios. También se indican los paquetes cuándo un cliente recupera el objeto remoto, y por último los paquetes que representan el llamado a un método remoto: 
+
+\begin{itemize}
+    \item 1-29: servidor publica servicios
+    \item 32-60: cliente recupera el objeto remoto
+    \item 70-87: invocación de método remoto
+\end{itemize}
 
 \section{Ejercicio 2 - RFS implementado con RMI}
 
