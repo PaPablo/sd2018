@@ -45,9 +45,9 @@ A partir de las capturas realizadas con el analizador de protocolos \emph{Wiresh
 A continuación se enumeran los distintos paquetes que fluyen por la red entre el servidor y el RMIregistry en el momento en el que el primero publica los servicios. También se indican los paquetes cuándo un cliente recupera el objeto remoto, y por último los paquetes que representan el llamado a un método remoto: 
 
 \begin{itemize}
-    \item 1-29: servidor publica servicios
-    \item 32-60: cliente recupera el objeto remoto
-    \item 70-87: invocación de método remoto
+    \item 1-29: servidor publica servicios. Para ello se comunica directamente con el RMIregistry (puerto 1099)
+    \item 32-60: cliente recupera el objeto remoto que implementa la interfase \texttt{ISumaResta}. Primero se comunica con RMIregistry en el puerto 1099, y luego se comunica con el objeto remoto en el puerto 39529 
+    \item 70-87: invocación de método remoto. Se comunica directamente con el objeto remoto al puerto 39529.
 \end{itemize}
 
 \section{Ejercicio 2 - RFS implementado con RMI}
