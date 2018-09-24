@@ -101,6 +101,38 @@ Con respecto al manejo de concurrencia de RMI, se puede verificar que crea \text
 
 Si se ejecuta varias veces el método \texttt{suma} \textbf{con el mismo cliente}, se podrá ver que siempre se imprime el mismo número de hilo. Se podría ver lo mismo si el mismo cliente ejecuta otro método del objeto remoto (el método \texttt{resta}, por ejemplo).  
 
+\section{Ejercicio 4 - Experimentos con RMI}
+
+\emph{RMI otorga un servicio concurrente en forma automática para el acceso a objetos remotos} 
+~\\
+
+Con la modificación realizada al proyecto de la calculadora mostrada en la sección inmediatamente anterior, se puede ver que \textbf{RMI automáticamente otorga un manejo concurrente de los objetos remotos} - cada referencia a un objeto remoto es un hilo distinto en el servidor.
+
+\emph{Las variables de instancia de un determinado objeto remoto, no se “contaminan” con sus equivalentes de otras instancias del mismo objeto a las que se está accediendo en forma concurrente (acceso sincronizado)} 
+~\\
+
+Realizando varias modificaciones a la implementación de la calculadora, se puede experimentar para ver que \textbf{se dan condiciones de carrera}. Para poder verificarlo, se debe reiniciar el servidor cada vez que se quiera hacer una nueva prueba (\emph{los códigos fuente necesarios para los experimentos se encuentran en el directorio \dq{ej4}}).
+
+Primero se debe ejecutar \texttt{rmiregistry} y el servidor que publica los servicios de suma y resta, y multiplicación y división. Para levantar el servidor, se debe correr el siguiente comando dentro del directorio \dq{ej4}: \texttt{java -cp bin Servidor}. 
+
+Las condiciones de carrera se pueden ver cuando se corren dos clientes a la vez, intercalando las ejecuciones. Primero se debe correr uno, con una operación de suma/resta - se mostrará un mensaje indicando el \dq{estado} del objeto remoto. Dejando ese mensaje abierto, correr el otro cliente con la operación inversa de suma/resta, y ejecutarlo hasta que finalice su ejecución. Luego correr el primero hasta que finalice, y comparar los resultados.
+
+Probando distintas combinaciones de operaciones de suma/resta y operandos se puede ver que se obtienen distintos resultados del \dq{estado} del objeto remoto. A continuación se detalla un experimento concreto para realizar:
+
+\begin{itemize}
+    \item Correr \texttt{rmiregistry} y el servidor 
+    \item Ejecutar el cliente con el comando \texttt{java -cp bin CLICliente localhost 21 + 9} - No cerrar el primer mensaje. Cuando se ejecuta una suma, el objeto remoto establece su \dq{estado} al doble del valor resultante de la suma (en este caso, el valor final del estado sería 60)
+    \item Ejecutar otro cliente con el comando \texttt{java -cp bin CLICliente localhost 30 - 20} - Ejecutar hasta finalizar. Cuando se ejecuta una resta, el objeto remoto resta el valor resultante de la resta a su estado (en este caso, el valor final sería de -10, ya que el valor inicial del estado es de 0).
+    \item Continuar con la ejecución del primer cliente - el resultado final del estado debe ser 40.
+\end{itemize}
+
+Si el experimento anterior se repite, pero primero ejecutando el segundo cliente primero (el de la resta - no finalizarlo hasta después de ejecutar el otro cliente), y luego el primero (el de la suma), el resultado final debe ser 50.
+
+
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
