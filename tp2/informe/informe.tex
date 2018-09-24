@@ -129,10 +129,49 @@ Probando distintas combinaciones de operaciones de suma/resta y operandos se pue
 Si el experimento anterior se repite, pero primero ejecutando el segundo cliente primero (el de la resta - no finalizarlo hasta después de ejecutar el otro cliente), y luego el primero (el de la suma), el resultado final debe ser 50.
 
 
+\section{Ejercicio 5 - Implementación de Timeout}
 
+Al tener que tratar con servicios remotos el cliente se encuentra atado a la \textbf{disponibilidad} del servidor en cueanto a tiempo para poder atender sus peticiones. Por lo tanto, lo que puede hacer el cliente es fijar un tiempo de espera o \textbf{timeout} para las peticiones que le realice al servidor. De esta forma no se queda esperando indefinidamente a que le respondan.
 
+Para implementar el timeout en el cliente debemos crear una clase \texttt{TimeoutFactory} que cree los sockets de cliente y servidor contemplando un timeout especificado. Y luego hacer que el cliente adopte precauciones con respecto a los tiempos de espera.
 
+\begin{lstlisting}[title={Socket factory que contempla el \textbf{timeout} especificado}]
+class TimeoutFactory extends RMISocketFactory {
 
+    private int timeout;
+
+    public TimeoutFactory(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public Socket createSocket(String host, int port) throws IOException {
+        Socket ret = getDefaultSocketFactory().createSocket(host, port);
+        ret.setSoTimeout(timeout * 1000);
+        return ret;
+    }
+
+    public ServerSocket createServerSocket(int port) throws IOException {
+        return getDefaultSocketFactory().createServerSocket(port);
+    }
+}
+\end{lstlisting}
+
+Luego, en el cliente, antes de setear el valor del host al cual conectarse para requerir los servicios:
+
+\begin{lstlisting}[title={Utilizar la \texttt{TimeoutFactory} como default para la creación de sockets en el constructor de Cliente}]
+    public Cliente(String host) {
+        try {
+            RMISocketFactory.setSocketFactory(
+                new TimeoutFactory(5)
+            );
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+        this.setHost(host);
+    }
+\end{lstlisting}
+
+Al utlizar esta nueva implementación se le agregó una pausa de 6 segundos en el servicio de Suma. Luego se ejecutó el cliente requiriendo la suma. Como la espera máxima fijada es de 5 segundos, el servicio falla. Cuando la espera se quita el servicio finaliza exitosamente.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
