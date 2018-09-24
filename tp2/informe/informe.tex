@@ -15,7 +15,7 @@
 \tableofcontents
 \clearpage 
 
-\lstset{style=cstyle}
+\lstset{style=javastyle}
 
 \section{Ejercicio 1 - Calculadora implementada con RMI}
 
@@ -88,7 +88,18 @@ Algunas diferencias entre RPC y RMI son las siguientes:
 \end{itemize}
 
 
+Con respecto al manejo de concurrencia de RMI, se puede verificar que crea \textbf{un hilo por referencia a objeto remoto}. Un experimento posible para demostrar esto consiste en modificar la clase \emph{SumaResta.java} del proyecto del ejercicio anterior de la siguiente manera:
 
+\begin{lstlisting}[title={Modificar el método \texttt{suma} para poder ver el hilo en el que corre}]
+    public int suma(int a, int b) {
+        long threadId = Thread.currentThread().getId();
+        JOptionPane.showMessageDialog(null, 
+                String.format("HILO [%d]", threadId));
+        return a+b;
+    }
+\end{lstlisting}
+
+Si se ejecuta varias veces el método \texttt{suma} \textbf{con el mismo cliente}, se podrá ver que siempre se imprime el mismo número de hilo. Se podría ver lo mismo si el mismo cliente ejecuta otro método del objeto remoto (el método \texttt{resta}, por ejemplo).  
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
