@@ -15,7 +15,7 @@
 \tableofcontents
 \clearpage 
 
-\lstset{style=cstyle}
+\lstset{style=javastyle}
 
 \section{Ejercicio 1 - Calculadora implementada con RMI}
 
@@ -45,9 +45,9 @@ A partir de las capturas realizadas con el analizador de protocolos \emph{Wiresh
 A continuación se enumeran los distintos paquetes que fluyen por la red entre el servidor y el RMIregistry en el momento en el que el primero publica los servicios. También se indican los paquetes cuándo un cliente recupera el objeto remoto, y por último los paquetes que representan el llamado a un método remoto: 
 
 \begin{itemize}
-    \item 1-29: servidor publica servicios
-    \item 32-60: cliente recupera el objeto remoto
-    \item 70-87: invocación de método remoto
+    \item 1-29: servidor publica servicios. Para ello se comunica directamente con el RMIregistry (puerto 1099)
+    \item 32-60: cliente recupera el objeto remoto que implementa la interfase \texttt{ISumaResta}. Primero se comunica con RMIregistry en el puerto 1099, y luego se comunica con el objeto remoto en el puerto 39529 
+    \item 70-87: invocación de método remoto. Se comunica directamente con el objeto remoto al puerto 39529.
 \end{itemize}
 
 \section{Ejercicio 2 - RFS implementado con RMI}
@@ -88,7 +88,18 @@ Algunas diferencias entre RPC y RMI son las siguientes:
 \end{itemize}
 
 
+Con respecto al manejo de concurrencia de RMI, se puede verificar que crea \textbf{un hilo por referencia a objeto remoto}. Un experimento posible para demostrar esto consiste en modificar la clase \emph{SumaResta.java} del proyecto del ejercicio anterior de la siguiente manera:
 
+\begin{lstlisting}[title={Modificar el método \texttt{suma} para poder ver el hilo en el que corre}]
+    public int suma(int a, int b) {
+        long threadId = Thread.currentThread().getId();
+        JOptionPane.showMessageDialog(null, 
+                String.format("HILO [%d]", threadId));
+        return a+b;
+    }
+\end{lstlisting}
+
+Si se ejecuta varias veces el método \texttt{suma} \textbf{con el mismo cliente}, se podrá ver que siempre se imprime el mismo número de hilo. Se podría ver lo mismo si el mismo cliente ejecuta otro método del objeto remoto (el método \texttt{resta}, por ejemplo).  
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
