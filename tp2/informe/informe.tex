@@ -128,6 +128,12 @@ Probando distintas combinaciones de operaciones de suma/resta y operandos se pue
 
 Cabe aclarar que, aunque cada cada cliente tenga \textbf{referencia} al objeto remoto (en este caso, al objeto de la clase \texttt{SumaResta} publicado por el servidor), sigue siendo el mismo objeto, por lo tanto hay un \textbf{único estado}. Para evitar estas condiciones de carrera, se podría modificar los métodos de suma y de resta de tal forma que solamente un cliente los ejecute por vez (que su ejecución sea atómica); de esta forma el estado no terminaría en valores inesperados.  
 
+\emph{Cuando se pasan objetos remotos como parámetros el pasaje es por referencia, contrariamente de cuando se pasan objetos locales (por valor)} 
+~\\
+
+Para demostrar este enunciado, se modificó la clase \texttt{Cliente} agregando un método \texttt{wrapperSuma}. Su objetivo es demostrar que el pasaje de los objetos remotos es por referencia, y no por valor.
+
+El resultado de las ejecuciones se debe mantener igual que en las secciones anteriores: por cada operación de suma/resta, se mostrará un contador de cuántas de estas operaciones se han realizado.
 
 \section{Ejercicio 5 - Implementación de Timeout}
 
