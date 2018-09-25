@@ -111,7 +111,7 @@ Con la modificación realizada al proyecto de la calculadora mostrada en la secc
 \emph{Las variables de instancia de un determinado objeto remoto, no se “contaminan” con sus equivalentes de otras instancias del mismo objeto a las que se está accediendo en forma concurrente (acceso sincronizado)} 
 ~\\
 
-Realizando varias modificaciones a la implementación de la calculadora, se puede experimentar para ver que \textbf{se dan condiciones de carrera}. Para poder verificarlo, se debe reiniciar el servidor cada vez que se quiera hacer una nueva prueba (\emph{los códigos fuente necesarios para los experimentos se encuentran en el directorio \dq{ej4}}).
+Realizando varias modificaciones a la implementación de la calculadora, se pueden realizar varios experimentos para ver que \textbf{se dan condiciones de carrera}. Para poder verlo más claramente, se debe reiniciar el servidor cada vez que se quiera hacer una nueva prueba (\emph{los códigos fuente necesarios para los experimentos se encuentran en el directorio \dq{ej4}}).
 
 Primero se debe ejecutar \texttt{rmiregistry} y el servidor que publica los servicios de suma y resta, y multiplicación y división. Para levantar el servidor, se debe correr el siguiente comando dentro del directorio \dq{ej4}: \texttt{java -cp bin Servidor}. 
 
@@ -121,12 +121,12 @@ Probando distintas combinaciones de operaciones de suma/resta y operandos se pue
 
 \begin{itemize}
     \item Correr \texttt{rmiregistry} y el servidor 
-    \item Ejecutar el cliente con el comando \texttt{java -cp bin CLICliente localhost 21 + 9} - No cerrar el primer mensaje. Cuando se ejecuta una suma, el objeto remoto establece su \dq{estado} al doble del valor resultante de la suma (en este caso, el valor final del estado sería 60)
-    \item Ejecutar otro cliente con el comando \texttt{java -cp bin CLICliente localhost 30 - 20} - Ejecutar hasta finalizar. Cuando se ejecuta una resta, el objeto remoto resta el valor resultante de la resta a su estado (en este caso, el valor final sería de -10, ya que el valor inicial del estado es de 0).
-    \item Continuar con la ejecución del primer cliente - el resultado final del estado debe ser 40.
+    \item Ejecutar el cliente con el comando \texttt{java -cp bin CLICliente localhost 21 + 9} - No cerrar el primer mensaje. Cuando se ejecuta una suma o una resta, el objeto remoto incrementa un contador
+    \item Ejecutar otro cliente con el comando \texttt{java -cp bin CLICliente localhost 30 - 20} - Ejecutar hasta finalizar
+    \item Continuar con la ejecución del primer cliente - el resultado final del estado debe ser 2
 \end{itemize}
 
-Si el experimento anterior se repite, pero primero ejecutando el segundo cliente primero (el de la resta - no finalizarlo hasta después de ejecutar el otro cliente), y luego el primero (el de la suma), el resultado final debe ser 50.
+Cabe aclarar que, aunque cada cada cliente tenga \textbf{referencia} al objeto remoto (en este caso, al objeto de la clase \texttt{SumaResta} publicado por el servidor), sigue siendo el mismo objeto, por lo tanto hay un \textbf{único estado}. Para evitar estas condiciones de carrera, se podría modificar los métodos de suma y de resta de tal forma que solamente un cliente los ejecute por vez (que su ejecución sea atómica); de esta forma el estado no terminaría en valores inesperados.  
 
 
 \section{Ejercicio 5 - Implementación de Timeout}

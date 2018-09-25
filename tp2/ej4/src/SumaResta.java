@@ -38,28 +38,30 @@ public class SumaResta extends UnicastRemoteObject
         System.out.println (String.format("Sumando %d + %d...", a,b));
         this.displayMsg(String.format("TOTAL ANTES DE SUMAR: %d", 
                     this.getTotal()));
-        int _res = a+b;
-        this.setTotal((this.getTotal() + _res) * 2);
+        this.increment();
         this.displayMsg(String.format("TOTAL DESPUES DE SUMAR: %d", 
                     this.getTotal()));
-        return _res;
+        return a+b;
     }
     public int resta(int a, int b) 
     {
         System.out.println (String.format("Restando %d - %d...", a,b));
         this.displayMsg(String.format("TOTAL ANTES DE RESTAR: %d", 
                     this.getTotal()));
-        int _res = a-b;
-        this.setTotal(this.getTotal() - _res);
+        this.increment();
         this.displayMsg(String.format("TOTAL DESPUES DE RESTAR: %d", 
                     this.getTotal()));
-        return _res;
+        return a-b;
     }
 
     public void displayMsg(String msg) {
         JOptionPane.showMessageDialog(
                 null, 
                 msg);
+    }
+
+    public void increment() {
+        this.setTotal(this.getTotal() + 1);
     }
 
     public void setTotal(int _total) {
