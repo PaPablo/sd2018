@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,22 +10,12 @@ import exceptions.CouldNotReadFileException;
 import exceptions.CouldNotWriteFileException;
 import rfs.Client;
 import javax.swing.JButton;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import javax.swing.SwingConstants;
 import javax.swing.JLabel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import javax.swing.JMenuBar;
 import javax.swing.JFileChooser;
 import java.io.File;
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenu;

@@ -1,5 +1,9 @@
+package servidor;
+
 import java.rmi.Naming;
 import java.rmi.registry.Registry;
+
+import reloj.Reloj;
 
 public class Servidor {
 
