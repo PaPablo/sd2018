@@ -7,13 +7,13 @@ import reloj.Reloj;
 
 public class Servidor {
 
-    public Servidor(String host) {
+    public Servidor(String host, int offset) {
         try {
             String relojRname = String.format(
                     "//%s:%d/Reloj", 
                     host,
                     Registry.REGISTRY_PORT);
-            Naming.rebind(relojRname, new Reloj());
+            Naming.rebind(relojRname, new Reloj(offset));
         } catch(Exception e){
             e.printStackTrace();
         }

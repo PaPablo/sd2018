@@ -8,12 +8,18 @@ import utils.DateFormatter;
 public class Reloj extends UnicastRemoteObject 
     implements IReloj {
     
-    public Reloj() throws RemoteException {
+    private int offset;
+    public Reloj(int offset) throws RemoteException {
         super();
+        this.offset = offset;
+        System.out.println(String.format(
+                    "Reloj creado con un offset de [%d]",
+                    offset
+                    ));
     }
 
     public long now() {
-        long horaMilis = System.currentTimeMillis() + 20000;
+        long horaMilis = System.currentTimeMillis() + this.offset;
         System.out.println(String.format(
                     "[Servidor] La hora es %s [%d]",
                     DateFormatter.getTimeFromMillis(horaMilis),
