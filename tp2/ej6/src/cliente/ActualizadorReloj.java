@@ -33,6 +33,12 @@ public class ActualizadorReloj extends Thread {
 
                 long sleep = this.cliente.getUpdateTime();
                 //Esperamos el tiempo que indique la deriva del reloj
+                if (GlobalState.isDebug()) {
+                    System.out.println(String.format(
+                                "[DEBUG] ActualizadorReloj - me voy a dormir [%d]",
+                                sleep
+                                ));
+                }
                 Thread.sleep(sleep);
                 //Actualizamos reloj
                 this.cliente.tick();

@@ -86,6 +86,14 @@ public class ActualizadorDeriva extends Thread {
 
         int driftAdjustment = this.getClockDriftAdjustment(offset);
 
+        if (GlobalState.isDebug()) {
+            System.out.println(String.format(
+                        "[DEBUG] OFFSET = %d\n[DEBUG] ADJUSTMENT = %d",
+                        offset,
+                        driftAdjustment
+                        ));
+        }
+
         this.cliente.adjustDrift(driftAdjustment);
     }
 
