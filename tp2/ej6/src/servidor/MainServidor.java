@@ -8,6 +8,10 @@ public class MainServidor {
 
         for (int i = 0; i < args.length; i++) {
             try {
+                if (args[i].equals("--help")) {
+                    printHelp();
+                    System.exit(0);
+                } 
                 if (args[i].equals("-h") || args[i].equals("--host")) {
                     i++;
                     host = args[i];
