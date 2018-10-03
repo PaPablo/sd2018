@@ -6,12 +6,14 @@ import exceptions.ClienteException;
 import gui.VentanaReloj;
 
 public class MainCliente {
+
+    public static final int MAX_REQUESTS_FOR_SYNC = 5;
+
     public static void main(String[] args) {
 
-        VentanaReloj ventana = new VentanaReloj();
-        ventana.setVisible(true);
         String host = "localhost";
-        int requestsForSync = 5;
+        int requestsForSync = MAX_REQUESTS_FOR_SYNC;
+
         for (int i = 0; i < args.length; i++) {
             try {
                 if (args[i].equals("-h") || args[i].equals("--host")) {
@@ -36,6 +38,9 @@ public class MainCliente {
         System.out.println(String.format(
                     "Cliente conectado con el host [%s]",
                     host));
+
+        VentanaReloj ventana = new VentanaReloj();
+        ventana.setVisible(true);
 
         ActualizadorReloj actualizadorReloj = new ActualizadorReloj(cliente);
         actualizadorReloj.addListener(ventana);
