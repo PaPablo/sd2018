@@ -16,12 +16,23 @@ public class MainCliente {
 
         for (int i = 0; i < args.length; i++) {
             try {
+                if (args[i].equals("--help")) {
+                    printHelp();
+                    System.exit(0);
+                } 
                 if (args[i].equals("-h") || args[i].equals("--host")) {
                     i++;
                     host = args[i];
+                    continue;
+                } 
+                if (args[i].equals("-d") || args[i].equals("--debug")) {
+                    System.out.println("*** DEBUG MODE ***");
+                    GlobalState.addEnv("debug");
+                    continue;
                 } 
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.out.println("Invocación incorrecta - faltan parámetros");
+                printHelp();
                 System.exit(1);
             }
         }
@@ -77,5 +88,9 @@ public class MainCliente {
                 //System.exit(1);
             //}
         //}
+    }
+
+    public static void printHelp() {
+        System.out.println("MainCliente [-h|--host] [HOST] [-d|--debug]");
     }
 }
