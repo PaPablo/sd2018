@@ -181,13 +181,47 @@ Al utlizar esta nueva implementación se le agregó una pausa de 6 segundos en e
 
 \section{Ejercicio 7 - NTP Servers}
 
-Utilizando un conjunto de clases provistas por la cátedra, \texttt{NtpMessage} para realizar una consulta a un servidor NTP, y \texttt{SntpClient} como base para armar un cliente,  se realizaron una serie de consultas a diversos servidores NTP para graficar los offset que se observaban cuando se consulta uno u otro servidor.
+Utilizando un conjunto de clases provistas por la cátedra, \texttt{NtpMessage} para realizar una consulta a un servidor NTP, y \texttt{SntpClient} como base para armar un cliente,  se implementó un nuevo cliente que realiza una serie de consultas a diversos servidores NTP para graficar los offset que se observaban cuando se consulta uno u otro servidor.
 
-Se grafica la salida de la serie de pruebas realizadas:
+Los servidores utilizados fueron:
+
+\begin{center}
+    \begin{tabular}{ c }
+        \textbf{Server URL} \\
+        \hline
+        \hline
+        pool.ntp.org \\ 
+        asia.pool.ntp.org \\
+        europe.pool.ntp.org \\
+        north-america.pool.ntp.org \\
+        oceania.pool.ntp.org \\ 
+        south-america.pool.ntp.org \\ 
+    \end{tabular}
+\end{center}
+
+Se grafica un fragmento a la salida de la serie de pruebas realizadas:
 
 \begin{lstlisting}
-
-    
+|                          - |        - |          - |
+|                   Servidor | # prueba |     Offset |
+|                          - |        - |          - |
+|               pool.ntp.org |        1 | -64.191 ms |
+|               pool.ntp.org |        2 | -64.234 ms |
+|               pool.ntp.org |        3 | -64.171 ms |
+|               pool.ntp.org |        4 | -64.172 ms |
+|               pool.ntp.org |        5 | -64.184 ms |
+|               pool.ntp.org |        6 | -64.209 ms |
+|               pool.ntp.org |        7 | -64.176 ms |
+|               pool.ntp.org |        8 | -64.175 ms |
+|                          - |        - |          - |
+|          asia.pool.ntp.org |        1 | -64.219 ms |
+|          asia.pool.ntp.org |        2 | -64.228 ms |
+|          asia.pool.ntp.org |        3 | -64.226 ms |
+|          asia.pool.ntp.org |        4 | -64.227 ms |
+|          asia.pool.ntp.org |        5 | -64.163 ms |
+.
+.
+.
 \end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
