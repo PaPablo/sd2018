@@ -3,49 +3,98 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+import java.util.HashMap;
+import java.sql.Timestamp;
+import java.sql.Time;
 
 public class Client
 {
 
     public static void main(String[] args) throws IOException
     {
-        String serverName;
+        String[] servers = {
+            "pool.ntp.org",
+            "asia.pool.ntp.org",
+            "europe.pool.ntp.org",
+            "north-america.pool.ntp.org",
+            "oceania.pool.ntp.org",
+            "south-america.pool.ntp.org",
+        };
 
-        // Process command-line args
-        if(args.length==1)
-        {
-            serverName = args[0];
-        }
-        else
-        {
-            printUsage();
-            return;
-        }
 
         // Create socket
         DatagramSocket socket = new DatagramSocket();
 
-        // Get message from server using created socket
-        // This is done to avoid creating a new socket every time
-        NtpProbe probe = new NtpProbe(serverName, socket);
-
-        for (int i = 0; i < 8; i++) {
-            probe.sendMessage();
-
-            System.out.println(String.format("\n\nPrueba %d", i+1));
-            // Corrected, according to RFC2030 errata
-
-            // Display response
-            System.out.println("Round-trip delay: " +
-                    new DecimalFormat("0.00").format(probe.rtt*1000) + " ms");
-
-            System.out.println("Local clock offset: " +
-                    new DecimalFormat("0.0000").format(probe.localClockOffset*1000) + " ms");
+        System.out.println(
+                String.format("| %26s | %23s | %23s | %10s |\n| %26s | %23s | %23s | %10s |\n| %26s | %23s | %23s | %10s |",
+                    "-",
+                    "-",
+                    "-",
+                    "-",
+                    "Servidor",
+                    "Hora Local",
+                    "Hora Servidor",
+                    "Offset",
+                    "-",
+                    "-",
+                    "-",
+                    "-"
+                    ));
+        for (String server : servers) {
+            probe(socket, server);
+            System.out.println(
+                    String.format("| %26s | %23s | %23s | %10s |",
+                        "-",
+                        "-",
+                        "-",
+                        "-"
+                        ));
         }
 
         socket.close();
     }
 
+    public static void probe(DatagramSocket socket, String serverName) throws IOException{
+        // Get message from server using created socket
+        // This is done to avoid creating a new socket every time
+        NtpProbe probe = new NtpProbe(serverName, socket);
+
+        // Date formater
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+
+
+        for (int i = 0; i < 8; i++) {
+            probe.sendMessage();
+
+            // Corrected, according to RFC2030 errata
+
+            // Display response
+            //System.out.println("Round-trip delay: " +
+            //new DecimalFormat("0.00").format(probe.rtt*1000) + " ms");
+
+            long millis = System.currentTimeMillis();
+            long realTime = (long) (millis + probe.localClockOffset);
+
+            String outString = String.format(
+                    "| %26s | %s | %s | %10s |",
+                    serverName,
+                    format.format(new Date(millis)),
+                    format.format(new Date(realTime)),
+                    String.format("%s ms", new DecimalFormat("0.000").format(probe.localClockOffset))
+                    );
+            System.out.println(outString);
+
+        }
+
+    }
 
 
     /**
