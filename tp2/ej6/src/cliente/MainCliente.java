@@ -62,32 +62,6 @@ public class MainCliente {
 
         actualizadorReloj.start();
         actualizadorDeriva.start();
-        //
-        //Timer timer = new Timer();
-        //long localClock, patternClock = 0;
-        //for (int i = 0; i < 10; i++) {
-            //try {
-                //timer.start();
-                //localClock = System.currentTimeMillis();
-                //patternClock = cliente.getPatternTime();
-                //System.out.println(String.format(
-                            //"Reloj local: %d\nReloj del servidor: %d\nDeriva: %d\nRTT: %d",
-                            //localClock,
-                            //patternClock, 
-                            //(localClock-patternClock),
-                            //timer.getPartial()/2
-                            //));
-                //ventana.updateText(cliente.getTimeFromMillis(localClock));
-                //Thread.sleep(1000);
-            //} catch (InterruptedException e) {
-
-            //} catch (ClienteException e) {
-                //System.out.println(String.format(
-                            //"No se pudo realizar la operación [%s]",
-                            //e));
-                //System.exit(1);
-            //}
-        //}
     }
 
     public static void printHelp() {
