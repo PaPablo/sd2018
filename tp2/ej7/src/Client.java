@@ -34,16 +34,13 @@ public class Client
         DatagramSocket socket = new DatagramSocket();
 
         System.out.println(
-                String.format("| %26s | %23s | %23s | %10s |\n| %26s | %23s | %23s | %10s |\n| %26s | %23s | %23s | %10s |",
-                    "-",
+                String.format("| %26s | %8s | %10s |\n| %26s | %8s | %10s |\n| %26s | %8s | %10s |",
                     "-",
                     "-",
                     "-",
                     "Servidor",
-                    "Hora Local",
-                    "Hora Servidor",
+                    "# prueba",
                     "Offset",
-                    "-",
                     "-",
                     "-",
                     "-"
@@ -51,8 +48,7 @@ public class Client
         for (String server : servers) {
             probe(socket, server);
             System.out.println(
-                    String.format("| %26s | %23s | %23s | %10s |",
-                        "-",
+                    String.format("| %26s | %8s | %10s |",
                         "-",
                         "-",
                         "-"
@@ -84,10 +80,9 @@ public class Client
             long realTime = (long) (millis + probe.localClockOffset);
 
             String outString = String.format(
-                    "| %26s | %s | %s | %10s |",
+                    "| %26s | %8s | %10s |",
                     serverName,
-                    format.format(new Date(millis)),
-                    format.format(new Date(realTime)),
+                    String.format("%d", i+1),
                     String.format("%s ms", new DecimalFormat("0.000").format(probe.localClockOffset))
                     );
             System.out.println(outString);
