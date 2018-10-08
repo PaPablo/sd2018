@@ -16,14 +16,14 @@ public class App {
     public static final String BANCO_DEPOSITO_SERVER_HOST = "localhost";
     public static final int BANCO_DEPOSITO_PORT_NUMBER = 5550;
     public static final String BANCO_DEPOSITO_DB_NAME = "banco";
-    public static final String BANCO_DEPOSITO_USERNAME = "jtatest";
-    public static final String BANCO_DEPOSITO_PASSWORD = "jtatest";
+    public static final String BANCO_DEPOSITO_USERNAME = "admin";
+    public static final String BANCO_DEPOSITO_PASSWORD = "admin";
 
     public static final String BANCO_EXTRACCION_SERVER_HOST = "localhost";
     public static final int BANCO_EXTRACCION_PORT_NUMBER = 5560;
     public static final String BANCO_EXTRACCION_DB_NAME = "banco";
-    public static final String BANCO_EXTRACCION_USERNAME = "jtatest";
-    public static final String BANCO_EXTRACCION_PASSWORD = "jtatest";
+    public static final String BANCO_EXTRACCION_USERNAME = "admin";
+    public static final String BANCO_EXTRACCION_PASSWORD = "admin";
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -48,9 +48,9 @@ public class App {
                     BANCO_DEPOSITO_DB_NAME);
 
             connExtraccion = new PGConnection(
-                    "localhost",
-                    5560,
-                    "banco");
+                    BANCO_EXTRACCION_SERVER_HOST,
+                    BANCO_EXTRACCION_PORT_NUMBER,
+                    BANCO_EXTRACCION_DB_NAME);
 
             ormDeposito = new CuentaObjects(connDeposito
                     .connect(
@@ -58,7 +58,9 @@ public class App {
                         BANCO_DEPOSITO_PASSWORD));
 
             ormExtraccion = new CuentaObjects(connExtraccion
-                    .connect("admin", "admin"));
+                    .connect(
+                        BANCO_EXTRACCION_USERNAME, 
+                        BANCO_EXTRACCION_PASSWORD));
 
         } catch(SQLException e) {
             System.out.println(String.format(
