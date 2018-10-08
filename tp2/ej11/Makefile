@@ -1,5 +1,8 @@
 all:
 	javac -cp ./lib/*.jar -d ./bin/ ./src/**/*.java
 
+ejemplos:
+	javac -cp ./lib/*.jar -d ./bin/ ./src/_ejemplos/*.java
+
 clean:
-	find ./bin/ -iname "*.class" -delete
+	rm -rf bin/*
