@@ -6,10 +6,10 @@ make
 
 - Correr con:
 ```bash
-java -cp bin:lib/postgresql-42.2.5.jar <MAIN>
+java -cp bin:lib/postgresql-42.2.5.jar app.App
 ```
 
-- Borrar `.class` con:
+- Limpiar con:
 
 ```bash
 make clean
