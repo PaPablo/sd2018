@@ -27,4 +27,18 @@ public class Cuenta {
                 this.bloqueada,
                 this.saldo);
     }
+
+    public boolean canExtract(double amount) {
+        return (this.saldo - amount) > 0;
+    }
+
+    public double extract(double amount) {
+        this.saldo -= amount;
+        return this.saldo;
+    }
+
+    public double deposit(double amount) {
+        this.saldo += amount;
+        return this.saldo;
+    }
 }
