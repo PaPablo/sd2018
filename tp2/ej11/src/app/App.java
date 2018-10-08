@@ -1,15 +1,15 @@
 package app;
 
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import cuenta.*;
+import db.*;
 import java.sql.*;
 import javax.sql.*;
 import javax.transaction.xa.*;
 import org.postgresql.xa.*;
-
-import db.*;
-import cuenta.*;
 
 public class App {
     public static void main(String[] args) {
@@ -173,8 +173,10 @@ public class App {
 
             //DEPOSITAR
             cuentaDeposito.deposit(monto);
+            cuentaDeposito.save();
             //EXTRAER
             cuentaExtraccion.extract(monto);
+            cuentaExtraccion.save();
 
             connDeposito.endTransaction(t);
             connExtraccion.endTransaction(t);
@@ -210,7 +212,8 @@ public class App {
                 connDeposito.rollback(t);
                 connExtraccion.rollback(t);
             }
-        } catch (XAException e) {
+        } catch (XAException 
+                | SQLException e) {
             System.out.println(String.format(
                         "[ERROR] pinchose la transaccion [%s]",
                         e));
