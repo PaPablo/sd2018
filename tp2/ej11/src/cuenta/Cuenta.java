@@ -28,6 +28,10 @@ public class Cuenta {
                 this.saldo);
     }
 
+    public double getSaldo() {
+        return this.saldo;
+    }
+
     public boolean canExtract(double amount) {
         return (this.saldo - amount) > 0;
     }
