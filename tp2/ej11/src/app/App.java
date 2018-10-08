@@ -128,9 +128,23 @@ public class App {
             System.out.println("*** TRANSACCION FINALIZADA ***");
             //FIN TRANSACCION
 
+            boolean canCommit = false;
+
+            while(true) {
+                System.out.print("¿Desea confirmar la operación? [y/n]: ");
+                String input = sc.nextLine().trim().toLowerCase();
+                if(input == "y" || input == "yes") {
+                    canCommit = true;
+                    break;
+                } else if (input == "n" || input == "no") {
+                    break;
+                }
+            }
+
             //VERIFICAR SI ANDUVO BIEN PARA COMMITEAR
             if (connDeposito.canPrepareForCommit(t) 
-                    && connExtraccion.canPrepareForCommit(t)) {
+                    && connExtraccion.canPrepareForCommit(t)
+                    && canCommit) {
                 System.out.println("*** COMMITEANDO ***");
                 connDeposito.commit(t);
                 connExtraccion.commit(t);
