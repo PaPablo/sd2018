@@ -222,6 +222,7 @@ public class App {
 
         try {
             System.out.println("*** CERRANDO ***");
+            sc.close();
             connDeposito.close();
             connExtraccion.close();
         } catch (SQLException e) {
