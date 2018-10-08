@@ -32,6 +32,7 @@ public class CuentaObjects implements ORM<Cuenta, Integer> {
                         _rows.getBoolean("bloqueada"),
                         _rows.getDouble("saldo")
                         );
+                _cuenta.setConnection(this.conn);
             } 
 
             _stmt.close();

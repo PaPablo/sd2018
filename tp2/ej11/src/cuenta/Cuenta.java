@@ -1,5 +1,9 @@
 package cuenta;
 
+import java.sql.Statement;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class Cuenta {
@@ -9,6 +13,7 @@ public class Cuenta {
     private Timestamp fechaCreacion;
     private boolean bloqueada;
     private double saldo;
+    private Connection _conn;
 
     public Cuenta(int id, String titular, Timestamp fechaCreacion, boolean bloqueada, double saldo) {
         this.id = id;
@@ -32,6 +37,10 @@ public class Cuenta {
         return this.saldo;
     }
 
+    public boolean isBlocked() {
+        return this.bloqueada;
+    }
+
     public boolean canExtract(double amount) {
         return (this.saldo - amount) > 0;
     }
@@ -44,5 +53,17 @@ public class Cuenta {
     public double deposit(double amount) {
         this.saldo += amount;
         return this.saldo;
+    }
+
+    public void save() throws SQLException {
+        Statement _stmt = this._conn.createStatement();
+        _stmt.executeUpdate(String.format(
+                    "UPDATE cuentas SET saldo=%f WHERE id=%d",
+                    this.saldo,
+                    this.id));
+    }
+
+    public void setConnection(Connection conn) {
+        this._conn = conn;
     }
 }
