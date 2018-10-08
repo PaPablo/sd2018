@@ -79,16 +79,6 @@ public class App {
 
         PGConnection connDeposito = null,
                      connExtraccion = null;
-        //PGXADataSource pgXaDataSourceExtraccion = null,
-                       //pgXaDataSourceDeposito = null;
-        //XADataSource xaDataSourceExtraccion = null, 
-                     //xaDataSourceDeposito = null;
-        //XAConnection xaConnExtraccion = null,
-                     //xaConnDeposito = null;
-        //XAResource xaResExtraccion = null,
-                   //xaResDeposito = null;
-        //Connection connExtraccion = null, 
-                   //connDeposito = null;
 
         try {
 
@@ -101,40 +91,12 @@ public class App {
                     5560,
                     "banco");
 
-            //pgXaDataSourceExtraccion = new PGXADataSource();
-            //pgXaDataSourceExtraccion.setServerName("localhost");
-            //pgXaDataSourceExtraccion.setPortNumber(5550);
-            //pgXaDataSourceExtraccion.setDatabaseName("banco");
-
-            //xaDataSourceExtraccion = pgXaDataSourceExtraccion;
-
-
-            //pgXaDataSourceDeposito = new PGXADataSource();
-            //pgXaDataSourceDeposito.setServerName("localhost");
-            //pgXaDataSourceDeposito.setPortNumber(5560);
-            //pgXaDataSourceDeposito.setDatabaseName("banco");
-
-            //xaDataSourceDeposito = pgXaDataSourceDeposito;
-
-
             Connection _c = connDeposito.connect("admin", "admin");
             connExtraccion.connect("admin", "admin");
 
             CuentaObjects orm = new CuentaObjects(_c);
             Cuenta c = orm.getById(idCuentaExtraccion);
             System.out.println(c);
-            //xaConnExtraccion = xaDataSourceExtraccion
-                //.getXAConnection("admin", "admin");
-
-            //xaConnDeposito = xaDataSourceDeposito
-                //.getXAConnection("admin", "admin");
-
-            //xaResExtraccion = xaConnExtraccion.getXAResource();
-            //xaResDeposito = xaConnDeposito.getXAResource();
-
-            //connExtraccion = xaConnExtraccion.getConnection();
-            //connDeposito = xaConnDeposito.getConnection();
-
 
         } catch(SQLException e) {
             System.out.println(String.format(
@@ -150,26 +112,20 @@ public class App {
                     101, 
                     new byte[]{0x01},
                     new byte[]{0x02});
-            //Xid xid = new MyXid(101, new byte[]{0x01}, new byte[]{0x02});
 
             //COMIENZO TRANSACCION
             connDeposito.startTransaction(t);
             connExtraccion.startTransaction(t);
 
             System.out.println("*** TRANSACCION COMENZADA ***");
-            //xaResExtraccion.start(xid, XAResource.TMNOFLAGS);
-            //xaResDeposito.start(xid, XAResource.TMNOFLAGS);
 
             /*
              * Hackz hackz hackz que modifican las BDs
              * */
 
-
             connDeposito.endTransaction(t);
             connExtraccion.endTransaction(t);
             System.out.println("*** TRANSACCION FINALIZADA ***");
-            //xaResExtraccion.end(xid, XAResource.TMSUCCESS);
-            //xaResDeposito.end(xid, XAResource.TMSUCCESS);
             //FIN TRANSACCION
 
             //VERIFICAR SI ANDUVO BIEN PARA COMMITEAR
@@ -183,20 +139,6 @@ public class App {
                 connDeposito.rollback(t);
                 connExtraccion.rollback(t);
             }
-            //int retXAExtraccion = xaResExtraccion.prepare(xid);
-            //int retXADeposito = xaResDeposito.prepare(xid);
-
-            //if (retXAExtraccion == XAResource.XA_OK && retXADeposito == XAResource.XA_OK) {
-                //System.out.println("*** COMMITEANDO ***");
-                //xaResExtraccion.commit(xid, false);
-                //xaResDeposito.commit(xid, false);
-            //} else {
-                ////ROLLBACK
-                //System.out.println("*** ROLLBACKKKK ***");
-                //xaResExtraccion.commit(xid, false);
-                //xaResExtraccion.rollback(xid);
-                //xaResDeposito.rollback(xid);
-            //}
         } catch (XAException e) {
             System.out.println(String.format(
                         "[ERROR] pinchose la transaccion [%s]",
@@ -245,11 +187,6 @@ public class App {
             System.out.println("*** CERRANDO ***");
             connDeposito.close();
             connExtraccion.close();
-            //connExtraccion.close();
-            //connDeposito.close();
-
-            //xaConnExtraccion.close();
-            //xaConnDeposito.close();
         } catch (SQLException e) {
             System.out.println("boe");
         }
