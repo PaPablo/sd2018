@@ -53,89 +53,105 @@ public class App {
         System.out.println("*** CONECTADO ***");
 
 
-        //Ingresar monto
-        while(true) {
-            System.out.print("Ingrese un monto a transferir: ");
-            try {
-                monto = sc.nextInt();
-                if(monto <= 0) {
+        try {
+            //Ingresar monto
+            while(true) {
+                System.out.print("Ingrese un monto a transferir: ");
+                try {
+                    monto = Integer.parseInt(sc.nextLine());
+                    if(monto <= 0) {
+                        System.out.println(String.format(
+                                    "Debe ingresar un monto mayor que 0 (monto ingresado [%d])",
+                                    monto));
+                        continue;
+                    }
+                    break;
+                } catch(InputMismatchException 
+                        | NumberFormatException e){
                     System.out.println(String.format(
-                                "Debe ingresar un monto válido (monto ingresado [%d])",
+                                "Debe ingresar un monto válido",
                                 monto));
-                    continue;
                 }
-                break;
-            } catch(InputMismatchException e){
-                System.out.println(String.format(
-                            "Debe ingresar un monto válido (monto ingresado [%s])",
-                            monto));
             }
-        }
 
-        //Ingresar cuenta a extraer
-        while(true) {
-            System.out.print("Ingrese el ID de la cuenta de la cual extraer: ");
-            try {
-                idCuentaExtraccion = sc.nextInt();
-                if(idCuentaExtraccion <= 0) {
+            //Ingresar cuenta a extraer
+            while(true) {
+                System.out.print("Ingrese el ID de la cuenta de la cual extraer: ");
+                try {
+                    idCuentaExtraccion = Integer.parseInt(sc.nextLine());
+                    cuentaExtraccion = ormExtraccion.getById(idCuentaExtraccion);
+
+                    //La cuenta debe existir
+                    if (cuentaExtraccion == null) {
+                        System.out.println(String.format(
+                                    "La cuenta ingresada no existe (ID ingresado [%d])",
+                                    idCuentaExtraccion));
+                        continue;
+                    }
+
+                    //No debe estar bloqueada
+                    if (cuentaExtraccion.isBlocked()) {
+                        System.out.println(String.format(
+                                    "La cuenta %d está bloqueada. No se puede extraer", 
+                                    idCuentaExtraccion));
+                        continue;
+
+                    }
+
+                    //Se debe poder extraer el monto indicado
+                    if (!cuentaExtraccion.canExtract(monto)) {
+                        System.out.println(String.format(
+                                    "La cuenta %d no tiene tanto saldo para extrar\n[Saldo de la cuenta: %f\nSaldo a extraer: %d]",
+                                    idCuentaExtraccion,
+                                    cuentaExtraccion.getSaldo(),
+                                    monto));
+                        continue;
+                    }
+
+                    break;
+                } catch(InputMismatchException 
+                        | NumberFormatException e){
                     System.out.println(String.format(
-                                "Debe ingresar un ID válido (ID ingresado [%d])",
+                                "Debe ingresar un ID válido",
                                 idCuentaExtraccion));
-                    continue;
                 }
-
-                cuentaExtraccion = ormExtraccion.getById(idCuentaExtraccion);
-
-                if (cuentaExtraccion == null) {
-                    System.out.println(String.format(
-                                "La cuenta ingresada no existe (ID ingresado [%d])",
-                                idCuentaExtraccion));
-                    continue;
-                }
-
-                if (!cuentaExtraccion.canExtract(monto)) {
-                    System.out.println(String.format(
-                                "La cuenta %d no tiene tanto saldo para extrar\n[Saldo de la cuenta: %f\nSaldo a extraer: %d]",
-                                idCuentaExtraccion,
-                                cuentaExtraccion.getSaldo(),
-                                monto));
-                    continue;
-                }
-
-                break;
-            } catch(InputMismatchException e){
-                System.out.println(String.format(
-                            "Debe ingresar un ID válido (ID ingresado [%s])",
-                            idCuentaExtraccion));
             }
-        }
 
-        //Ingresar cuenta a depositar
-        while(true) {
-            System.out.print("Ingrese el ID de la cuenta a la cual depositar: ");
-            try {
-                idCuentaDeposito = sc.nextInt();
-                if(idCuentaDeposito <= 0) {
+            //Ingresar cuenta a depositar
+            while(true) {
+                System.out.print("Ingrese el ID de la cuenta a la cual depositar: ");
+                try {
+                    idCuentaDeposito = Integer.parseInt(sc.nextLine());
+                    cuentaDeposito = ormDeposito.getById(idCuentaDeposito);
+
+                    //La cuenta debe existir
+                    if (cuentaDeposito == null) {
+                        System.out.println(String.format(
+                                    "La cuenta ingresada no existe (ID ingresado [%d])",
+                                    idCuentaDeposito));
+                        continue;
+                    }
+                    
+                    //No debe estar bloqueada
+                    if (cuentaDeposito.isBlocked()) {
+                        System.out.println(String.format(
+                                    "La cuenta %d está bloqueada. No se puede extraer", 
+                                    idCuentaExtraccion));
+                        continue;
+                    }
+
+                    break;
+                } catch(InputMismatchException 
+                        | NumberFormatException e){
                     System.out.println(String.format(
-                                "Debe ingresar un ID válido (ID ingresado [%d])",
+                                "Debe ingresar un ID válido",
                                 idCuentaDeposito));
-                    continue;
                 }
-
-                cuentaDeposito = ormDeposito.getById(idCuentaDeposito);
-
-                if (cuentaDeposito == null) {
-                    System.out.println(String.format(
-                                "La cuenta ingresada no existe (ID ingresado [%d])",
-                                idCuentaDeposito));
-                    continue;
-                }
-                break;
-            } catch(InputMismatchException e){
-                System.out.println(String.format(
-                            "Debe ingresar un ID válido (ID ingresado [%s])",
-                            idCuentaDeposito));
             }
+        } catch(NoSuchElementException e) {
+            System.out.println();
+            System.out.println("Hasta luego!");
+            System.exit(0);
         }
 
 
