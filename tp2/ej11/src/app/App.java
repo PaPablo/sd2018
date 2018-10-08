@@ -190,10 +190,10 @@ public class App {
             while(true) {
                 System.out.print("¿Desea confirmar la operación? [y/n]: ");
                 String input = sc.nextLine().trim().toLowerCase();
-                if(input == "y" || input == "yes") {
+                if(input.equals("y") || input.equals("yes")) {
                     canCommit = true;
                     break;
-                } else if (input == "n" || input == "no") {
+                } else if (input.equals("n") || input.equals("no")) {
                     break;
                 }
             }
