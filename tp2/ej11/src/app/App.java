@@ -146,43 +146,6 @@ public class App {
         }
 
 
-        /*
-        try {
-
-            Statement stmt;
-            ResultSet rows;
-
-            System.out.println("*** CONN EXTRACCION ***");
-            stmt = connExtraccion.createStatement();
-            stmt.pre
-            rows = stmt.executeQuery("SELECT * FROM cuentas");
-            while (rows.next()) {
-                System.out.println(String.format(
-                            "[%d] TITULAR %s",
-                            rows.getRow(),
-                            rows.getString("titular")));
-            }
-
-            System.out.println("*** CONN DEPOSITO ***");
-            stmt = connDeposito.createStatement();
-            rows = stmt.executeQuery("SELECT * FROM cuentas");
-            while (rows.next()) {
-                System.out.println(String.format(
-                            "[%d] TITULAR %s",
-                            rows.getRow(),
-                            rows.getString("titular")));
-            }
-
-            stmt.close();
-
-        } catch(SQLException e){
-            System.out.println(String.format(
-                        "[ERROR] NO SE PUDO RECUPERAR LA INFORMACION [%s]",
-                        e));
-            System.exit(1);
-        }
-        */
-
         try {
             System.out.println("*** CERRANDO ***");
             connDeposito.close();
