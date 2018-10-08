@@ -117,8 +117,12 @@ public class App {
             //xaDataSourceDeposito = pgXaDataSourceDeposito;
 
 
-            connDeposito.connect("admin", "admin");
+            Connection _c = connDeposito.connect("admin", "admin");
             connExtraccion.connect("admin", "admin");
+
+            CuentaObjects orm = new CuentaObjects(_c);
+            Cuenta c = orm.getById(idCuentaExtraccion);
+            System.out.println(c);
             //xaConnExtraccion = xaDataSourceExtraccion
                 //.getXAConnection("admin", "admin");
 
@@ -131,9 +135,6 @@ public class App {
             //connExtraccion = xaConnExtraccion.getConnection();
             //connDeposito = xaConnDeposito.getConnection();
 
-            //CuentaObjects orm = new CuentaObjects(connExtraccion);
-            //Cuenta c = orm.getById(idCuentaExtraccion);
-            //System.out.println(c);
 
         } catch(SQLException e) {
             System.out.println(String.format(
