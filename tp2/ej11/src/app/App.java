@@ -12,6 +12,19 @@ import javax.transaction.xa.*;
 import org.postgresql.xa.*;
 
 public class App {
+
+    public static final String BANCO_DEPOSITO_SERVER_HOST = "localhost";
+    public static final int BANCO_DEPOSITO_PORT_NUMBER = 5550;
+    public static final String BANCO_DEPOSITO_DB_NAME = "banco";
+    public static final String BANCO_DEPOSITO_USERNAME = "jtatest";
+    public static final String BANCO_DEPOSITO_PASSWORD = "jtatest";
+
+    public static final String BANCO_EXTRACCION_SERVER_HOST = "localhost";
+    public static final int BANCO_EXTRACCION_PORT_NUMBER = 5560;
+    public static final String BANCO_EXTRACCION_DB_NAME = "banco";
+    public static final String BANCO_EXTRACCION_USERNAME = "jtatest";
+    public static final String BANCO_EXTRACCION_PASSWORD = "jtatest";
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int monto = 0, 
@@ -30,16 +43,20 @@ public class App {
         try {
 
             connDeposito = new PGConnection(
-                    "localhost",
-                    5550,
-                    "banco");
+                    BANCO_DEPOSITO_SERVER_HOST,
+                    BANCO_DEPOSITO_PORT_NUMBER,
+                    BANCO_DEPOSITO_DB_NAME);
+
             connExtraccion = new PGConnection(
                     "localhost",
                     5560,
                     "banco");
 
             ormDeposito = new CuentaObjects(connDeposito
-                    .connect("admin", "admin"));
+                    .connect(
+                        BANCO_DEPOSITO_USERNAME, 
+                        BANCO_DEPOSITO_PASSWORD));
+
             ormExtraccion = new CuentaObjects(connExtraccion
                     .connect("admin", "admin"));
 
@@ -114,6 +131,11 @@ public class App {
                     System.out.println(String.format(
                                 "Debe ingresar un ID válido",
                                 idCuentaExtraccion));
+                } catch(SQLException e) {
+                    System.out.println(String.format(
+                        "No se pudo recuperar la información de la cuenta [%s]", 
+                        e));
+                    System.exit(1);
                 }
             }
 
@@ -146,6 +168,11 @@ public class App {
                     System.out.println(String.format(
                                 "Debe ingresar un ID válido",
                                 idCuentaDeposito));
+                } catch(SQLException e) {
+                    System.out.println(String.format(
+                        "No se pudo recuperar la información de la cuenta [%s]", 
+                        e));
+                    System.exit(1);
                 }
             }
         } catch(NoSuchElementException e) {
@@ -204,11 +231,11 @@ public class App {
             if (connDeposito.canPrepareForCommit(t) 
                     && connExtraccion.canPrepareForCommit(t)
                     && canCommit) {
-                System.out.println("*** COMMITEANDO ***");
+                System.out.println("*** CONFIRMANDO LA TRANSACCION ***");
                 connDeposito.commit(t);
                 connExtraccion.commit(t);
             } else {
-                System.out.println("*** ROLLBACKKKK ***");
+                System.out.println("*** DESHACIENDO LA TRANSACCION ***");
                 connDeposito.rollback(t);
                 connExtraccion.rollback(t);
             }
@@ -226,9 +253,8 @@ public class App {
             connDeposito.close();
             connExtraccion.close();
         } catch (SQLException e) {
-            System.out.println("boe");
+            System.out.println("No se pudo cerrar :/");
+            e.printStackTrace();
         }
-
-        System.out.println("todo joya amiguito :)");
     } 
 }
