@@ -4,7 +4,7 @@ services:
     build: ./imagen-bancos
     container_name: "jta-banco-1"
     volumes:
-      - "$HOME/.local/jta-banco-1:/volume"
+      - "$HOME/.local/docker-volumes/jta-banco-1:/volume"
     ports:
       - "5550:5432"
     command: ["--max-prepared-transactions=10"]
@@ -17,7 +17,7 @@ services:
     build: ./imagen-bancos
     container_name: "jta-banco-2"
     volumes:
-      - "$HOME/.local/jta-banco-2:/volume"
+      - "$HOME/.local/docker-volumes/jta-banco-2:/volume"
     ports:
       - "5560:5432"
     command: ["--max-prepared-transactions=10"]
