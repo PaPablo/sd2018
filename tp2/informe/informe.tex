@@ -276,10 +276,18 @@ Se grafica un fragmento a la salida de la serie de pruebas realizadas:
 
 \section{Ejercicio 11 - Transacciones distribuidas}
 
-\emph{Explicar cómo el protocolo de compromiso de dos fases para transacciones anidadas, se asegura que si la transacción de nivel superior se compromete, todas las descendientes se comprometen o se abortan} 
+\emph{Explicar cómo el protocolo de compromiso de dos fases para transacciones anidadas asegura que si la transacción de nivel superior se compromete, todas las descendientes se comprometen o se abortan} 
 ~\\
 
-Eeeee
+En un contexto de transacciones anidadas, la transacción de mayor nivel (la que está más cerca de la ra, viendolo como un árbol) se llama \textbf{transacción de nivel superior}, mientras que las internas se llaman \textbf{subtransacciones}.  
+
+Cuando una subtransacción se completa, toma una decisión sobre si \emph{comprometer previsionalmente} (no graba nada en disco), o abortar. Cuando todas las subtransacciones son completadas, todas las que hayan compremitdo previsionalmente llevan a cabo el \emph{protocolo de compromiso en dos fases} expresando su intención de comprometer la transacción y \textbf{preparándose para comprometer}, si es que es el resultado del \emph{C2F}. Todas las subtransacciones cuyos ancestros (transacciones superiores) hayan abortado, serán abortadas también.  
+
+Cabe destacar que si una transacción superior fue abortada, todas sus subtransacciones serán forzadas a abortar también. Sin embargo, la recíproca no es cierta; si una subtransacción fue abortada, no significa que su padre ni sus subtransacciones hermanas sean forzadas a abortar. Si una subtransacción fue comprometida previsionalmente, debe ser abortada si su ancestro fue abortado, sin importar que luego su ancestro pueda comprometer exitosamente.
+
+La transacción superior cumple el rol de \textbf{coordinador} en el protocolo de compromiso en dos fases, siendo los otros integrantes las subtransacciones que comprometieron previsionalmente y no tienen ancestros abortados. Si las subtransacciones deciden comprometer (final de la primer fase), entonces deben \emph{preparar} sus transacciones almacenando su estado en disco.
+
+La segunda fase consiste en que el coordinador recupera las decisiones de los integrantes y les indica la decisión final. Cuando se completó el procedimiento, el coordinador y los participantes habrán comprometido o abortado sus transacciones consistentemente \autocite{ColourisTwoPhaseCommitProtocol}
 
 \subsection{Implementación con \emph{JTA}}
 
