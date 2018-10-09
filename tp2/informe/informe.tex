@@ -206,7 +206,7 @@ A continuación se detallan los pasos necesarios para correr la aplicación:
 
 \section{Ejercicio 7 - NTP Servers}
 
-Utilizando un conjunto de clases provistas por la cátedra, \texttt{NtpMessage} para realizar una consulta a un servidor NTP, y \texttt{SntpClient} como base para armar un cliente,  se implementó un nuevo cliente que realiza una serie de consultas a diversos servidores NTP para graficar los offset que se observaban cuando se consulta uno u otro servidor.
+Utilizando un conjunto de clases provistas por la cátedra, \texttt{NtpMessage} para realizar una consulta a un servidor NTP, y \texttt{SntpClient} como base para armar un cliente,  se implementó un nuevo cliente que realiza una serie de consultas a diversos servidores NTP para graficar los corrimientos que se observaban cuando se consulta uno u otro servidor.
 
 Los servidores utilizados fueron:
 
@@ -224,7 +224,7 @@ Los servidores utilizados fueron:
     \end{tabular}
 \end{center}
 
-Se grafica un fragmento a la salida de la serie de pruebas realizadas:
+A continuación, se incluye salida de la serie de pruebas realizadas:
 
 \begin{lstlisting}
 |                          - |        - |          - |
@@ -253,16 +253,16 @@ Se grafica un fragmento a la salida de la serie de pruebas realizadas:
 
 \begin{itemize}
     \item Verdadero, al ambas partes conocer la clave, en situación de disputa frente a una tercera parte, no puede determinarse quién encriptó el mensaje.
-    \item Falso. La encriptación asimétrica, al agregar un overhead sobre la confección del mensaje, disminuye notablemente la eficiencia. Es por eso que se opta por utilizar criptografía asimétrica para la transmisión de una clave que luego se utilizará para llevar adelante una comunicación encriptada simetricamente.
-    \item Falso. En ciptografía simétrica sí, pero en asimétrica no. Es más, en PKI las claves públicas pueden estar en público conocimiento. \autocite{WikipediaDigitalSignature}
+    \item Falso. La encriptación asimétrica, al agregar un \emph{overhead} sobre la confección del mensaje, disminuye notablemente la eficiencia. Es por eso que se opta por utilizar criptografía asimétrica para la transmisión de una clave que luego se utilizará para llevar adelante una comunicación encriptada simétricamente.
+    \item Falso. En criptografía simétrica sí, pero en asimétrica no. Es más, con PKI las claves públicas pueden ser de público conocimiento \autocite{WikipediaDigitalSignature}.
 \end{itemize}
 
 \section{Ejercicio 9 - Firma Digital}
 
 \begin{itemize}
     \item Es necesaria la clave pública del remitente.
-    \item Necesito mi clave privada. Utilizando el método de establecimiento de claves que haga falta, como ser Diffie-Hellman. \autocite{WikipediaEmailEncryption}
-    \item Requiere la clave pública del remitente para poder encriptar el mail y que pueda desencriptarlo con su clave privada.
+    \item Necesito mi clave privada. Utilizando el método de establecimiento de claves que haga falta, como ser \emph{Diffie-Hellman} \autocite{WikipediaEmailEncryption}.
+    \item Requiere la clave pública del remitente para poder encriptar el mail y que pueda ser desencriptado con su clave privada.
 \end{itemize}
 
 
