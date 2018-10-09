@@ -249,6 +249,34 @@ Se grafica un fragmento a la salida de la serie de pruebas realizadas:
 .
 \end{lstlisting}
 
+\section{Ejercicio 11 - Transacciones distribuidas}
+
+\emph{Explicar cómo el protocolo de compromiso de dos fases para transacciones anidadas, se asegura que si la transacción de nivel superior se compromete, todas las descendientes se comprometen o se abortan} 
+~\\
+
+Eeeee
+
+\subsection{Implementación con \emph{JTA}}
+
+\emph{Los códigos fuentes necesarios para este ejercicio se encuentran en el directorio \emph{ej11/src}} 
+
+Esta solución utiliza tanto las librerías estándar de \emph{JDBC} (\emph{Java Database Connectivity}), como de \emph{JTA} (\emph{Java Transaction API}). Debido a la cantidad de código \dq{de andamiaje} necesario para llevar a cabo una operación con \emph{JDBC} y \emph{JTA}, se decidió implementar el paquete \texttt{db} con distintas clases que hagan más sencillo el uso de las librerías (encapsulando su complejidad y presentando una interfaz más simple, enfocada principalmente en el enunciado del ejercicio).   
+
+Para utilizar la aplicación desarrollada, primero se debe contar con las bases de datos necesarias; para esta situación se decidió utilizar \emph{contenedores de Docker} y la herramienta de orquestración de contenedores \emph{docker-compose}. 
+
+Si se desea probar la aplicación, primero se deben crear los contenedores con el comando \texttt{docker-compose up --build -d} (estando parado en el directorio \emph{ej11/}). Con dicho comando se crearán dos contenedores, uno para cada base de datos que se necesita. Cada base de datos ya es inicializada con la tabla \texttt{cuentas} necesaria, y con algunos registros creados.
+
+Por otro lado, para no tener que estar manejando código SQL desde la aplicación de Java, se implementó el paquete \texttt{cuenta}, con las clases \texttt{Cuenta} y \texttt{CuentaObjects}. La primera es una modelación sencilla de la tabla homónima, con sus respectivos campos y tipos de datos, y algunos métodos que implementan una lógica básica (si una cuenta está bloqueada o no, si tiene saldo suficiente para realizar una extracción, depositar o extraer una suma, y actualizar su registro en la base de datos). La segunda se encarga de buscar en la base de datos una cuenta (según un identificador pasado por parámetro), y devolver un objeto \texttt{Cuenta}.
+
+Al igual que en la aplicación del ejercicio 6, se debe compilar el código con el comando \texttt{make}. En este caso, para correr la aplicación no hace falta levantar ningún servidor (solamente los contenedores); entonces una vez compilado el código, se debe ejecutar el siguiente comando:
+
+\begin{lstlisting}[title={Ejemplo de invocación de la aplicación (correr estando parado en el directorio \emph{ej11})}]
+java -cp ./bin/:./lib/postgresql-42.2.5.jar app.App 
+\end{lstlisting}
+
+La aplicación le pedirá un monto a extraer de una cuenta y depositar en la otra, un identificador de cuenta de la cual extraer (verificará que exista, que la cuenta no esté bloqueada, y que tenga saldo suficiente), y un segundo identificador de una cuenta a la cual depositar (verificando también que no exista ni que esté bloqueada). Luego, realizará la operación y por último, solicitará una confirmación.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
