@@ -179,6 +179,31 @@ Luego, en el cliente, antes de setear el valor del host al cual conectarse para 
 
 Al utlizar esta nueva implementación se le agregó una pausa de 6 segundos en el servicio de Suma. Luego se ejecutó el cliente requiriendo la suma. Como la espera máxima fijada es de 5 segundos, el servicio falla. Cuando la espera se quita el servicio finaliza exitosamente.
 
+\section{Ejercicio 6 - Relojes}
+
+\emph{Los códigos fuentes necesarios para este ejercicio se encuentran en el directorio \emph{ej6/src}} 
+
+Para implementar el reloj de la hora, primero se definió la interfase \texttt{IReloj} con su único método \texttt{now()}, que devuelve un valor \texttt{long} de Java (pensado para que devuelva la hora en formato EPOCH \footnote{También conocido como \emph{Tiempo UNIX} o \emph{POSIX}, indica el tiempo actual como una aproximación a la cantidad de segundos que pasaron desde las 00 horas (UTC) del 1 de Enero de 1970 \autocite{WikipediaEpoch}}). El servidor publica un servicio como un objeto RMI que devuelve la hora, y la aplicación para lanzar el servidor acepta como parámetro por línea de comandos un corrimiento (tanto positivo como negativo) para aplicar al reloj (\emph{ejecutar la aplicación del servidor con el parámetro \emph{--help} para ver cómo pasar dicho valor}).
+
+El cliente es considerablemente más complejo; no solo tiene una muy sencilla interfaz gráfica, sino que se encarga de pedir al servidor su hora actual, y actualizar su reloj local en base al \textbf{algoritmo de Cristian}. La implementación de este algoritmo se puede hallar en la clase \texttt{ActualizadorDeriva}.
+
+Ahora bien, cuando se ejecuta el cliente, luego de recuperar los parámetros correspondientes de la invocación de línea de comandos, primero inicializa la interfaz gráfica.
+
+Luego, lanza dos hilos nuevos. Uno de ellos (clase \texttt{ActualizadorReloj}) se encargará de actualizar el reloj cada un determinado tiempo (varía según la deriva que tenga el reloj). Este hilo emite el evento necesario para refrescar la interfaz gráfica. El otro hilo (clase \texttt{ActualizadorDeriva}) es el encargado de ir actualizando la deriva del reloj, en base a la diferencia que exista entre el reloj local y el del servidor (sigue el Algoritmo de Cristian).
+
+A continuación se detallan los pasos necesarios para correr la aplicación:
+
+\begin{itemize}
+    \item Compilar los códigos fuente valiéndose del archivo \emph{Makefile} disponbile en el directorio \emph{ej6/} - compilar con el comando \texttt{make}.
+    \item Correr el \emph{rmiregistry}. Para ello se puede probar alguna de las siguientes opciones:
+    \begin{itemize}
+        \item Ejecutar el comando \texttt{rmiregistry} estando parado dentro del directorio \emph{bin/} (generado por el comando \texttt{make})  
+        \item \texttt{rmiregistry -J--class-path=./bin/} (estando parado en el directorio \emph{ej6})
+    \end{itemize}
+    \item Correr la aplicación del servidor con \texttt{java -cp bin servidor.MainServidor} (el parámetro \emph{--help} permite ver las distintas banderas con las que cuenta) 
+    \item Correr la aplicación del cliente con \texttt{java -cp bin cliente.MainCliente} (al igual que la aplicación del servidor, cuenta con un parámetro de ayuda). 
+\end{itemize}
+
 \section{Ejercicio 7 - NTP Servers}
 
 Utilizando un conjunto de clases provistas por la cátedra, \texttt{NtpMessage} para realizar una consulta a un servidor NTP, y \texttt{SntpClient} como base para armar un cliente,  se implementó un nuevo cliente que realiza una serie de consultas a diversos servidores NTP para graficar los offset que se observaban cuando se consulta uno u otro servidor.
