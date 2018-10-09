@@ -1,0 +1,28 @@
+version: '3'
+services:
+  banco-1:
+    build: ./imagen-bancos
+    container_name: "jta-banco-1"
+    volumes:
+      - "$HOME/.local/docker-volumes/jta-banco-1:/volume"
+    ports:
+      - "5550:5432"
+    command: ["--max-prepared-transactions=10"]
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=banco
+      - PGDATA=/volume/data
+  banco-2:
+    build: ./imagen-bancos
+    container_name: "jta-banco-2"
+    volumes:
+      - "$HOME/.local/docker-volumes/jta-banco-2:/volume"
+    ports:
+      - "5560:5432"
+    command: ["--max-prepared-transactions=10"]
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=banco
+      - PGDATA=/volume/data
