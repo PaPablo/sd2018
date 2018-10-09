@@ -254,14 +254,14 @@ Se grafica un fragmento a la salida de la serie de pruebas realizadas:
 \begin{itemize}
     \item Verdadero, al ambas partes conocer la clave, en situación de disputa frente a una tercera parte, no puede determinarse quién encriptó el mensaje.
     \item Falso. La encriptación asimétrica, al agregar un overhead sobre la confección del mensaje, disminuye notablemente la eficiencia. Es por eso que se opta por utilizar criptografía asimétrica para la transmisión de una clave que luego se utilizará para llevar adelante una comunicación encriptada simetricamente.
-    \item Falso. En ciptografía simétrica sí, pero en asimétrica no. Es más, en PKI las claves públicas pueden estar en público conocimiento.
+    \item Falso. En ciptografía simétrica sí, pero en asimétrica no. Es más, en PKI las claves públicas pueden estar en público conocimiento. \autocite{WikipediaDigitalSignature}
 \end{itemize}
 
 \section{Ejercicio 9 - Firma Digital}
 
 \begin{itemize}
     \item Es necesaria la clave pública del remitente.
-    \item Necesito mi clave privada. Utilizando el método de establecimiento de claves que haga falta, como ser Diffie-Hellman.
+    \item Necesito mi clave privada. Utilizando el método de establecimiento de claves que haga falta, como ser Diffie-Hellman. \autocite{WikipediaEmailEncryption}
     \item Requiere la clave pública del remitente para poder encriptar el mail y que pueda desencriptarlo con su clave privada.
 \end{itemize}
 
@@ -271,7 +271,7 @@ Se grafica un fragmento a la salida de la serie de pruebas realizadas:
 \begin{itemize}
     \item Mi certificado se encontrará firmado utilizando una clave comprometida que ya no tiene valor de seguridad.
     \item Ahora alguien más puede desencriptar información que era sólo para mí.
-    \item Puedo cambiar mi par de llaves. Dicho cambio requiere regenerar mis certificados, para con los demas. Y el hecho de cambiar mi clave pública, procurando que se deje inutilizado el par anterior de claves. En este punto se puede ver una vulnerabilidad, si mediante algún medio se impide el conocimiento del nuevo par de claves, puede haber robo de información
+    \item Puedo cambiar mi par de llaves. Dicho cambio requiere regenerar mis certificados, para con los demas. Y el hecho de cambiar mi clave pública, procurando que se deje inutilizado el par anterior de claves. En este punto se puede ver una vulnerabilidad, si mediante algún medio se impide el conocimiento del nuevo par de claves, puede haber robo de información \autocite{WikipediaPublicKeyCertificate}
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
