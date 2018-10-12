@@ -37,7 +37,7 @@ public class Cliente {
      * Wrapper para demostrar que el pasaje de objetos remotos
      * es por referencia y no por copia
      */
-    wrapperSuma(ISumaResta calc, int a, int b) {
+    public int wrapperSuma(ISumaResta calc, int a, int b) throws RemoteException{
         return calc.suma(a, b);
     }
     /**
@@ -49,7 +49,7 @@ public class Cliente {
         try {
             ISumaResta calc = 
                 (ISumaResta) Naming.lookup(this.getRname("+"));
-            return this.wrapper_suma(calc, n1, n2);
+            return this.wrapperSuma(calc, n1, n2);
         } catch (Exception e) {
             throw new NoSePudoCompletarLaOperacionException();
         }
