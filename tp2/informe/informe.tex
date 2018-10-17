@@ -260,18 +260,17 @@ A continuación, se incluye salida de la serie de pruebas realizadas:
 \section{Ejercicio 9 - Firma Digital}
 
 \begin{itemize}
-    \item Es necesaria la clave pública del remitente.
-    \item Necesito mi clave privada. Utilizando el método de establecimiento de claves que haga falta, como ser \emph{Diffie-Hellman} \autocite{WikipediaEmailEncryption}.
-    \item Requiere la clave pública del remitente para poder encriptar el mail y que pueda ser desencriptado con su clave privada.
+    \item Es necesaria la \textbf{clave pública del remitente}.
+    \item Es necesaria la \textbf{clave pública del remitente}, de esta forma sólo él podrá desencriptarlo con su clave privada. Utilizando el método de establecimiento de claves que haga falta, como puede ser \emph{Diffie-Hellman} \autocite{WikipediaEmailEncryption}.
+    \item Para que un remitente pueda abrir un \emph{mail} encriptado con su clave pública, es necesario que éste tenga su \textbf{clave privada} 
 \end{itemize}
-
 
 \section{Ejercicio 10 - PKI}
 
 \begin{itemize}
-    \item Mi certificado se encontrará firmado utilizando una clave comprometida que ya no tiene valor de seguridad.
+    \item Mi certificado se encontrará firmado utilizando una clave comprometida que ya no tiene valor de seguridad. 
     \item Ahora alguien más puede desencriptar información que era sólo para mí.
-    \item Puedo cambiar mi par de llaves. Dicho cambio requiere regenerar mis certificados, para con los demas. Y el hecho de cambiar mi clave pública, procurando que se deje inutilizado el par anterior de claves. En este punto se puede ver una vulnerabilidad, si mediante algún medio se impide el conocimiento del nuevo par de claves, puede haber robo de información \autocite{WikipediaPublicKeyCertificate}
+    \item Puedo cambiar mi par de llaves (\emph{revocación de certificados}). Dicho cambio requiere regenerar mis certificados, para con los demás. Y el hecho de cambiar mi clave pública, procurando que se deje inutilizado el par anterior de claves. En este punto se puede ver una vulnerabilidad, si mediante algún medio se impide el conocimiento del nuevo par de claves, puede haber robo de información \autocite{WikipediaPublicKeyCertificate}. Para revocar los certificados, se añade una \textbf{fecha de expiración}, y cualquier remitente que reciba un certificado vencido lo debe rechazar, requiriendo uno nuevo \autocite{ColourisCertificates}. 
 \end{itemize}
 
 \section{Ejercicio 11 - Transacciones distribuidas}
