@@ -1,0 +1,65 @@
+\input{project_settings}
+\input{listings_settings}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% En 'titlepage.tex' se encuentra la página de título
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INDICE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\tableofcontents
+\clearpage 
+
+\lstset{style=MyStyle}
+
+\section{Ejercicio 1 - Analizando respuesta de CGI}
+
+Para el siguiente experimento, se utilizaron los \emph{scripts} disponibles en la carpeta \dq{ej1/}. 
+
+En el directorio \dq{http/} se encuentra un \emph{script} para levantar un servidor HTTP utilizando la librería estándar de Python, y una petición HTTP como ejemplo. Para correr el servidor, se debe ejecutar el siguiente comando:
+
+\begin{lstlisting}
+   ./run.sh 
+\end{lstlisting}
+
+Luego, para hacer la petición, se debe utilizar \texttt{nc}, \texttt{ncat}, o \texttt{netcat} de la siguiente forma:
+
+\begin{lstlisting}
+   cat req.txt | nc localhost 8000 
+\end{lstlisting}
+
+La cabecera HTTP (que es lo que se quiere ver en este experimento) esperable es la siguiente
+
+\begin{lstlisting}
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.5.2
+Date: Fri, 19 Oct 2018 14:47:58 GMT
+Content-type: text/html; charset=utf-8
+Content-Length: 373
+\end{lstlisting}
+
+Con el servidor CGI, el procedimiento para correr el servidor y realizar una petición es exactamente igual al anterior, con la siguiente respuesta esperable:
+
+\begin{lstlisting}
+HTTP/1.0 200 Script output follows
+Server: SimpleHTTP/0.6 Python/3.5.2
+Date: Fri, 19 Oct 2018 14:50:03 GMT
+Content-type: text/html
+
+<h1>Hola! Probando CGI</h1>
+\end{lstlisting}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIN DOCUMENTO, AHORA REFERENCIAS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\printbibliography
+
+\end{document}
