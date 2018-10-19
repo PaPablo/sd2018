@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% block styles%}
+    <link rel="stylesheet" href="/static/css/style.css" media="all">
+    {%endblock%}
+    <title>CGI</title>
+  </head>
+  <body>
+
+    <!--   Example taken from here 
+      https://franciscoamk.com/como-crear-una-fija-estatica-con-html-y-css/ -->
+      <header id="main-header">
+        <nav>
+          <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">Web</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <section class="content-container" id="main-content">
+        <div class="content">
+          {% block content %}
+          {%endblock%}
+        </div>
+      </section>
+
+      <footer id="main-footer">
+        <p>Footer</p>
+      </footer>
+
+      {% block scripts%}
+      <script src="/static/js/vendors/sha256.min.js" charset="utf-8"></script>
+      <script src="/static/js/index.js" charset="utf-8"></script>
+      {%endblock%}
+  </body>
+</html>
