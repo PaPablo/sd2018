@@ -35,7 +35,7 @@ Luego, para hacer la petición, se debe utilizar \texttt{nc}, \texttt{ncat}, o \
 
 La cabecera HTTP (que es lo que se quiere ver en este experimento) esperable es la siguiente
 
-\begin{lstlisting}
+\begin{lstlisting}[title={Cabecera HTTP de la respuesta obtenida del servidor}]
 HTTP/1.0 200 OK
 Server: SimpleHTTP/0.6 Python/3.5.2
 Date: Fri, 19 Oct 2018 14:47:58 GMT
@@ -45,7 +45,7 @@ Content-Length: 373
 
 Con el servidor CGI, el procedimiento para correr el servidor y realizar una petición es exactamente igual al anterior, con la siguiente respuesta esperable:
 
-\begin{lstlisting}
+\begin{lstlisting}[title={Respuesta obtenida del servidor CGI}]
 HTTP/1.0 200 Script output follows
 Server: SimpleHTTP/0.6 Python/3.5.2
 Date: Fri, 19 Oct 2018 14:50:03 GMT
@@ -53,6 +53,8 @@ Content-type: text/html
 
 <h1>Hola! Probando CGI</h1>
 \end{lstlisting}
+
+Comparando la primer línea de cada respueta, se puede ver que la del servidor CGI indica que la respuesta a continuación es lo que devolvió el \emph{script} ejecutado, revelando así que es un servidor CGI.
 
 
 
