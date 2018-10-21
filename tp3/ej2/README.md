@@ -3,3 +3,5 @@
 ```bash
 ./run.sh
 ```
+
+En un navegador, ingresar la dirección `localhost:8080`
