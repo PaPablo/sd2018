@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  {{super()}}
+  <link rel="stylesheet" href="/static/css/forms.css" type="text/css" media="all" />
+{%endblock%}
+
+{% block content %}
+<div id="signup-container">
+  {% if errors %}
+    <ul id="errors">
+      {% for key, value in errors.items() %}
+      <li><b>{{key}}:</b> {{value}}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if user_created %}
+    <div id="user-created">
+      <h1>Usuario creado con éxito <i class="fas fa-check"></i></h1>
+      <a href="/cgi-bin/index.py">Volver al inicio</a>
+    </div>
+  {% else %}
+  <form action="/cgi-bin/signup.py" method="POST" accept-charset="utf-8" id="signup-form">
+    <label for="nombre">Nombre y apellido</label>
+    <input 
+      required
+      type="text" 
+      {% if user and user["nombre"] %}
+      value="{{user["nombre"]}}"
+      {% endif %}
+      maxlength="{{max_nombre}}" 
+      placeholder="Ingrese su nombre y su apellido, por favor" 
+      name="nombre" 
+      id="nombre"/>
+    <span class="field-description">{{max_nombre}} caracteres como máximo</span>
+    <hr>
+    <label for="legajo">Número de legajo</label>
+    <input 
+      required
+      type="number" 
+      {% if user and user["legajo"] %}
+      value="{{user["legajo"]}}"
+      {% endif %}
+      min="1"
+      max="99999999"
+      placeholder="Ingrese su número de legajo, por favor" 
+      name="legajo" 
+      id="legajo"/>
+    <span class="field-description">{{max_legajo}} dígitos como máximo</span>
+    <hr>
+    <label for="sexo">Sexo</label>
+    <select id="sexo" name="sexo" required id="sexo">
+      <option value="h">Hombre</option>
+      <option value="m">Mujer</option>
+    </select>
+    <hr>
+    <label for="edad">Edad</label>
+    <input 
+      required
+      type="number" 
+      {% if user and user["edad"] %}
+      value="{{user["edad"]}}"
+      {% endif %}
+      min="1"
+      max="99"
+      placeholder="Ingrese su edad, por favor" 
+      name="edad" 
+      id="edad"/>
+    <span class="field-description">{{max_edad}} caracteres como máximo</span>
+    <hr>
+    <label for="password">Contraseña</label>
+    <input 
+      required
+      type="password" 
+      placeholder="Ingrese una contraseña, por favor" 
+      name="password" 
+      id="password"/>
+    <button id="" type="submit">Aceptar</button>
+  </form>
+  {% endif %}
+</div>
+
+{%endblock%}
+
+
+{% block scripts %}
+  {{super()}} 
+  <script src="/static/js/dist/signup.js" charset="utf-8"></script>
+{%endblock%}
