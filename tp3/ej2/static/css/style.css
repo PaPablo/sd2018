@@ -23,25 +23,19 @@ p {
   width: 100%;
   left: 0;
   top: 0;
-  position: fixed;
-  height: 70px;
+  position: sticky;
+  display: flex;
+  justify-content: space-between;
 }
-
-  #main-header a {
-    color: white;
-  }
 
 /*
  * Navegación
  */
-nav {
-	float: right;
-}
+
 	nav ul {
 		margin: 0;
-		padding: 0;
+		padding: 0 20px 0 0;
 		list-style: none;
-		padding-right: 20px;
 	}
 	
 		nav ul li {
@@ -52,6 +46,7 @@ nav {
 			nav ul li a {
 				display: block;
 				padding: 0 10px;
+        color: white;
 				text-decoration: none;
 			}
 			
@@ -59,14 +54,32 @@ nav {
 					background: #0b76a6;
 				}
 
+#main-header #login-status {
+  color: white;
+  padding: 0 20px 0 0;
+  line-height: 80px;
+}
+
+#main-header #login-status span {
+  color: #A9A9A9;
+  font-weight: bold;
+  padding-right: 20px;
+}
+
+#main-header #login-status a {
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
 .content-container {
   flex-grow: 1;
 }
+
 #main-content {
 	background: white;
-	width: 90%;
-  max-height: 100%;
-	margin: 100px auto 0 auto;
+	width: 95%;
+	margin: 30px auto 0 auto;
 	box-shadow: 0 0 5px rgba(0,0,0,.1);
 }
  

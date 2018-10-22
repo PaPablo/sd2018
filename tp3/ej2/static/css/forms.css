@@ -1,0 +1,71 @@
+#signup-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+#user-created {
+  color: #4BB543;
+  margin: 0 auto;
+}
+
+#signup-form {
+  margin: 0 auto;
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 30px 40px 20px 30px;
+}
+
+input {
+  width: 100%;
+}
+
+input:valid {
+  /*Sacado de acá:*/
+  /*https://www.jotform.com/answers/942964-Changing-the-active-focus-border-color-of-the-input-field*/
+  box-shadow: 0 0 3px green;
+  -moz-box-shadow: 0 0 3px green;
+  -webkit-box-shadow: 0 0 3px green;
+}
+
+button[type="submit"] {
+  /*Botón sacado de acá:*/
+  /*https://medium.freecodecamp.org/a-quick-guide-to-styling-buttons-using-css-f64d4f96337f*/
+  float: right;
+  background: transparent; /*Elimina el fondo*/
+  border: 2px solid #0099CC;
+  border-radius: 6px;
+  Letras en mayúsculas
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  font-family: "Lucida Console", Monaco, monospace;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000000;
+  margin: 20px;
+  text-transform: uppercase;
+}
+
+button[type="submit"]:hover {
+  background-color: #0099CC;
+  color: white;
+}
+
+.field-description {
+  position: relative;
+  bottom: 3px;
+  left: 3px;
+  color: #375A59;
+  font-size: 11px;
+}
+
+#errors {
+  color: red;
+}
