@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% block styles%}
     <link rel="stylesheet" href="/static/css/style.css" media="all">
+    <link rel="stylesheet" href="/static/css/vendors/fontawesome/all.css" type="text/css" media="all" />
     {%endblock%}
     <title>CGI</title>
   </head>
@@ -16,11 +17,20 @@
       <header id="main-header">
         <nav>
           <ul>
-            <li><a href="#">Inicio</a></li>
+            <li><a href="/cgi-bin/index.py">Inicio</a></li>
             <li><a href="#">Contacto</a></li>
             <li><a href="#">Web</a></li>
           </ul>
         </nav>
+        <div id="login-status">
+          {% if is_logged_in %}
+            <span><i class="fas fa-user"></i> {{user["username"]}}</span>
+            <a href="/cgi-bin/logout.py"><i class="fas fa-sign-out-alt"></i> Salir</a>
+          {% else %}
+            <a href="/cgi-bin/signup.py"><i class="fas fa-user-plus"></i> Registrarse</a>
+            <a href="/cgi-bin/login.py"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
+          {% endif %}
+        </div>
       </header>
 
       <section class="content-container" id="main-content">
@@ -31,12 +41,10 @@
       </section>
 
       <footer id="main-footer">
-        <p>Footer</p>
+        <p>Sistemas Distribuidos - 2018</p>
       </footer>
 
       {% block scripts%}
-      <script src="/static/js/vendors/sha256.min.js" charset="utf-8"></script>
-      <script src="/static/js/index.js" charset="utf-8"></script>
       {%endblock%}
   </body>
 </html>
