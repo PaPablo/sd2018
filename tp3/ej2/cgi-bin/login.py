@@ -5,7 +5,7 @@ from utils.utils import print_headers, get_template
 
 def main():
     print_headers()
-    template = get_template("index.html")
+    template = get_template("login.html")
     user = {"username": "Luciano"}
     print(template.render(is_logged_in=False,
                           user=user))
