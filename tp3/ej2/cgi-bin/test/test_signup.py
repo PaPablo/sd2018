@@ -35,9 +35,9 @@ class TestSignup(unittest.TestCase):
                             "UnaPasswordMuySegura".encode()).hexdigest())
         self.orm.create(alumno)
         alumno_dict = {"legajo": 1}
-        self.assertTrue(user_exists(alumno_dict))
+        self.assertTrue(user_exists(alumno_dict, orm=self.orm))
         alumno_dict["legajo"] = 32
-        self.assertFalse(user_exists(alumno_dict))
+        self.assertFalse(user_exists(alumno_dict, orm=self.orm))
 
     def test_devuelve_error_si_alumno_existe(self):
         alumno = Alumno(1, "Juancho", "m", 21,
@@ -45,10 +45,10 @@ class TestSignup(unittest.TestCase):
                             "UnaPasswordMuySegura".encode()).hexdigest())
         self.orm.create(alumno)
         alumno_dict = {"legajo": 1}
-        errors = check_new_user(alumno_dict)
+        errors = check_new_user(alumno_dict, orm=self.orm)
         usuario_ya_existe_msg = errors.get("usuario", None)
         self.assertIsNotNone(usuario_ya_existe_msg)
         alumno_dict = {"legajo": 322}
-        errors = check_new_user(alumno_dict)
+        errors = check_new_user(alumno_dict, orm=self.orm)
         usuario_ya_existe_msg = errors.get("usuario", None)
         self.assertIsNone(usuario_ya_existe_msg)

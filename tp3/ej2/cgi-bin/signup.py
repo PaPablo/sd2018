@@ -46,15 +46,15 @@ def get_user_constraints():
     }
     return {}
 
-def user_exists(user):
+def user_exists(user, orm=ORM):
     """Verifica que el usuario no exista previamente"""
-    alumnos = ORM.get_all()
+    alumnos = orm.get_all()
     for alumno in alumnos:
         if int(alumno.legajo) == int(user["legajo"]):
             return True
     return False
 
-def check_new_user(user):
+def check_new_user(user, orm=ORM):
     """Verifica que los datos recibidos son correctos para crear un nuevo usuario"""
 
     errors = {}
@@ -67,7 +67,7 @@ def check_new_user(user):
         except KeyError:
             continue
 
-    errors["usuario"] = "Legajo ya registrado" if user_exists(user) else None
+    errors["usuario"] = "Legajo ya registrado" if user_exists(user, orm=orm) else None
 
     return {k:v for k, v in errors.items() if v}
 
