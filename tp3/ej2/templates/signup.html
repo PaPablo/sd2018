@@ -1,12 +1,24 @@
 {% extends "base.html" %}
 
+<!--Este template requiere:
+  - errors (dict)
+  - user_created
+  - user (dict)
+    - nombre
+    - legajo
+    - edad
+  - max_nombre
+  - max_legajo
+  - max_edad
+-->
+
 {% block styles %}
   {{super()}}
   <link rel="stylesheet" href="/static/css/forms.css" type="text/css" media="all" />
 {%endblock%}
 
 {% block content %}
-<div id="signup-container">
+<div id="form-container">
   {% if errors %}
     <ul id="errors">
       {% for key, value in errors.items() %}
@@ -16,7 +28,7 @@
   {% endif %}
 
   {% if user_created %}
-    <div id="user-created">
+    <div id="form-success">
       <h1>Usuario creado con éxito <i class="fas fa-check"></i></h1>
       <a href="/cgi-bin/index.py">Volver al inicio</a>
     </div>
