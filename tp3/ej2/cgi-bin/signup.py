@@ -1,15 +1,26 @@
 #!/usr/bin/env python3
 
+import os
+import cgi
 import jinja2
+
 from utils.utils import print_headers, get_template, get_dict_from_fieldstorage
 from utils.logger import Logger
 from db.db import Connection
-import os
-import cgi
+from db.orm_alumnos import ORMAlumnos
+from models.alumno import Alumno
 
 MAX_LENGTH_NOMBRE=70
 MAX_LENGTH_LEGAJO=8
 MAX_LENGTH_EDAD=2
+
+FIELD_CONSTRAINTS = {
+    "max_nombre": MAX_LENGTH_NOMBRE,
+    "max_legajo": MAX_LENGTH_LEGAJO,
+    "max_edad": MAX_LENGTH_EDAD,
+}
+
+ORM = ORMAlumnos(Connection.get_conn())
 
 def get_user_constraints():
     """Devuelve las distintas condiciones que tienen que cumplir los campos de un nuevo usuario"""
@@ -35,6 +46,14 @@ def get_user_constraints():
     }
     return {}
 
+def user_exists(user):
+    """Verifica que el usuario no exista previamente"""
+    alumnos = ORM.get_all()
+    for alumno in alumnos:
+        if int(alumno.legajo) == int(user["legajo"]):
+            return True
+    return False
+
 def check_new_user(user):
     """Verifica que los datos recibidos son correctos para crear un nuevo usuario"""
 
@@ -48,6 +67,8 @@ def check_new_user(user):
         except KeyError:
             continue
 
+    errors["usuario"] = "Legajo ya registrado" if user_exists(user) else None
+
     return {k:v for k, v in errors.items() if v}
 
 def has_errors(errors):
@@ -56,7 +77,6 @@ def has_errors(errors):
 def post():
     """Crear usuario"""
 
-    cur = Connection.get_conn().cursor()
     # Acá hay que chequear que los datos que vienen del formulario
     # sean correctos (cumplen con las condiciones necesarias)
     form = cgi.FieldStorage()
@@ -68,22 +88,20 @@ def post():
     errors = check_new_user(user)
     Logger.info("errors => {}".format(errors))
     if not has_errors(errors):
-        # TODO: CREAR USUARIO
         Logger.info("USUARIO VALIDO - CREAR!")
+        alumno = Alumno.from_dict(user)
+        ORM.create(alumno)
+        Logger.info(f"Usuario creado con éxito [{alumno}]")
         print(template.render(user_created=True))
     else:
         Logger.info("USUARIO NO ES VALIDO - NO CREAR :(")
-        print(template.render(errors=errors, user=user))
+        print(template.render(FIELD_CONSTRAINTS, errors=errors, user=user))
 
 
 def get():
     """Devolver la página correspondiente"""
     template = get_template("signup.html")
-    print(template.render({
-        "max_nombre": MAX_LENGTH_NOMBRE,
-        "max_legajo": MAX_LENGTH_LEGAJO,
-        "max_edad": MAX_LENGTH_EDAD,
-    }))
+    print(template.render(FIELD_CONSTRAINTS))
 
 def main():
     print_headers()

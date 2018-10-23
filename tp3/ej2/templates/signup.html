@@ -10,7 +10,7 @@
   {% if errors %}
     <ul id="errors">
       {% for key, value in errors.items() %}
-      <li><b>{{key}}:</b> {{value}}</li>
+      <li><b class="error-key">{{key}}:</b> <span class="error-value">{{value}}</span></li>
       {% endfor %}
     </ul>
   {% endif %}

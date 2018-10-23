@@ -69,3 +69,7 @@ button[type="submit"]:hover {
 #errors {
   color: red;
 }
+
+#errors li .error-key {
+  text-transform: uppercase;
+}
