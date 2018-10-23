@@ -688,5 +688,9 @@ TSWLatexianTemp*
 # Jupyter
 .ipynb_checkpoints/
 
+# SQLite3
+*.db
+*.sqlite3
+
 
 # End of https://www.gitignore.io/api/latex
