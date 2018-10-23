@@ -3,9 +3,9 @@
 trap ctrl_c int
 
 function ctrl_c() {
-    PID=$(ps aux | grep -i "proxy.py" | cut -d " " -f3 | head -1)
+    PID=$(ps aux | grep -i "proxy.py" | head -1 | cut -d " " -f4)
     echo "CTRL + C trapped, killing server [PID $PID]"
-    kill $PID
+    kill $PID || pkill python
 }
 
 ./proxy.py &
