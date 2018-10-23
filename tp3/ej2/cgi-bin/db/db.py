@@ -10,20 +10,25 @@ class Connection:
     __conn = None
 
     @staticmethod
-    def get_conn():
+    def get_conn(db_name=DB_NAME):
         """Método estático para obtener la conexión"""
         if Connection.__conn is None:
-            Connection()
+            Connection(db_name)
         return Connection.__conn
 
-    def __init__(self, db_name=DB_NAME):
+    @staticmethod
+    def _reset():
+        Connection.__conn = None
+
+    def __init__(self, db_name):
         """Constructor de la conexión"""
         if Connection.__conn is not None:
             raise Exception("SINGLETON")
 
         _conn = sqlite3.connect(db_name)
         for sql_script in glob.iglob("{}/*.sql".format(self.SCHEMA_DIR)):
-            query = open(sql_script, "r").read()
-            _conn.execute(query)
+            with open(sql_script, "r") as f:
+                query = f.read()
+                _conn.execute(query)
         _conn.commit()
         Connection.__conn = _conn
