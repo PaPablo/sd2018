@@ -3,6 +3,7 @@
 import jinja2
 from utils.utils import print_headers, get_template, get_dict_from_fieldstorage
 from utils.logger import Logger
+from db.db import Connection
 import os
 import cgi
 
@@ -55,13 +56,13 @@ def has_errors(errors):
 def post():
     """Crear usuario"""
 
+    cur = Connection.get_conn().cursor()
     # Acá hay que chequear que los datos que vienen del formulario
     # sean correctos (cumplen con las condiciones necesarias)
     form = cgi.FieldStorage()
     user = get_dict_from_fieldstorage(form)
     Logger.info(user)
 
-    print_headers()
     template = get_template("signup.html")
 
     errors = check_new_user(user)
@@ -77,7 +78,6 @@ def post():
 
 def get():
     """Devolver la página correspondiente"""
-    print_headers()
     template = get_template("signup.html")
     print(template.render({
         "max_nombre": MAX_LENGTH_NOMBRE,
@@ -86,6 +86,7 @@ def get():
     }))
 
 def main():
+    print_headers()
     req_method = os.getenv("REQUEST_METHOD")
     Logger.info("EL METODO ES [{}]".format(req_method))
     if req_method == "GET":
