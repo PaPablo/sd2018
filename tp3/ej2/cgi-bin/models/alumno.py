@@ -20,3 +20,16 @@ class Alumno(object):
             return cls(*row)
         except TypeError as e:
             return None
+
+    @classmethod
+    def from_dict(cls, dikt):
+        try:
+            return cls(
+                dikt["legajo"],
+                dikt["nombre"],
+                dikt["sexo"],
+                dikt["edad"],
+                dikt["password"],
+            )
+        except KeyError as e:
+            return None
