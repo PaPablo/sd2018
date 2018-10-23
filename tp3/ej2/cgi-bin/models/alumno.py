@@ -1,3 +1,9 @@
+FIELD_CONSTRAINTS = {
+    "max_nombre": 70,
+    "max_legajo": 8,
+    "max_edad": 2,
+}
+
 class Alumno(object):
 
     """Clase para representar el alumno"""

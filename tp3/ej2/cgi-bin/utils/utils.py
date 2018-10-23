@@ -14,3 +14,7 @@ def get_dict_from_fieldstorage(data):
         _dict[field] = data[field].value
 
     return _dict
+
+def print_template(template_to_print):
+    print_headers()
+    print(template_to_print)

@@ -4,23 +4,10 @@ import os
 import cgi
 import jinja2
 
-from utils.utils import print_headers, get_template, get_dict_from_fieldstorage
+from utils.utils import print_template, get_template, get_dict_from_fieldstorage
 from utils.logger import Logger
-from db.db import Connection
-from db.orm_alumnos import ORMAlumnos
-from models.alumno import Alumno
-
-MAX_LENGTH_NOMBRE=70
-MAX_LENGTH_LEGAJO=8
-MAX_LENGTH_EDAD=2
-
-FIELD_CONSTRAINTS = {
-    "max_nombre": MAX_LENGTH_NOMBRE,
-    "max_legajo": MAX_LENGTH_LEGAJO,
-    "max_edad": MAX_LENGTH_EDAD,
-}
-
-ORM = ORMAlumnos(Connection.get_conn())
+from models.alumno import Alumno, FIELD_CONSTRAINTS
+from db.get_orm import get_orm
 
 def get_user_constraints():
     """Devuelve las distintas condiciones que tienen que cumplir los campos de un nuevo usuario"""
@@ -31,30 +18,29 @@ def get_user_constraints():
     # y un mensaje ("message")
     return {
         "nombre": {
-            "function": lambda n: len(n)<=MAX_LENGTH_NOMBRE,
+            "function": lambda n: len(n) <= FIELD_CONSTRAINTS["max_nombre"],
             "message": "Nombre demasiado largo. {} caracteres como máximo".format(
-                MAX_LENGTH_NOMBRE)},
+                FIELD_CONSTRAINTS["max_nombre"])},
         "legajo": {
-            "function": lambda l: len(str(l))<=MAX_LENGTH_LEGAJO,
+            "function": lambda l: len(str(l)) <= FIELD_CONSTRAINTS["max_legajo"],
             "message": "Legajo incorrecto. {} dígitos como máximo".format(
-                MAX_LENGTH_EDAD)},
+                FIELD_CONSTRAINTS["max_legajo"])},
         "edad": {
-            "function": lambda e: len(str(e))<=MAX_LENGTH_EDAD,
+            "function": lambda e: len(str(e)) <= FIELD_CONSTRAINTS["max_edad"],
             "message": "Edad incorrecta. {} dígitos como máximo".format(
-                MAX_LENGTH_EDAD
+                FIELD_CONSTRAINTS["max_edad"]
             )},
     }
-    return {}
 
-def user_exists(user, orm=ORM):
+def user_exists(user):
     """Verifica que el usuario no exista previamente"""
-    alumnos = orm.get_all()
+    alumnos = get_orm().get_all()
     for alumno in alumnos:
         if int(alumno.legajo) == int(user["legajo"]):
             return True
     return False
 
-def check_new_user(user, orm=ORM):
+def check_new_user(user):
     """Verifica que los datos recibidos son correctos para crear un nuevo usuario"""
 
     errors = {}
@@ -67,7 +53,7 @@ def check_new_user(user, orm=ORM):
         except KeyError:
             continue
 
-    errors["usuario"] = "Legajo ya registrado" if user_exists(user, orm=orm) else None
+    errors["usuario"] = "Legajo ya registrado" if user_exists(user) else None
 
     return {k:v for k, v in errors.items() if v}
 
@@ -90,21 +76,20 @@ def post():
     if not has_errors(errors):
         Logger.info("USUARIO VALIDO - CREAR!")
         alumno = Alumno.from_dict(user)
-        ORM.create(alumno)
+        get_orm().create(alumno)
         Logger.info(f"Usuario creado con éxito [{alumno}]")
-        print(template.render(user_created=True))
+        print_template(template.render(user_created=True))
     else:
         Logger.info("USUARIO NO ES VALIDO - NO CREAR :(")
-        print(template.render(FIELD_CONSTRAINTS, errors=errors, user=user))
+        print_template(template.render(FIELD_CONSTRAINTS, errors=errors, user=user))
 
 
 def get():
     """Devolver la página correspondiente"""
     template = get_template("signup.html")
-    print(template.render(FIELD_CONSTRAINTS))
+    print_template(template.render(FIELD_CONSTRAINTS))
 
 def main():
-    print_headers()
     req_method = os.getenv("REQUEST_METHOD")
     Logger.info("EL METODO ES [{}]".format(req_method))
     if req_method == "GET":
