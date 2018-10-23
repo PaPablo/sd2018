@@ -21,15 +21,16 @@ class ORMAlumnos(ORM):
 
         return Alumno.from_row(alumno)
 
+    def get_all(self):
+        return [Alumno.from_row(row) for row in super().get_all()]
+
     def create(self, alumno):
         """Guarda un nuevo alumno en la BD"""
         cur = self.conn.cursor()
 
-        query = "INSERT INTO {} VALUES (?,?,?,?,?)".format(
-            self.table
-        ), tuple(alumno.as_dict().values())
+        query = "INSERT INTO {} VALUES (?,?,?,?,?)".format(self.table)
 
-        cur.execute(query)
+        cur.execute(query, tuple(alumno.__dict__.values()))
         cur.close()
         self.conn.commit()
 
@@ -37,7 +38,11 @@ class ORMAlumnos(ORM):
         """Actualiza un alumno existente en la BD"""
         cur = self.conn.cursor()
         fields = []
-        for k, v in alumno.as_dict().items():
+        # COPIAMOS los campos del alumno
+        alumno_fields = alumno.__dict__.copy()
+        # Remover el campo de PK
+        alumno_fields.pop(self.PK_FIELD)
+        for k, v in alumno_fields.items():
             fields.append("{}='{}'".format(k, v))
 
         query = "UPDATE {table} SET {update_query} WHERE {pk_field} = {pk}".format(
@@ -47,7 +52,6 @@ class ORMAlumnos(ORM):
             pk=getattr(alumno, self.PK_FIELD)
         )
 
-        #TODO: OJO QUE ESTARÍA PISANDO CLAVES AL MODIFICAR
         cur.execute(query)
 
         cur.close()
