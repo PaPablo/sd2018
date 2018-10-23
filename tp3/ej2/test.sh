@@ -1,3 +1,3 @@
 #!/bin/bash
 
-env python3 -m unittest discover cgi-bin/
+env python3 -m unittest discover cgi-bin/ -v
