@@ -685,5 +685,8 @@ TSWLatexianTemp*
 # glossaries
 *.glstex
 
+# Jupyter
+.ipynb_checkpoints/
+
 
 # End of https://www.gitignore.io/api/latex
