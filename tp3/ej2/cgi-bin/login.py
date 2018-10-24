@@ -4,10 +4,10 @@ import jinja2
 import os
 import cgi
 from datetime import datetime
-from http.cookies import SimpleCookie
 
 from utils.utils import print_template, get_template, get_dict_from_fieldstorage
 from utils.logger import Logger
+from session.session import set_auth_cookie
 from db.get_orm import get_orm
 from models.alumno import FIELD_CONSTRAINTS
 
@@ -26,7 +26,10 @@ def post():
         pass
     if correct_login:
         Logger.info("CREDENCIALES VÁLIDAS => LOGIN :)")
-        return(template.render(is_logged_in=True, user=alumno))
+        cookie = set_auth_cookie("SD-CGI", "localhost", user["legajo"], user["password"])
+        print(cookie)
+        Logger.info(f"COOKIE => {cookie}")
+        return(template.render(is_logged_in=True, alumno=alumno))
     else:
         Logger.info("CREDENCIALES INVÁLIDAS => NOOOO LOGIN D:")
         errors = {"usuario": "Usuario o contraseña inválidos"}
