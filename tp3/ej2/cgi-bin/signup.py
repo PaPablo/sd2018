@@ -78,24 +78,24 @@ def post():
         alumno = Alumno.from_dict(user)
         get_orm().create(alumno)
         Logger.info(f"Usuario creado con éxito [{alumno}]")
-        print_template(template.render(user_created=True))
+        return template.render(user_created=True)
     else:
         Logger.info("USUARIO NO ES VALIDO - NO CREAR :(")
-        print_template(template.render(FIELD_CONSTRAINTS, errors=errors, user=user))
+        return template.render(FIELD_CONSTRAINTS, errors=errors, user=user)
 
 
 def get():
     """Devolver la página correspondiente"""
     template = get_template("signup.html")
-    print_template(template.render(FIELD_CONSTRAINTS))
+    return template.render(FIELD_CONSTRAINTS)
 
 def main():
     req_method = os.getenv("REQUEST_METHOD")
     Logger.info("EL METODO ES [{}]".format(req_method))
     if req_method == "GET":
-        return get()
+        print_template(get())
     elif req_method == "POST":
-        return post()
+        print_template(post())
 
 if __name__ == "__main__":
     main()
