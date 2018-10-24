@@ -19,6 +19,11 @@ class Alumno(object):
         return f"Alumno(\
 {self.legajo}, {self.nombre}, {self.sexo}, {self.edad}, {self.password})"
 
+    def are_credentials_valid(self, form):
+        """Verifica que las credenciales sean de un alumno registrado"""
+
+        return self.password == form.get("password", None)
+
     @classmethod
     def from_row(cls, row):
         """Devuelve un Alumno a partir de una tupla"""
