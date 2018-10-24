@@ -23,8 +23,8 @@
           </ul>
         </nav>
         <div id="login-status">
-          {% if user is defined and user is not none %}
-            <span><i class="fas fa-user"></i> {{user["username"]}}</span>
+          {% if is_logged_in and user is defined and user is not none %}
+            <span><i class="fas fa-user"></i> {{user["nombre"]}}</span>
             <a href="/cgi-bin/logout.py"><i class="fas fa-sign-out-alt"></i> Salir</a>
           {% else %}
             <a href="/cgi-bin/signup.py"><i class="fas fa-user-plus"></i> Registrarse</a>

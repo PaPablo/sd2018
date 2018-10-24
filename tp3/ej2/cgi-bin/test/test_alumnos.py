@@ -30,3 +30,12 @@ class TestAlumnos(unittest.TestCase):
         alumno = Alumno.from_dict(alumno_dict)
         self.assertIsNotNone(alumno)
         self.assertEqual(self.alumno.nombre, alumno.nombre)
+
+    def test_valida_contrasenia(self):
+        password = sha256("UnaPasswordMuySegura".encode()).hexdigest()
+        alumno = {"legajo": 1, "password": password}
+        self.assertTrue(self.alumno.are_credentials_valid(alumno))
+        password = sha256("OtraPassword".encode()).hexdigest()
+        alumno = {"legajo": 1, "password": password}
+        self.assertFalse(self.alumno.are_credentials_valid(alumno))
+
