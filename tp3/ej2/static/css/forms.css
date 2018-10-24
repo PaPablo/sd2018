@@ -1,15 +1,15 @@
-#signup-container {
+#form-container {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
-#user-created {
+#form-success {
   color: #4BB543;
   margin: 0 auto;
 }
 
-#signup-form {
+form {
   margin: 0 auto;
   border: 1px solid gray;
   border-radius: 3px;

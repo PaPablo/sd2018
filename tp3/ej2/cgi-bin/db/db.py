@@ -18,6 +18,7 @@ class Connection:
 
     @staticmethod
     def _reset():
+        Connection.__conn.close()
         Connection.__conn = None
 
     def __init__(self, db_name):
