@@ -7,7 +7,14 @@ import jinja2
 from utils.utils import print_template, get_template, get_dict_from_fieldstorage
 from utils.logger import Logger
 from models.alumno import Alumno, FIELD_CONSTRAINTS
+from session.session import is_authenticated
 from db.get_orm import get_orm
+
+def get_alumno_from_cookie():
+    user = is_authenticated("SD-CGI")
+    alumno = get_orm().get_by_id(user["legajo"]) if user else None
+    Logger.info(f"get_alumno_from_cookie => {alumno}")
+    return alumno
 
 def get_user_constraints():
     """Devuelve las distintas condiciones que tienen que cumplir los campos de un nuevo usuario"""
@@ -73,21 +80,34 @@ def post():
 
     errors = check_new_user(user)
     Logger.info("errors => {}".format(errors))
+    logged_alumno = get_alumno_from_cookie()
     if not has_errors(errors):
         Logger.info("USUARIO VALIDO - CREAR!")
         alumno = Alumno.from_dict(user)
         get_orm().create(alumno)
         Logger.info(f"Usuario creado con éxito [{alumno}]")
-        return template.render(user_created=True)
+        return template.render(
+            user_created=True,
+            is_logged_in=logged_alumno is not None,
+            alumno=logged_alumno)
     else:
         Logger.info("USUARIO NO ES VALIDO - NO CREAR :(")
-        return template.render(FIELD_CONSTRAINTS, errors=errors, user=user)
+        return template.render(
+            FIELD_CONSTRAINTS,
+            errors=errors,
+            user=user,
+            is_logged_in=logged_alumno is not None,
+            alumno=logged_alumno)
 
 
 def get():
     """Devolver la página correspondiente"""
     template = get_template("signup.html")
-    return template.render(FIELD_CONSTRAINTS)
+    logged_alumno = get_alumno_from_cookie()
+    return template.render(
+        FIELD_CONSTRAINTS,
+        is_logged_in=logged_alumno is not None,
+        alumno=logged_alumno)
 
 def main():
     req_method = os.getenv("REQUEST_METHOD")
