@@ -20,8 +20,11 @@ def main():
         print(logout())
         is_logged_in = False
 
-    print_template(template.render(is_logged_in=is_logged_in,
-                                   alumno=logged_alumno))
+    alumnos = get_orm().get_all()
+    print_template(template.render(
+        is_logged_in=is_logged_in,
+        alumnos=alumnos,
+        alumno=logged_alumno))
 
 
 if __name__ == "__main__":
