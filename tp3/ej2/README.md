@@ -1,7 +1,13 @@
-- Para levantar el servidor, correr:
+1. Instalar las dependencias necesarias con:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Levantar el servidor, correr:
 
 ```bash
 ./run.sh
 ```
 
-En un navegador, ingresar la dirección `localhost:8080`
+3. En un navegador, ingresar la dirección `localhost:8080`
