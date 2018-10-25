@@ -103,6 +103,8 @@ def post():
 def get():
     """Devolver la página correspondiente"""
     template = get_template("signup.html")
+    # Si está logueado, habría que mostrar el formulario con los
+    # datos del alumno para modificar
     logged_alumno = get_alumno_from_cookie()
     return template.render(
         FIELD_CONSTRAINTS,
