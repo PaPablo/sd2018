@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Hola {{user["username"]}}!</h1>
+{% if alumno is not none %}
+<h1>Hola {{alumno.nombre}}!</h1>
+{% else %}
+<h1>No iniciaste sesión</h1>
+{% endif %}
 
 {%endblock%}
