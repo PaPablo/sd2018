@@ -9,4 +9,4 @@ function ctrl_c() {
 }
 
 ./proxy.py &
-env python3 -m http.server --cgi 8081
+npm --prefix static/js run build && env python3 -m http.server --cgi 8081
