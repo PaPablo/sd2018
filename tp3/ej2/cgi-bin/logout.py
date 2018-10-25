@@ -7,6 +7,7 @@ from session.session import remove_auth_cookie
 
 def main():
 
+    #Remover cookie
     cookie = remove_auth_cookie("SD-CGI", "localhost")
     Logger.info(f"LOGOUT COOKIE => {cookie}")
     print(cookie)

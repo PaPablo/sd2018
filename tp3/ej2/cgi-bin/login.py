@@ -26,6 +26,7 @@ def post():
         pass
     if correct_login:
         Logger.info("CREDENCIALES VÁLIDAS => LOGIN :)")
+        #Generar cookie de autenticación
         cookie = set_auth_cookie("SD-CGI", "localhost", user["legajo"], user["password"])
         print(cookie)
         Logger.info(f"COOKIE => {cookie}")
