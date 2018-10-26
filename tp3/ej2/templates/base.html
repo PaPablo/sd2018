@@ -7,7 +7,7 @@
     {% block styles%}
     <link rel="stylesheet" href="/static/css/style.css" media="all">
     <link rel="stylesheet" href="/static/css/vendors/fontawesome/all.css" type="text/css" media="all" />
-    {%endblock%}
+    {% endblock styles%}
     <title>CGI</title>
   </head>
   <body>
@@ -35,7 +35,7 @@
       <section class="content-container" id="main-content">
         <div class="content">
           {% block content %}
-          {%endblock%}
+          {% endblock content %}
         </div>
       </section>
 
@@ -43,7 +43,7 @@
         <p>Sistemas Distribuidos - 2018</p>
       </footer>
 
-      {% block scripts%}
-      {%endblock%}
+      {% block scripts %}
+      {% endblock scripts %}
   </body>
 </html>

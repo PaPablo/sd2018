@@ -33,18 +33,16 @@
 {% else %}
 <h1>No iniciaste sesión</h1>
 {% endif %}
+{% endblock content %}
 
-  {% block scripts %}
-  <script type="text/javascript" charset="utf8" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-  <script charset="utf-8">
-  //window.onload = () => {
-  //  $('#tabla-alumnos').DataTable();
-  //};
-  $(document).ready( function () {
-      console.log("LA CTM ALL BOYTS");
-      $('#tabla-alumnos').DataTable({ responsive: true });
-  } );
-  </script>
-  {%endblock%}
-{%endblock%}
+{% block scripts %}
+<script src="/static/js/dist/index.js"></script>
+<!--<script type="text/javascript" charset="utf8" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+<!--<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>-->
+<!--<script charset="utf-8">-->
+<!--$(document).ready( function () {-->
+    <!--console.log("LA CTM ALL BOYTS");-->
+    <!--$('#tabla-alumnos').DataTable({ responsive: true });-->
+<!--} );-->
+<!--</script>-->
+{% endblock scripts %}
