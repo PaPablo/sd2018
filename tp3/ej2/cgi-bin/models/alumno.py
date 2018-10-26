@@ -19,6 +19,11 @@ class Alumno(object):
         return f"Alumno(\
 {self.legajo}, {self.nombre}, {self.sexo}, {self.edad}, {self.password})"
 
+    def update(self, dikt):
+        """Actualiza los datos de un alumno desde un diccionario"""
+        for k, v in dikt.items():
+            setattr(self, k, v)
+
     def are_credentials_valid(self, form):
         """Verifica que las credenciales sean de un alumno registrado"""
 

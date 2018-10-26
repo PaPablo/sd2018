@@ -3,14 +3,14 @@
 import jinja2
 from utils.utils import get_template, print_template
 from utils.logger import Logger
-from session.session import remove_auth_cookie
+from session.login import logout
 
 def main():
 
     #Remover cookie
-    cookie = remove_auth_cookie("SD-CGI", "localhost")
-    Logger.info(f"LOGOUT COOKIE => {cookie}")
-    print(cookie)
+    logout_cookie = logout()
+    Logger.info(f"LOGOUT COOKIE => {logout_cookie}")
+    print(logout_cookie)
     template = get_template("logout.html")
     print_template(template.render())
 

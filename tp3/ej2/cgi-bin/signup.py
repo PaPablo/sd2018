@@ -11,6 +11,7 @@ from session.session import is_authenticated
 from db.get_orm import get_orm
 
 def get_alumno_from_cookie():
+    "Devuelve el alumno a partir de la cookie o None"
     user = is_authenticated("SD-CGI")
     alumno = get_orm().get_by_id(user["legajo"]) if user else None
     Logger.info(f"get_alumno_from_cookie => {alumno}")
@@ -67,46 +68,64 @@ def check_new_user(user):
 def has_errors(errors):
     return len(errors.items()) > 0
 
+def is_update(alumno):
+    return alumno is not None
+
 def post():
     """Crear usuario"""
 
     # Acá hay que chequear que los datos que vienen del formulario
     # sean correctos (cumplen con las condiciones necesarias)
+    # Acá en el POST también hay que verificar si el usuario está logueado,
+    # porque en tal caso, los datos que vengan son para modificar,
+    # no para crear uno nuevo
     form = cgi.FieldStorage()
     user = get_dict_from_fieldstorage(form)
+    logged_alumno = get_alumno_from_cookie()
     Logger.info(user)
-
     template = get_template("signup.html")
 
     errors = check_new_user(user)
+
+    if is_update(logged_alumno):
+        Logger.info("USUARIO PARA MODIFICAR!")
+        Logger.info(f"ALUMNO EXISTENTE => {logged_alumno}")
+        Logger.info(f"DATOS NUEVOS => {user}")
+        logged_alumno.update(user)
+        get_orm().update(logged_alumno)
+        return template.render(
+            alumno_updated=True,
+            alumno=logged_alumno)
+
     Logger.info("errors => {}".format(errors))
-    logged_alumno = get_alumno_from_cookie()
+
     if not has_errors(errors):
         Logger.info("USUARIO VALIDO - CREAR!")
         alumno = Alumno.from_dict(user)
         get_orm().create(alumno)
         Logger.info(f"Usuario creado con éxito [{alumno}]")
         return template.render(
-            user_created=True,
-            is_logged_in=logged_alumno is not None,
+            alumno_created=True,
             alumno=logged_alumno)
-    else:
-        Logger.info("USUARIO NO ES VALIDO - NO CREAR :(")
-        return template.render(
-            FIELD_CONSTRAINTS,
-            errors=errors,
-            user=user,
-            is_logged_in=logged_alumno is not None,
-            alumno=logged_alumno)
+
+    # Tiene errores
+    Logger.info("USUARIO NO ES VALIDO - NO CREAR :(")
+    return template.render(
+        FIELD_CONSTRAINTS,
+        errors=errors,
+        user=user,
+        alumno=logged_alumno)
 
 
 def get():
     """Devolver la página correspondiente"""
     template = get_template("signup.html")
+    # Si está logueado, habría que mostrar el formulario con los
+    # datos del alumno para modificar
     logged_alumno = get_alumno_from_cookie()
     return template.render(
         FIELD_CONSTRAINTS,
-        is_logged_in=logged_alumno is not None,
+        is_update=logged_alumno is not None,
         alumno=logged_alumno)
 
 def main():

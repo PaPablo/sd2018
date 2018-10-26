@@ -7,7 +7,7 @@ from datetime import datetime
 
 from utils.utils import print_template, get_template, get_dict_from_fieldstorage
 from utils.logger import Logger
-from session.session import set_auth_cookie
+from session.login import login
 from db.get_orm import get_orm
 from models.alumno import FIELD_CONSTRAINTS
 
@@ -24,12 +24,13 @@ def post():
         correct_login = alumno.are_credentials_valid(user)
     except AttributeError as e:
         pass
+
     if correct_login:
         Logger.info("CREDENCIALES VÁLIDAS => LOGIN :)")
         #Generar cookie de autenticación
-        cookie = set_auth_cookie("SD-CGI", "localhost", user["legajo"], user["password"])
-        print(cookie)
-        Logger.info(f"COOKIE => {cookie}")
+        login_cookie = login(user["legajo"], user["password"])
+        print(login_cookie)
+        Logger.info(f"COOKIE => {login_cookie}")
         return(template.render(is_logged_in=True, alumno=alumno))
     else:
         Logger.info("CREDENCIALES INVÁLIDAS => NOOOO LOGIN D:")
