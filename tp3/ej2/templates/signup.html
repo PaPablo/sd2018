@@ -27,9 +27,14 @@
     </ul>
   {% endif %}
 
-  {% if user_created %}
+  {% if alumno_created %}
     <div id="form-success">
-      <h1>Usuario creado con éxito <i class="fas fa-check"></i></h1>
+      <h1>Alumno creado con éxito <i class="fas fa-check"></i></h1>
+      <a href="/cgi-bin/index.py">Volver al inicio</a>
+    </div>
+  {% elif alumno_updated %}
+    <div id="form-success">
+      <h1>Alumno modificado con éxito <i class="fas fa-check"></i></h1>
       <a href="/cgi-bin/index.py">Volver al inicio</a>
     </div>
   {% else %}
@@ -38,48 +43,60 @@
     <input 
       required
       type="text" 
-      {% if user and user["nombre"] %}
-      value="{{user["nombre"]}}"
-      {% endif %}
-      maxlength="{{max_nombre}}" 
+      value="{{alumno["nombre"]|default("")}}"
+      maxlength="{{max_nombre|default(-1)}}" 
       placeholder="Ingrese su nombre y su apellido, por favor" 
       name="nombre" 
       id="nombre"/>
-    <span class="field-description">{{max_nombre}} caracteres como máximo</span>
+    <span class="field-description">{{max_nombre|default(-1)}} caracteres como máximo</span>
     <hr>
     <label for="legajo">Número de legajo</label>
     <input 
       required
       type="number" 
-      {% if user and user["legajo"] %}
-      value="{{user["legajo"]}}"
-      {% endif %}
+      value="{{alumno["legajo"]|default("")}}"
       min="1"
       max="99999999"
       placeholder="Ingrese su número de legajo, por favor" 
       name="legajo" 
+      {% if is_update is defined and is_update %}
+      disabled 
+      {% endif %}
       id="legajo"/>
-    <span class="field-description">{{max_legajo}} dígitos como máximo</span>
+    <span class="field-description">{{max_legajo|default(-1)}} dígitos como máximo</span>
     <hr>
     <label for="sexo">Sexo</label>
     <select id="sexo" name="sexo" required id="sexo">
+      {% if alumno is defined %}
+      <option 
+      value="h"
+      {% if alumno["sexo"] == "h" %}
+      selected 
+      {% endif %}>
+      Hombre</option>
+      <option 
+      value="m"
+      {% if alumno["sexo"] == "m" %}
+      selected 
+      {% endif %}>
+      Mujer</option>
+      {% else %}
       <option value="h">Hombre</option>
       <option value="m">Mujer</option>
+      {% endif %}
     </select>
     <hr>
     <label for="edad">Edad</label>
     <input 
       required
       type="number" 
-      {% if user and user["edad"] %}
-      value="{{user["edad"]}}"
-      {% endif %}
+      value="{{alumno["edad"]|default("")}}"
       min="1"
       max="99"
       placeholder="Ingrese su edad, por favor" 
       name="edad" 
       id="edad"/>
-    <span class="field-description">{{max_edad}} caracteres como máximo</span>
+    <span class="field-description">{{max_edad|default(-1)}} caracteres como máximo</span>
     <hr>
     <label for="password">Contraseña</label>
     <input 
