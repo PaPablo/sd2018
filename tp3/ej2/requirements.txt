@@ -1,2 +1,10 @@
+cssselect==1.0.3
+docopt==0.6.2
+greenlet==0.4.15
 Jinja2==2.10
+lxml==4.2.5
 MarkupSafe==1.0
+msgpack==0.5.6
+neovim==0.2.6
+pquery==1.4
+pyquery==1.4.0
