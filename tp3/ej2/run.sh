@@ -11,5 +11,10 @@ function ctrl_c() {
     kill $PID
 }
 
+if [ ! -d "./static/js/node_modules/" ]; then
+    echo "*** NO node_modules. INSTALLING ***"
+    npm --prefix static/js install
+fi
+
 ./proxy.py &
 npm --prefix static/js run build && env python3 -m http.server --cgi 8081
