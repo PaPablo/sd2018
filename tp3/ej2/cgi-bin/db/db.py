@@ -29,7 +29,10 @@ class Connection:
         _conn = sqlite3.connect(db_name)
         for sql_script in glob.iglob("{}/*.sql".format(self.SCHEMA_DIR)):
             with open(sql_script, "r") as f:
-                query = f.read()
-                _conn.execute(query)
+                try:
+                    query = f.read()
+                    _conn.executescript(query)
+                except sqlite3.IntegrityError as e:
+                    pass
         _conn.commit()
         Connection.__conn = _conn

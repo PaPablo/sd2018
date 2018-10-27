@@ -1,9 +1,9 @@
-import { main } from "./main";
-
-import { sha256 } from "js-sha256";
+import $ from "jquery";
+import dt from "datatables.net";
+import dtConfig from "./dt-config.js";
 
 window.onload = () => {
-  console.log("eeesa el build");
-  console.log("juaza");
-  console.log(sha256("unaPassword"));
+  dt();
+  console.log("/static/js/dist/index.js");
+  $("#tabla-alumnos").DataTable(dtConfig);
 };
