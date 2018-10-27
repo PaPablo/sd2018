@@ -35,9 +35,9 @@ class TestORMAlumnos(unittest.TestCase):
     def test_el_testcase_anda(self):
         self.assertEqual(1, 1)
 
-    def test_la_BD_esta_vacia(self):
+    def test_la_BD_no_esta_vacia(self):
         alumnos = self.cur.execute("SELECT * FROM Alumno").fetchall()
-        self.assertEqual(len(alumnos), 0)
+        self.assertGreater(len(alumnos), 0)
 
     def test_alumno_se_carga_correctamente(self):
         self.create_alumnos()
@@ -47,6 +47,7 @@ class TestORMAlumnos(unittest.TestCase):
     def test_orm_devuelve_alumno(self):
         self.create_alumnos()
         alumno = self.orm.get_by_id(1)
+        self.assertIsInstance(alumno, Alumno)
         self.assertEqual(alumno.nombre, "Juancho Pancho")
 
     def test_orm_actualiza_correctamente(self):
