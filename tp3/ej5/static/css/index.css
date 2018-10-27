@@ -1,0 +1,57 @@
+.container {
+	display: flex;
+	flex-direction: column;
+  min-height: 80vh;
+}
+
+.box {
+  color: #182748;
+  font-family: Monaco;
+  display: flex;
+  flex-direction: column;
+}
+
+.box-2 {
+  background-color: #FAF8F7;
+  flex: 1;
+}
+
+.box-3 {
+  height: 100px;
+  background-color: #E29753;
+}	
+
+.box-3 form {
+  height: 100%;
+  margin: 5px 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.box-3 form input  {
+  width: 100%;
+  background-color: #FAF8F7;
+}
+.box-3 form button[type="submit"]  {
+}
+
+	.main-pane {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+    height: 100%;
+		flex-wrap: nowrap;
+	}
+	
+	.messages {
+		flex: 1;
+		max-height: 70vh;
+		overflow-x: hidden;
+	}
+	
+	.users {
+		background-color: #A4645A;
+		height: 100%;
+    min-width: 30vh;
+	}
+	

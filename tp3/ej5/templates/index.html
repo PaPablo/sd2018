@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{super()}} 
+<link rel="stylesheet" href="/static/css/index.css" media="all">
+{% endblock styles %}
+{% block content %}
+  <div id="chat" class="container">
+    <div class="box box-2">
+      <div class="main-pane">
+        <div class="messages">
+          <ul>
+            {% for msg in messages%}
+            <li>{{msg}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="users">
+          <ul>
+            <li>User 1</li>
+            <li>User 2</li>
+            <li>User 3</li>
+            <li>User 4</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="chat-box" class="box box-3">
+      <form method="POST">
+        <input type="text" name="message">
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

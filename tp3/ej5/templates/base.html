@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    {% block styles %}
+    <link rel="stylesheet" href="/static/css/base.css" media="all">
+    {% endblock styles %}
+    <title>Chat CGI</title>
+  </head>
+  <body>
+    <div id="main-content">
+      {% block content %}
+      {% endblock content %}
+    </div>
+
+    {% block scripts %}
+    {% endblock scripts %}
+  </body>
+</html>
