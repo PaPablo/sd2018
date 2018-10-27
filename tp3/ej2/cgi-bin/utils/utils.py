@@ -6,6 +6,7 @@ def get_template(template_name, templates_dir="./templates"):
     import jinja2
     loader = jinja2.FileSystemLoader(templates_dir)
     ctx = jinja2.Environment(loader=loader)
+    ctx.filters["display_sex"] = lambda s: "Hombre" if s == "h" else "Mujer"
     return ctx.get_template(template_name)
 
 def get_dict_from_fieldstorage(data):

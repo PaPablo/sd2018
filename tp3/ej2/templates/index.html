@@ -2,13 +2,45 @@
 
 {% block styles %}
 {{super()}} 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+<!--DataTables' styles-->
+<link rel="stylesheet" type="text/css" href="/static/js/node_modules/datatables.net-dt/css/jquery.dataTables.min.css" media="all">
+<link rel="stylesheet" href="/static/css/index.css" media="all">
 {%endblock%}
 
 {% block content %}
 {% if alumno is not none %}
-<h1>Hola {{alumno.nombre}}!</h1>
+<h1>Alumnos registrados</h1>
   {% if alumnos %}
+  <form class="form-inline" action="/cgi-bin/index.py">
+    <label for="nombre">Nombre:</label>
+    <input 
+    type="text" 
+    id="nombre" 
+    placeholder="Nombre y apellido" 
+    name="filtro-nombre">
+    <label for="legajo">Legajo:</label>
+    <input 
+    type="text" 
+    id="legajo" 
+    placeholder="MIX-MAX" 
+    name="filtro-legajo">
+    <label for="sexo">Sexo:</label>
+    <select id="sexo" name="filtro-sexo">
+      <option value=""></option>
+      <option value="h">Hombre</option>
+      <option value="m">Mujer</option>
+    </select>
+    <label for="edad">Edad:</label>
+    <input 
+    type="text" 
+    id="edad" 
+    placeholder="MIN-MAX" 
+    name="filtro-edad">
+    <button type="submit">Filtrar</button>
+  </form> 
+  <div id="count-alumnos">
+    Cantidad de alumnos mostrados: <b>{{alumnos | length}}</b>
+  </div>
   <table id="tabla-alumnos" class="display" style="">
     <thead>
       <tr>
@@ -23,12 +55,16 @@
       <tr>
         <td>{{alum.nombre}}</td>
         <td>{{alum.legajo}}</td>
-        <td>{{alum.sexo}}</td>
+        <td>{{alum.sexo | display_sex}}</td>
         <td>{{alum.edad}}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  {% else %}
+  <div id="empty-alumnos">
+    <h1>No hay alumnos para mostrar</h1>
+  </div>
   {% endif %}
 {% else %}
 <h1>No iniciaste sesión</h1>
@@ -37,12 +73,4 @@
 
 {% block scripts %}
 <script src="/static/js/dist/index.js"></script>
-<!--<script type="text/javascript" charset="utf8" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
-<!--<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>-->
-<!--<script charset="utf-8">-->
-<!--$(document).ready( function () {-->
-    <!--console.log("LA CTM ALL BOYTS");-->
-    <!--$('#tabla-alumnos').DataTable({ responsive: true });-->
-<!--} );-->
-<!--</script>-->
 {% endblock scripts %}
