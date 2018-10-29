@@ -6,26 +6,29 @@
 {% endblock styles %}
 {% block content %}
   <div id="chat" class="container">
-    <div class="box box-2">
+    <div class="header">
+      <a href="#"><i class="fas fa-user"></i> {{user}}</a>
+      <a href="?logout=true"><i class="fas fa-door-closed"></i> Salir</a>
+    </div>
+    <div class="box main-box">
       <div class="main-pane">
         <div class="messages">
           <ul>
             {% for msg in messages%}
-            <li>{{msg}}</li>
+            <li><b>{{msg["user"]}}</b>: {{msg["message"]}}</li>
             {% endfor %}
           </ul>
         </div>
         <div class="users">
           <ul>
-            <li>User 1</li>
-            <li>User 2</li>
-            <li>User 3</li>
-            <li>User 4</li>
+            {% for u in users %}
+            <li>{{u}}</li>
+            {% endfor %}
           </ul>
         </div>
       </div>
     </div>
-    <div id="chat-box" class="box box-3">
+    <div id="chat-box" class="box input-box">
       <form method="POST">
         <input type="text" name="message">
         <button type="submit">Enviar</button>

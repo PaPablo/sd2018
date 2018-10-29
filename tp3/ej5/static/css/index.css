@@ -4,35 +4,50 @@
   min-height: 80vh;
 }
 
+.header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  min-height: 80px;
+  background-color: #E29753;
+  justify-content: flex-end;
+  margin-bottom: 3px;
+}
+
+.header a {
+  line-height: 80px;
+  padding-right: 20px;
+  font-size: 1.25em;
+}
+
 .box {
   color: #182748;
-  font-family: Monaco;
   display: flex;
   flex-direction: column;
 }
 
-.box-2 {
+.main-box {
   background-color: #FAF8F7;
   flex: 1;
 }
 
-.box-3 {
+.input-box {
   height: 100px;
   background-color: #E29753;
 }	
 
-.box-3 form {
+.input-box form {
   height: 100%;
   margin: 5px 5px;
   display: flex;
   justify-content: space-between;
 }
 
-.box-3 form input  {
+.input-box form input  {
   width: 100%;
   background-color: #FAF8F7;
 }
-.box-3 form button[type="submit"]  {
+.input-box form button[type="submit"]  {
 }
 
 	.main-pane {

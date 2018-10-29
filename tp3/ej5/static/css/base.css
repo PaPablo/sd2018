@@ -1,4 +1,5 @@
 body {
+  font-family: Monaco;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -8,7 +9,6 @@ body {
 
 #main-content {
   width: 95%;
-  height: 100%;
   margin: 10px auto;
   border: 2px solid #182748;
   border-radius: 5px;
