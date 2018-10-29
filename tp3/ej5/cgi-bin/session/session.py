@@ -1,7 +1,6 @@
 from os import environ
 from datetime import datetime, timedelta
 from http.cookies import SimpleCookie
-import logging
 
 # Sacado de acá:
 # https://recursospython.com/codigos-de-fuente/cookies-autenticacion-cgi/
@@ -37,7 +36,6 @@ def get_auth_cookies(name):
     # Check if there's any cookie available.
     if "HTTP_COOKIE" in environ:
         cookie = SimpleCookie(environ["HTTP_COOKIE"])
-        logging.info(f"cookie => {cookie}")
         # Look for our cookie
         if name in cookie:
             # Maybe it's empty

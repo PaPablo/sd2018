@@ -7,20 +7,20 @@
 {% block content %}
   <div id="chat" class="container">
     <div class="header">
-      <a href="#"><i class="fas fa-user"></i> {{user}}</a>
+      <a href="#"><i class="fas fa-user"></i> <span id="username">{{user}}</span></a>
       <a href="?logout=true"><i class="fas fa-door-closed"></i> Salir</a>
     </div>
     <div class="box main-box">
       <div class="main-pane">
         <div class="messages">
-          <ul>
+          <ul id="messages-list">
             {% for msg in messages%}
             <li><b>{{msg["user"]}}</b>: {{msg["message"]}}</li>
             {% endfor %}
           </ul>
         </div>
         <div class="users">
-          <ul>
+          <ul id="users-list">
             {% for u in users %}
             <li>{{u}}</li>
             {% endfor %}
@@ -29,10 +29,14 @@
       </div>
     </div>
     <div id="chat-box" class="box input-box">
-      <form method="POST">
+      <form method="POST" id="message-form">
         <input type="text" name="message">
-        <button type="submit">Enviar</button>
+        <button id="send-button" type="submit">Enviar</button>
       </form>
     </div>
   </div>
 {% endblock content %}
+{% block scripts %}
+{{super()}} 
+<script src="/static/js/dist/index.js"></script>
+{% endblock scripts %}
