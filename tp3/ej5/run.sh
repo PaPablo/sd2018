@@ -1,3 +1,3 @@
 #!/bin/bash
 
-env python -m http.server --cgi
+npm --prefix static/js run build && env python -m http.server --cgi
