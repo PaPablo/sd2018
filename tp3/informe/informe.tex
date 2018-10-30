@@ -56,6 +56,94 @@ Content-type: text/html
 
 Comparando la primer línea de cada respueta, se puede ver que la del servidor CGI indica que la respuesta a continuación es lo que devolvió el \emph{script} ejecutado, revelando así que es un servidor CGI.
 
+\section{Ejercicio 2 - Aplicación de alumnos con CGI}
+
+La aplicación desarrollada para el almacenamiento y consulta de los alumnos cuenta con las siguientes características:
+
+\begin{itemize}
+    \item Registro de un nuevo alumno
+    \item Ingreso al sistema, con el número de legajo y contraseña
+    \item Modificación de los datos personales
+    \item Listado de los alumnos registrados
+    \item Consulta por nombre, legajo (puede ser un rango o un valor específico), sexo, y edad (puede ser un rango o un valor específico)
+\end{itemize}
+
+Fue desarrollada con Python3 para los \emph{scripts} de CGI, utilizando una base de datos \emph{SQLite3} (librería estándar de Python) y JavaScript para darle un mayor comportamiento a las páginas devueltas por los \emph{scripts} de CGI.
+
+\subsection{Requisitos}
+
+Para correrla, como medida previa es necesario contar con los siguientes programas instalados:
+
+\begin{itemize}
+    \item \textbf{Python3} - lenguaje con el cual se desarrollaron los \emph{scripts} CGI  
+    \item \textbf{pip} - gestor de paquetes de Python 
+    \item \textbf{npm} - gestor de paquetes de JavaScript
+\end{itemize}
+
+\subsection{Cómo correrla}
+
+Simplemente se debe ingresar al directorio \dq{ej2/}, instalar las dependencias necesarias con el comando \texttt{pip install -r requirements.txt} y luego correr el \emph{script} \dq{run.sh} con el comando \texttt{./run.sh}. En un navegador (preferentemente Firefox), ingresar a la dirección \dq{localhost:8080}
+
+\subsection{\emph{Scripts} CGI}
+
+Se implementaron los siguientes \emph{scripts} CGI:
+
+\begin{itemize}
+    \item \textbf{cgi-bin/index.py}: página principal. Muestra la tabla de alumnos y los campos para filtrar una vez que se ingresó al sistema.
+    \item \textbf{cgi-bin/signup.py}: registro del alumno. Muestra un formulario para crear un nuevo alumno, haciendo controles de integridad de los datos (el largo del nombre no debe ser mayor a 70 caracteres, por ejemplo), y que el legajo no exista previamente.
+    \item \textbf{cgi-bin/login.py}: página con formulario para ingreso al sistema. Genera una \emph{cookie} de sesión para no tener que reingresar los datos sucesivamente. 
+    \item \textbf{cgi-bin/logout.py}: cierre de sesión. Invalida la \emph{cookie} generada al ingresar al sistema.
+\end{itemize}
+
+\subsection{Almacenamiento de alumnos}
+
+Como se comentaba al comienzo de la presente sección, la aplicación utiliza una base de datos \emph{SQLite3}. La cual cuenta con una única tabla \dq{Alumno}, cuya definición se puede encontrar en \dq{schema/Alumno.sql}
+
+\subsection{Generación de dinámica de HTML}
+
+En un primer momento, la ventaja de CGI frente a los servidores HTTP era la generación dinámica de páginas web, pudiendo encrustar en un bloque de código HTML el resultado de una consulta a una base de datos.
+
+Para la presente aplicación, en vez de imprimir el código HTMl directamente, se utilizó el \emph{motor de plantillas} de Python, \textbf{Jinja2}. Este permite definir \emph{templates}, que son estructuras HTML que reciben datos externos, con los cuales completar la página. Utiliza una sintaxis muy similar a la de Python, renderizando datos de forma condicional, iterando sobre listas, incluyendo otros \emph{templates}, y extenderlos. Las plantillas definidas para la aplicación se encuentran en el directorio \dq{templates}.
+
+Teniendo el motor de plantillas, se pudo renderizar la tabla presente en la página inicial de la aplicación. Cabe destacar que también se utilizaron las librerías de JavaScript, \textbf{JQuery} y \textbf{DataTables}, para la visualización de la tabla.  
+
+\section{Ejercicio 5 - Chat con CGI}
+
+A partir del servidor de chat implementado en C que se presentaba en el apunte de Ajax provisto por la cátedra, se implementó el mismo servidor en Python. Luego se fueron incluyendo el resto de las funcionalidades requeridas.
+
+A diferencia del ejercicio anterior, el chat utiliza funcionalidades de Ajax para enviar mensajes y actualizar la ventana principal, en vez de enviar un formulario y recargar la página.
+
+\subsection{Requisitos}
+
+Los mismos que la aplicación de la sección anterior
+
+\subsection{Cómo correrla}
+
+Esta aplicación no usa ninguna dependencia nueva de la anterior, por lo tanto se puede correr igual que la anterior. Etilizando el script \emph{run.sh}, se debe ejecutar con el comando \texttt{./run.sh} 
+
+\subsection{Almacenamiento del chat y usuarios}
+
+En este caso se obvió la base de datos y directamente se almacenó los mensajes intercambiados en el chat y los usuarios registrados en archivos de texto plano. Al igual que el servidor implementado en C, al abrir el archivo se intenta bloquearlo, para evitar condiciones de carrera y resultados inconsistentes. Para bloquear el recurso se utilizó el módulo de la librería estándar de Python \texttt{fcntl}. 
+
+\subsection{Actualización del chat}
+
+Tanto para el envío de un nuevo mensaje como para la actualización del chat y de los usuarios registrados, se utilizó Ajax. Se definió un intervalo de 2 segundos para ejecutar la actualización. \emph{Para ver el código JavaScript del chat, dirigirse al archivo ej5/static/js/src/chat.js}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
