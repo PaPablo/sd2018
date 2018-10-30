@@ -3,6 +3,7 @@
 import fcntl
 import cgi
 import os
+import time
 
 
 from utils.utils import get_template, print_headers
@@ -33,20 +34,26 @@ def get_messages_from_lines(lines, starting=0):
 def get_main_page(template_name="index.html", user=None,
                   new_msg=None, starting=0):
     """Devuelve la página del chat"""
-    with open(CHATFILE, "a+") as f:
-        # Bloquear archivo
-        if new_msg and user:
-            f.write(f"{user}: {new_msg}\n")
+    while True:
+        try:
+            with open(CHATFILE, "a+") as f:
+                # Bloquear archivo
+                if new_msg and user:
+                    f.write(f"{user}: {new_msg}\n")
 
-        f.seek(0)
-        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                f.seek(0)
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
-        messages = get_messages_from_lines(f.readlines(), starting=starting)
+                messages = get_messages_from_lines(
+                    f.readlines(), starting=starting)
 
-        # Liberar archivo
-        fcntl.flock(f, fcntl.LOCK_UN)
-        return get_template(template_name).render(
-            user=user, users=get_all_users(), messages=messages)
+                # Liberar archivo
+                fcntl.flock(f, fcntl.LOCK_UN)
+                return get_template(template_name).render(
+                    user=user, users=get_all_users(), messages=messages)
+        except BlockingIOError as e:
+            log(f"BLOQUEADO [{e}]")
+            time.sleep(0.1)
 
 def get_user_or_create(username):
     """Devuelve el usuario registrado en el archivo o lo crea si no existe"""
