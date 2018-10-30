@@ -1,4 +1,4 @@
-import { encodeObj } from "./utils";
+import { encodeObj, cleanInput, scrollToBottom } from "./utils";
 
 const REFRESH_INTERVAL = 1000 * 2;
 
@@ -12,17 +12,6 @@ const addMessage = ({username, message}) => {
   messagesUl.appendChild(newMessage);
 };
 
-const cleanInput = () => {
-  /* Limpia el input del chat */
-  const form = document.querySelector("#message-form");
-  const input = form.querySelector("input");
-  input.value = "";
-};
-
-const scrollToBottom = querySelector => {
-  const el = document.querySelector(querySelector);
-  el.scrollTop = el.scrollHeight;
-};
 
 const getMessage = () => {
   /* Recupera un mensaje del input del chat */
@@ -62,7 +51,7 @@ const onClickMessageSend = (evt) => {
     .then(res => {
       const username = document.querySelector("#username").innerText;
       addMessage({username, message});
-      cleanInput();
+      cleanInput("#message-form input");
       scrollToBottom(".messages");
     })
     .catch(err => {

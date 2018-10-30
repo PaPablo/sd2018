@@ -5,4 +5,18 @@ const encodeObj = obj => {
     k => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`).join('&');
 }
 
-export { encodeObj };
+const cleanInput = querySelector => {
+  /* Limpia el input del chat */
+  document.querySelector(querySelector).value = ""
+};
+
+const scrollToBottom = querySelector => {
+  const el = document.querySelector(querySelector);
+  el.scrollTop = el.scrollHeight;
+};
+
+export { 
+  encodeObj,
+  cleanInput,
+  scrollToBottom
+};
