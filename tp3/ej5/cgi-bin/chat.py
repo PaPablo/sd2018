@@ -57,31 +57,41 @@ def get_main_page(template_name="index.html", user=None,
 
 def get_user_or_create(username):
     """Devuelve el usuario registrado en el archivo o lo crea si no existe"""
-    with open(USERSFILE, "a+") as f:
-        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        f.seek(0)
-        for user in f.readlines():
-            user = user.replace("\n", "").replace("\r", "")
-            if user == username:
-                fcntl.flock(f, fcntl.LOCK_UN)
-                return user
+    while True:
+        try:
+            with open(USERSFILE, "a+") as f:
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                f.seek(0)
+                for user in f.readlines():
+                    user = user.replace("\n", "").replace("\r", "")
+                    if user == username:
+                        fcntl.flock(f, fcntl.LOCK_UN)
+                        return user
 
-        f.write(f"{username}\n")
-        fcntl.flock(f, fcntl.LOCK_UN)
-        return username
+                f.write(f"{username}\n")
+                fcntl.flock(f, fcntl.LOCK_UN)
+                return username
+        except BlockingIOError as e:
+            log(f"BLOQUEADO [{e}]")
+            time.sleep(0.1)
 
 def get_all_users():
     """Devuelve todos los usuarios registrados en el archivo"""
     users = []
-    with open(USERSFILE, "a+") as f:
-        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        f.seek(0)
-        for user in f.readlines():
-            user = user.replace("\n", "").replace("\r", "")
-            users.append(user)
+    while True:
+        try:
+            with open(USERSFILE, "a+") as f:
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                f.seek(0)
+                for user in f.readlines():
+                    user = user.replace("\n", "").replace("\r", "")
+                    users.append(user)
 
-        fcntl.flock(f, fcntl.LOCK_UN)
-        return users
+                fcntl.flock(f, fcntl.LOCK_UN)
+                return users
+        except BlockingIOError as e:
+            log(f"BLOQUEADO [{e}]")
+            time.sleep(0.1)
 
 
 def get():
