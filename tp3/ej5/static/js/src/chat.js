@@ -19,6 +19,11 @@ const cleanInput = () => {
   input.value = "";
 };
 
+const scrollToBottom = querySelector => {
+  const el = document.querySelector(querySelector);
+  el.scrollTop = el.scrollHeight;
+};
+
 const getMessage = () => {
   /* Recupera un mensaje del input del chat */
   const form = document.querySelector("#message-form");
@@ -58,6 +63,7 @@ const onClickMessageSend = (evt) => {
       const username = document.querySelector("#username").innerText;
       addMessage({username, message});
       cleanInput();
+      scrollToBottom(".messages");
     })
     .catch(err => {
       console.error({err});
@@ -78,6 +84,7 @@ const onRefreshMessages = () => {
         messages.forEach(msg => {
           document.querySelector("#messages-list").appendChild(msg);
         });
+        scrollToBottom(".messages");
       } catch (e) {
         //Como la #messages-list puede estar vacía, 
         //va tirar excepción al querer acceder a ".children"
