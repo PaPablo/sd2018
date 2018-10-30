@@ -1,6 +1,6 @@
 import { encodeObj } from "./utils";
 
-const REFRESH_INTERVAL = 1000 * 3;
+const REFRESH_INTERVAL = 1000 * 2;
 
 const getRefreshInterval = () => { return REFRESH_INTERVAL; };
 
