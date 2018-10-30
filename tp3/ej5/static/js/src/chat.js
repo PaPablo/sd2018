@@ -26,7 +26,7 @@ const getMessagesCount = () => {
   /* Devuelve la cantidad de mensajes que hay en el chat */
   const _length = Array.from(
     document.querySelector("#messages-list").children
-  ).length
+  ).length;
 
   return _length > 0 ? _length : 0;
 };
@@ -46,7 +46,7 @@ const onClickMessageSend = (evt) => {
       "Content-type": "application/x-www-form-urlencoded"
     }
   })
-    .then(res => {
+    .then(_ => {
       const username = document.querySelector("#username").innerText;
       addMessage({username, message});
       cleanInput("#message-form input");
@@ -54,7 +54,7 @@ const onClickMessageSend = (evt) => {
     })
     .catch(err => {
       console.error({err});
-    })
+    });
 };
 
 const onRefreshMessages = () => { 
@@ -66,7 +66,8 @@ const onRefreshMessages = () => {
       const parser = new DOMParser();
       const html = parser.parseFromString(res, "text/html");
       try {
-        const messages = Array.from(html.querySelector("#messages-list").children);
+        const messages = 
+          Array.from(html.querySelector("#messages-list").children);
         messages.forEach(msg => {
           document.querySelector("#messages-list").appendChild(msg);
         });
@@ -80,7 +81,7 @@ const onRefreshMessages = () => {
     })
     .catch(err => {
       console.error({err});
-    })
+    });
 };
 
 export { 

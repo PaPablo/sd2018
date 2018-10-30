@@ -14,7 +14,7 @@ const setMessageSendHandler = () => {
 const focusMessageForm = () => {
   const form = document.querySelector("#message-form");
   const input = form.querySelector("input");
-  input.focus()
+  input.focus();
 };
 
 window.onload = () => {
