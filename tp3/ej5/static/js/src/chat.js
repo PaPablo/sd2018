@@ -34,10 +34,8 @@ const getMessagesCount = () => {
 const onClickMessageSend = (evt) => {
   /* Manejador para el submit del form */
   evt.preventDefault();
-  console.log("onClickMessageSend"); 
   const message = getMessage();
   const encodedMessage = encodeObj(message);
-  console.log({encodedMessage});
 
   fetch("", {
     method: "POST",
@@ -61,7 +59,6 @@ const onClickMessageSend = (evt) => {
 
 const onRefreshMessages = () => { 
   /* Manejador para el refresco de los mensajes */
-  console.log("onRefreshMessages"); 
   const msgsCount = getMessagesCount();
   fetch(`?starting=${msgsCount}`)
     .then(res => res.text())
