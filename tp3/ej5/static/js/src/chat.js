@@ -5,6 +5,7 @@ const REFRESH_INTERVAL = 1000 * 3;
 const getRefreshInterval = () => { return REFRESH_INTERVAL; };
 
 const addMessage = ({username, message}) => {
+  /* Agrega un mensaje a la ventana de chat */
   const messagesUl = document.querySelector("#messages-list");
   const newMessage = document.createElement("li");
   newMessage.innerHTML = `<b>${username}</b>: ${message.message}`;
@@ -12,12 +13,14 @@ const addMessage = ({username, message}) => {
 };
 
 const cleanInput = () => {
+  /* Limpia el input del chat */
   const form = document.querySelector("#message-form");
   const input = form.querySelector("input");
   input.value = "";
 };
 
 const getMessage = () => {
+  /* Recupera un mensaje del input del chat */
   const form = document.querySelector("#message-form");
   const input = form.querySelector("input");
   return {
@@ -26,6 +29,7 @@ const getMessage = () => {
 };
 
 const getMessagesCount = () => {
+  /* Devuelve la cantidad de mensajes que hay en el chat */
   const _length = Array.from(
     document.querySelector("#messages-list").children
   ).length
@@ -34,6 +38,7 @@ const getMessagesCount = () => {
 };
 
 const onClickMessageSend = (evt) => {
+  /* Manejador para el submit del form */
   evt.preventDefault();
   console.log("onClickMessageSend"); 
   const message = getMessage();
@@ -60,6 +65,7 @@ const onClickMessageSend = (evt) => {
 };
 
 const onRefreshMessages = () => { 
+  /* Manejador para el refresco de los mensajes */
   console.log("onRefreshMessages"); 
   const msgsCount = getMessagesCount();
   fetch(`?starting=${msgsCount}`)
