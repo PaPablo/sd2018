@@ -28,7 +28,6 @@ def get_messages_from_lines(lines, starting=0):
                 "message": l[1]
             })
 
-    log(f"_messages => {_messages}")
     return _messages
 
 def get_main_page(template_name="index.html", user=None,
@@ -81,10 +80,8 @@ def get_all_users():
 def get():
     user = is_authenticated(COOKIE_NAME)
     form = cgi.FieldStorage()
-    log(f"get() - form => {form}")
     if user:
         starting = 0
-        log(f"get() - USUARIO LOGUEADO!")
         if form.getvalue("logout"):
             # Logout
             logout_cookie = logout(COOKIE_NAME)
@@ -102,15 +99,12 @@ def get():
 def post():
     user = is_authenticated(COOKIE_NAME)
     form = cgi.FieldStorage()
-    log(f"post() - form => {form}")
     if user:
-        log(f"POST() - USUARIO LOGUEADO!")
         # Recuperar el mensaje del form y guardarlo en el archivo
         message = form.getvalue("message")
         return get_main_page(user=user, new_msg=message)
     else:
         # Loguear
-        log(f"POST() - USUARIO NO LOGUEADO")
         username = form.getvalue("username")
         user = get_user_or_create(username)
         cookie = login(user, COOKIE_NAME)
@@ -119,7 +113,6 @@ def post():
 
 def main():
     req_method = os.getenv("REQUEST_METHOD")
-    log(f"LA COOKIE => {os.getenv('HTTP_COOKIE')}")
     if req_method == "GET":
         res = get()
         print_headers()
