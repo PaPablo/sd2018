@@ -1,9 +1,10 @@
-
 import {
   getRefreshInterval, 
   onRefreshMessages, 
   onClickMessageSend
 } from "./chat";
+
+import { scrollToBottom } from "./utils";
 
 const setMessageSendHandler = () => {
   document.querySelector("#send-button").addEventListener(
@@ -19,5 +20,6 @@ const focusMessageForm = () => {
 window.onload = () => {
   setInterval(onRefreshMessages, getRefreshInterval());
   setMessageSendHandler();
+  scrollToBottom(".messages");
   focusMessageForm();
 };
