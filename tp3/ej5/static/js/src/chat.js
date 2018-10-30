@@ -71,6 +71,8 @@ const onRefreshMessages = () => {
           document.querySelector("#messages-list").appendChild(msg);
         });
         scrollToBottom(".messages");
+        document.querySelector("#users-list").innerHTML = 
+          html.querySelector("#users-list").innerHTML;
       } catch (e) {
         //Como la #messages-list puede estar vacía, 
         //va tirar excepción al querer acceder a ".children"
