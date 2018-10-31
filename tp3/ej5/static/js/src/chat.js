@@ -40,6 +40,7 @@ const onClickMessageSend = (evt) => {
   fetch("", {
     method: "POST",
     body: encodedMessage,
+    credentials: "include",
     headers: {
       //Hay que setear esta cabecera para que el servidor 
       //lo reciba como si le estuviésemos mandando un <form>
@@ -60,7 +61,9 @@ const onClickMessageSend = (evt) => {
 const onRefreshMessages = () => { 
   /* Manejador para el refresco de los mensajes */
   const msgsCount = getMessagesCount();
-  fetch(`?starting=${msgsCount}`)
+  fetch(`?starting=${msgsCount}`, {
+    credentials: "include",
+  })
     .then(res => res.text())
     .then(res => {
       const parser = new DOMParser();
