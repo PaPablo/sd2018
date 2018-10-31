@@ -125,6 +125,8 @@ Esta aplicación no usa ninguna dependencia nueva de la anterior, por lo tanto s
 
 En este caso se obvió la base de datos y directamente se almacenó los mensajes intercambiados en el chat y los usuarios registrados en archivos de texto plano. Al igual que el servidor implementado en C, al abrir el archivo se intenta bloquearlo, para evitar condiciones de carrera y resultados inconsistentes. Para bloquear el recurso se utilizó el módulo de la librería estándar de Python \texttt{fcntl}. 
 
+Cuando un usuario ingresa al chat, el servidor verifica si ya existe su usuario en el archivo correspondiente, si no existe lo escribe. Una vez verificado, crea una \emph{cookie} de sesión para que no tenga que ingresar su nombre de usuario cada vez que ingrese al chat. 
+
 \subsection{Actualización del chat}
 
 Tanto para el envío de un nuevo mensaje como para la actualización del chat y de los usuarios registrados, se utilizó Ajax. Se definió un intervalo de 2 segundos para ejecutar la actualización. \emph{Para ver el código JavaScript del chat, dirigirse al archivo ej5/static/js/src/chat.js}.
