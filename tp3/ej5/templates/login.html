@@ -7,6 +7,14 @@
 
 {% block content %}
 <div class="container">
+  {% if errors %}
+    <ul id="errors">
+      {% for key, value in errors.items() %}
+      <li><b class="error-key">{{key}}:</b> <span class="error-value">{{value}}</span></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
   <form method="POST">
     <label for="username">Nombre de usuario: </label>
     <input 
