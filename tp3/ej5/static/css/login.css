@@ -16,3 +16,11 @@
 .container button {
   margin: 20px;
 }
+
+#errors {
+  color: red;
+}
+
+#errors li .error-key {
+  text-transform: uppercase;
+}

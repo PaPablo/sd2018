@@ -2,19 +2,81 @@
 
 import fcntl
 import cgi
+import csv
 import os
 import time
+from uuid import uuid4
 
 
 from utils.utils import get_template, print_headers
 from utils.log import log
-from session.session import is_authenticated
+from session.session import get_cookie_value
 from session.login import login, logout
 
 
 CHATFILE = "data/chat.txt"
+SESSIONFILE = "data/session.txt"
 USERSFILE = "data/users.txt"
 COOKIE_NAME = "SD-CGI-CHAT"
+
+def _get_last_line(filename):
+    """Devuelve la última línea de un archivo"""
+    with open(filename) as f:
+        # Bloquear archivo
+        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        lines = f.read().splitlines()
+        # Liberar archivo
+        fcntl.flock(f, fcntl.LOCK_UN)
+        return {
+            "count": len(lines)-1,
+            "line": lines[-1]
+        }
+
+def get_session(session_id):
+    """Devuelve la sesión de id `session_id`"""
+    while True:
+        try:
+            with open(SESSIONFILE) as f:
+                reader = csv.DictReader(f)
+                for r in reader:
+                    if r["id"] == session_id:
+                        return {
+                            "id": r["id"],
+                            "user": r["user"],
+                            "last_line": r["last_line"]
+                        }
+                return None
+        except BlockingIOError as e:
+            time.sleep(0.1)
+
+def create_session(username):
+    """Crea una sesión para el usuario `username`"""
+    _file_exists = os.path.exists(SESSIONFILE)
+    while True:
+        try:
+            with open(SESSIONFILE, "a+") as f:
+                # Bloquear archivo
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                writer = csv.DictWriter(f, fieldnames=["id","user","last_line"])
+                if not _file_exists:
+                    writer.writeheader()
+                f.seek(0)
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row["user"] == username:
+                        fcntl.flock(f, fcntl.LOCK_UN)
+                        return None
+                _session = {
+                    "id": str(uuid4()),
+                    "user": username,
+                    "last_line": _get_last_line(CHATFILE)["count"]
+                }
+                writer.writerow(_session)
+                # Liberar archivo
+                fcntl.flock(f, fcntl.LOCK_UN)
+                return _session
+        except BlockingIOError as e:
+            time.sleep(0.1)
 
 
 def get_messages_from_lines(lines, starting=0):
@@ -31,6 +93,48 @@ def get_messages_from_lines(lines, starting=0):
 
     return _messages
 
+def get_messages(starting):
+    """Devuelve los mensajes en la forma {user, message}"""
+    while True:
+        try:
+            with open(CHATFILE) as f:
+                # Bloquear archivo
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                _messages = []
+                for i, l in enumerate(f.readlines()):
+                    if i >= starting:
+                        l = l.replace("\n", "").replace("\r", "").split(":")
+                        l = [line.strip() for line in l]
+                        _messages.append({
+                            "user": l[0],
+                            "message": l[1]
+                        })
+                # Liberar archivo
+                fcntl.flock(f, fcntl.LOCK_UN)
+                return _messages
+        except BlockingIOError as e:
+            time.sleep(0.1)
+        except IndexError as e:
+            return []
+
+def add_message(user=None, msg=None):
+    """Agrega un nuevo mensaje al chat"""
+    if not user and not msg:
+        return
+    while True:
+        try:
+            with open(CHATFILE, "a+") as f:
+                # Bloquear archivo
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+                f.write(f"{user}: {msg}")
+
+                # Liberar archivo
+                fcntl.flock(f, fcntl.LOCK_UN)
+
+        except BlockingIOError as e:
+            time.sleep(0.1)
+
 def get_main_page(template_name="index.html", user=None,
                   new_msg=None, starting=0):
     """Devuelve la página del chat"""
@@ -38,11 +142,12 @@ def get_main_page(template_name="index.html", user=None,
         try:
             with open(CHATFILE, "a+") as f:
                 # Bloquear archivo
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
                 if new_msg and user:
                     f.write(f"{user}: {new_msg}\n")
 
                 f.seek(0)
-                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
                 messages = get_messages_from_lines(
                     f.readlines(), starting=starting)
@@ -95,9 +200,15 @@ def get_all_users():
 
 
 def get():
-    user = is_authenticated(COOKIE_NAME)
+    session_id = get_cookie_value(COOKIE_NAME)
+    session = get_session(session_id)
     form = cgi.FieldStorage()
-    if user:
+    log(f"session_id => {session_id}")
+    log(f"session => {session}")
+    log(f"form => {form}")
+    if session:
+        user = session["user"]
+        log(f"get() - LOGUEADO => {user}")
         starting = 0
         if form.getvalue("logout"):
             # Logout
@@ -110,23 +221,34 @@ def get():
         return get_main_page(user=user, starting=starting)
     else:
         # Mostrar pantalla de login
+        log(f"get() - NO LOGUEADO")
         return get_template("login.html").render()
-        pass
 
 def post():
-    user = is_authenticated(COOKIE_NAME)
+    session_id = get_cookie_value(COOKIE_NAME)
+    session = get_session(session_id)
     form = cgi.FieldStorage()
-    if user:
+    if session:
         # Recuperar el mensaje del form y guardarlo en el archivo
+        user = session["user"]
+        log(f"post() - LOGUEADO => {user}")
         message = form.getvalue("message")
         return get_main_page(user=user, new_msg=message)
     else:
         # Loguear
+        log(f"post() - NO LOGUEADO")
         username = form.getvalue("username")
-        user = get_user_or_create(username)
-        cookie = login(user, COOKIE_NAME)
+        # user = get_user_or_create(username)
+        session = create_session(username)
+        if not session:
+            return get_template("login.html").render(errors={
+                "nickname": f"El nickname '{username}' ya está siendo usado"
+            })
+        log(f"session => {session}")
+        cookie = login(session["id"], COOKIE_NAME)
+        log(f"cookie => {cookie}")
         print(cookie)
-        return get_main_page(user=user)
+        return get_main_page(user=session["user"])
 
 def main():
     req_method = os.getenv("REQUEST_METHOD")

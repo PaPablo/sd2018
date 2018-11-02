@@ -44,7 +44,7 @@ def get_auth_cookies(name):
     return None
 
 
-def is_authenticated(name):
+def get_cookie_value(name):
     """
     Returns a dict if the HTTP cookies are set. None otherwise.
     """
