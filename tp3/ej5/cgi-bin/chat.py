@@ -51,12 +51,12 @@ def file_is_empty(filename):
     except OSError as e:
         return True
 
-def get_session(session_id):
+def get_session(session_id, session_filename):
     """Devuelve la sesión de id `session_id`"""
     while True:
         try:
             _id, last_line = session_id.split("|")
-            with open(SESSIONFILE) as f:
+            with open(session_filename) as f:
                 reader = csv.DictReader(f)
                 for r in reader:
                     if r["id"] == _id:
@@ -74,9 +74,9 @@ def get_session(session_id):
                 AttributeError) as e:
             return None
 
-def create_session(username):
+def create_session(username, session_filename):
     """Crea una sesión para el usuario `username`"""
-    _file_exists = os.path.exists(SESSIONFILE)
+    _file_exists = os.path.exists(session_filename)
     _session = {
         "id": str(uuid4()),
         "user": username,
@@ -84,7 +84,7 @@ def create_session(username):
     }
     while True:
         try:
-            with open(SESSIONFILE) as f:
+            with open(session_filename) as f:
                 # Bloquear archivo
                 fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 reader = csv.DictReader(f)
@@ -96,22 +96,22 @@ def create_session(username):
                 # Liberar archivo
                 fcntl.flock(f, fcntl.LOCK_UN)
 
-            return add_session(_session)
+            return add_session(_session, session_filename)
         except BlockingIOError as e:
             time.sleep(0.1)
         except FileNotFoundError as e:
-            return add_session(_session)
+            return add_session(_session, session_filename)
 
-def add_session(session):
+def add_session(session, session_filename):
     """Escribe una nueva sesión"""
-    _file_exists = os.path.exists(SESSIONFILE)
+    _file_exists = os.path.exists(session_filename)
     while True:
         try:
-            with open(SESSIONFILE, "a+") as f:
+            with open(session_filename, "a+") as f:
                 # Bloquear archivo
                 fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 writer = csv.DictWriter(f, fieldnames=_get_session_fields())
-                if not _file_exists or file_is_empty(SESSIONFILE):
+                if not _file_exists or file_is_empty(session_filename):
                     writer.writeheader()
                 writer.writerow(session)
                 # Liberar archivo
@@ -120,12 +120,12 @@ def add_session(session):
         except BlockingIOError as e:
             time.sleep(0.1)
 
-def delete_session(session):
+def delete_session(session, session_filename):
     """Elimina una sesión"""
     while True:
         try:
             _tmp = NamedTemporaryFile(mode="w", delete=False)
-            with open(SESSIONFILE) as f, _tmp:
+            with open(session_filename) as f, _tmp:
                 reader = csv.DictReader(f, fieldnames=_get_session_fields())
                 writer = csv.DictWriter(_tmp, fieldnames=_get_session_fields())
                 writer.writeheader()
@@ -134,8 +134,8 @@ def delete_session(session):
                     if r["id"] == session["id"]:
                         continue
                     writer.writerow(r)
-            shutil.move(_tmp.name, SESSIONFILE)
-            subprocess.call(f"chmod 644 {SESSIONFILE}".split())
+            shutil.move(_tmp.name, session_filename)
+            subprocess.call(f"chmod 644 {session_filename}".split())
             break
         except BlockingIOError as e:
             time.sleep(0.1)
@@ -184,11 +184,11 @@ def add_message(user=None, msg=None):
             time.sleep(0.1)
 
 
-def get_active_users():
+def get_active_users(session_filename):
     """Devuelve los usuarios conectados"""
     while True:
         try:
-            with open(SESSIONFILE) as f:
+            with open(session_filename) as f:
                 # Bloquear archivo
                 fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 reader = csv.DictReader(f, fieldnames=_get_session_fields())
@@ -205,7 +205,7 @@ def get_active_users():
 
 def get():
     session_id = get_cookie_value(COOKIE_NAME)
-    session = get_session(session_id)
+    session = get_session(session_id, SESSIONFILE)
     form = cgi.FieldStorage()
     if session:
         user = session["user"]
@@ -213,7 +213,7 @@ def get():
         starting = 0
         if form.getvalue("logout"):
             # Logout
-            delete_session(session)
+            delete_session(session, SESSIONFILE)
             logout_cookie = logout(COOKIE_NAME)
             print(logout_cookie)
             return get_template("login.html").render()
@@ -225,18 +225,18 @@ def get():
         # session["last_line"] += starting
         # Y devolverle al cliente los mensajes que no vio todavia
 
-        delete_session(session)
+        delete_session(session, SESSIONFILE)
         session["last_line"] = str(
             int(session["last_line"]) + starting
         )
-        add_session(session)
+        add_session(session, SESSIONFILE)
 
         messages = get_messages(int(session["last_line"]))
         # Devolver el chat con los mensajes y los usuarios
         return get_template("index.html").render(
             user=user,
             messages=messages,
-            users=get_active_users()
+            users=get_active_users(SESSIONFILE)
         )
     else:
         # Mostrar pantalla de login
@@ -247,7 +247,7 @@ def get():
 
 def post():
     session_id = get_cookie_value(COOKIE_NAME)
-    session = get_session(session_id)
+    session = get_session(session_id, SESSIONFILE)
     form = cgi.FieldStorage()
     if session:
         # Recuperar el mensaje del form y guardarlo en el archivo
@@ -258,13 +258,13 @@ def post():
         return get_template("index.html").render(
             user=user,
             messages=get_messages(),
-            users=get_active_users()
+            users=get_active_users(SESSIONFILE)
         )
     else:
         # Loguear
         log(f"post() - NO LOGUEADO")
         username = form.getvalue("username")
-        session = create_session(username)
+        session = create_session(username, SESSIONFILE)
         if not session:
             return get_template("login.html").render(errors={
                 "nickname": f"El nickname '{username}' ya está siendo usado"
@@ -275,7 +275,7 @@ def post():
         return get_template("index.html").render(
             user=session["user"],
             messages=messages,
-            users=get_active_users()
+            users=get_active_users(SESSIONFILE)
         )
 
 def main():
