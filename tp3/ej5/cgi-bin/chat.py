@@ -11,7 +11,7 @@ from uuid import uuid4
 from tempfile import NamedTemporaryFile
 
 
-from utils.utils import get_template, print_headers
+from utils.utils import get_template, print_headers, _get_last_line, file_is_empty
 from utils.log import log
 from session.session import get_cookie_value
 from session.login import login, logout
@@ -22,34 +22,9 @@ SESSIONFILE = "data/session.csv"
 USERSFILE = "data/users.txt"
 COOKIE_NAME = "SD-CGI-CHAT"
 
-def _get_last_line(filename):
-    """Devuelve la última línea de un archivo"""
-    try:
-        with open(filename) as f:
-            # Bloquear archivo
-            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            lines = f.read().splitlines()
-            # Liberar archivo
-            fcntl.flock(f, fcntl.LOCK_UN)
-            return {
-                "count": len(lines),
-                "line": lines[-1]
-            }
-    except FileNotFoundError as e:
-        return {
-            "count": 0,
-            "line": None
-        }
-
 def _get_session_fields():
     """Devuelve los campos del archivo de sesión"""
     return ["id", "user", "last_line"]
-
-def file_is_empty(filename):
-    try:
-        return os.path.getsize(filename) <= 0
-    except OSError as e:
-        return True
 
 def get_session(session_id, session_filename):
     """Devuelve la sesión de id `session_id`"""
