@@ -11,7 +11,8 @@ from uuid import uuid4
 from tempfile import NamedTemporaryFile
 
 
-from utils.utils import get_template, print_headers, _get_last_line, file_is_empty
+from utils.utils import \
+    get_template, print_headers, _get_last_line, file_is_empty
 from utils.log import log
 from session.session import get_cookie_value
 from session.login import login, logout
@@ -102,7 +103,8 @@ def delete_session(session, session_filename):
             _tmp = NamedTemporaryFile(mode="w", delete=False)
             with open(session_filename) as f, _tmp:
                 reader = csv.DictReader(f, fieldnames=_get_session_fields())
-                writer = csv.DictWriter(_tmp, fieldnames=_get_session_fields())
+                writer = csv.DictWriter(
+                    _tmp, fieldnames=_get_session_fields())
                 writer.writeheader()
                 next(reader)
                 for r in reader:
@@ -244,7 +246,8 @@ def post():
             return get_template("login.html").render(errors={
                 "nickname": f"El nickname '{username}' ya está siendo usado"
             })
-        cookie = login(f"{session['id']}|{session['last_line']}", COOKIE_NAME)
+        cookie = login(
+            f"{session['id']}|{session['last_line']}", COOKIE_NAME)
         print(cookie)
         messages = get_messages(session["last_line"])
         return get_template("index.html").render(
