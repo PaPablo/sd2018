@@ -134,21 +134,150 @@ En la ventana principal del chat, en la parte izquierda se pueden ver los mensaj
 Tanto para el envío de un nuevo mensaje como para la actualización del chat y de los usuarios registrados, se utilizó Ajax. Se definió un intervalo de 2 segundos para ejecutar la actualización. \emph{Para ver el código JavaScript del chat, dirigirse al archivo ej5/static/js/src/chat.js}.
 
 
+\section{Ejercicio 6 - DFS}
+
+El hecho de poder compartir archivos entre dos computadores es extremadamente útil, sobre todo en ámbitos administrativos donde se dispone de una red común entre todos los equipos. Es por eso que desde Linux y desde Windows se ofrece la posibilidad de realizar de manera transparente.
+
+\subsection{Servidor Linux - Cliente Linux - NFS}
+
+Disponemos de un servidor corriendo con Linux y un cliente que desea tener acceso a los archivos también corriendo en Linux. Para ilustar este procedimiento se utilizó Ubuntu Server 18.04.
+
+\subsubsection{Servidor}
+
+Para poder realizar la compartición de archivos a través de NFS, es necesario instalar el paquete \texttt{nfs-kernel-server} utilizando apt.
+
+\begin{lstlisting}[bash]
+# update previo para actualizar la lista de paquetes
+sudo apt update && \
+sudo apt install nfs-kernel-server
+\end{lstlisting}
+
+Luego creamos nuestra carpeta a compartir, en nuestro caso será \texttt{/nfsshare}, con:
+
+\begin{lstlisting}[bash]
+mkdir /nfsshare
+\end{lstlisting}
+
+Luego es necesario modificar el archivo \texttt{/etc/exports} en el cual se listarán las carpetas a compartir, IP de los clientes posibles que pueden acceder y opciones de acceso. Junto con la carpeta y los posibles clientes, se pueden especificar opciones:
+
+\begin{itemize}
+    \item ro: read-only access
+    \item rw: read-write access
+    \item sync: Confirma las peticiones de acceso al directorio compartido solamente cuando los cambios se han confirmado.
+    \item no\_subtree\_check: Evita que se verifique todo el subarbol superior al directorio accedido para verificar permisos, le agrega confiabilidad pero le quita seguridad. 
+    \item no\_root\_squash: Permite al usuario \texttt{root} conectarse
+\end{itemize}
+
+    Otras opciones se detallan en la página man para \texttt{export} 
+
+\begin{lstlisting}[bash]
+# Permite a cualquier host conectarse a la carpeta compartida
+/nfsshare *(rw,sync,no_subtree_check,no_root_squash)
+
+# Permite a 192.168.2.10 conectarse en modo de solo lectura
+/nfsshare 192.168.2.10(ro)
+
+# Permite a cualquier host de la red 192.168.0.0/24 conectarse en modo de solo lectura
+# Junto con el host 192.168.1.10 con acceso de lecto-escritura
+/nfsshare 192.168.0.0(ro) 192.168.1.10(rw)
+\end{lstlisting}
+
+Se recomiendo reiniciar el servicio \texttt{nfs-kernel-server} una vez modificado el arhivo \texttt{/etc/exports} 
+
+\begin{lstlisting}[bash]
+sudo service nfs-kernel-server restart
+\end{lstlisting}
+
+\subsubsection{Cliente}
+
+Para poder acceder a los archivos de la carpeta compartida es necesario, quizas no, instalar el paquete \texttt{nfs-common} 
 
 
+\begin{lstlisting}[bash]
+sudo apt update && \
+sudo apt install -y nfs-common
+\end{lstlisting}
 
+Para poder listar las carpetas disponibles por nfs que posee un servidor podemos hacer:
 
+\begin{lstlisting}[bash]
+sudo showmount -e <ip_servidor>
+\end{lstlisting}
 
+Ya sabiendo qué carpetas se encuentran disponibles en el servidor, necesitamos una carpeta sobre la cual montar nuestro NFS, por lo tanto:
 
+\begin{lstlisting}[bash]
+sudo mkdir /mnt/nfsshare
+sudo mount -t nfs <ip_servidor>:/nfsshare /mnt/nfsshare
+\end{lstlisting}
 
+Y ya tendremos nuestra carpeta disponible para uso en el cliente. Cuando no se desee usar más la carpeta haciendo \textt{umount} de la carpeta será suficiente:
 
+\begin{lstlisting}[bash]
+sudo umount /mnt/nfsshare
+\end{lstlisting}
 
+\subsection{Windows - Linux - Samba}
 
+Puede suceder que se disponga de un servidor de archvios corriendo en Windows y, como usuarios Linux, queremos acceder a los archivos presentes allí. Para resolver esta necesidad es que existe Samba, que es un servidor que provee acceso a Active Directory, compartición de archivos y servicios de impresión. Es extremadamente útil para comunicar equipos con Windows con equipo con Linux.
 
+\subsubsection{Servidor Windows - Cliente Linux}
 
+En el servidor Windows suponemos la existencia de una carpeta ya compartida con permisos de acceso al usuario Everyone (este usuario es como comodín), y que el usuario dueño de la carpeta posee contraseña de acceso. Luego en nuestro cliente Linux debemos instalar \texttt{cifs-utils} con:
 
+\begin{lstlisting}[bash]
+sudo apt update && \
+sudo apt install -y cifs-utils
+\end{lstlisting}
 
+Una vez instalado corremos:
 
+\begin{lstlisting}[bash]
+mkdir $HOME/windows-share
+mount.cifs //<ip-servidor-windows>/<Nombre-de-carpeta> $HOME/windows-share -o user=<usuario-dueño>
+\end{lstlisting}
+
+Y se nos pedirá la contraseña del usuario. Y ya tenemos acceso a los archivos en la carpeta compartida.
+
+\subsubsection{Servidor Windows - Cliente Linux}
+
+En este segundo caso los datos se encuentran en un servidor Linux y queremos acceder dese un cliente Windows. Instalamos sambda y creamos nuestra carpeta a compartir:
+
+\begin{lstlisting}[bash]
+sudo apt update && \
+sudo apt install -y samba && \
+mkdir $HOME/shared
+\end{lstlisting}
+
+Luego editamos el archivo \texttt{/etc/samba/smb.conf} y agregamos la siguiente entrada
+
+\begin{lstlisting}
+[<folder_name>]
+path = /<path>/<to>/<folder>
+available = yes
+
+# Usuarios validos, si se deja en blanco, se permite a cualquiera
+valid users = <user_name>
+
+read only = no 
+browsable = yes 
+public = yes 
+writable = yes
+\end{lstlisting}
+
+Llenamos con los datos que corresponden y reiniciamos el servicio de samba:
+
+\begin{lstlisting}
+sudo service restart smbd
+\end{lstlisting}
+
+En el cliente windows creamos un nuevo Acceso Directo y como destino le ponemos:
+
+\begin{lstlisting}
+\\<ip-servidor>\<folder_name>
+\end{lstlisting}
+
+Y se creará nuestro enlace a la carpeta compartida. Ahora podemos utilizarla de manera transparente en nuestro cliente Windows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
