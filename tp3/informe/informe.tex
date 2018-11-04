@@ -146,7 +146,7 @@ Disponemos de un servidor corriendo con Linux y un cliente que desea tener acces
 
 Para poder realizar la compartición de archivos a través de NFS, es necesario instalar el paquete \texttt{nfs-kernel-server} utilizando apt.
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 # update previo para actualizar la lista de paquetes
 sudo apt update && \
 sudo apt install nfs-kernel-server
@@ -154,7 +154,7 @@ sudo apt install nfs-kernel-server
 
 Luego creamos nuestra carpeta a compartir, en nuestro caso será \texttt{/nfsshare}, con:
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 mkdir /nfsshare
 \end{lstlisting}
 
@@ -170,7 +170,7 @@ Luego es necesario modificar el archivo \texttt{/etc/exports} en el cual se list
 
     Otras opciones se detallan en la página man para \texttt{export} 
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 # Permite a cualquier host conectarse a la carpeta compartida
 /nfsshare *(rw,sync,no_subtree_check,no_root_squash)
 
@@ -184,7 +184,7 @@ Luego es necesario modificar el archivo \texttt{/etc/exports} en el cual se list
 
 Se recomiendo reiniciar el servicio \texttt{nfs-kernel-server} una vez modificado el arhivo \texttt{/etc/exports} 
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 sudo service nfs-kernel-server restart
 \end{lstlisting}
 
@@ -193,27 +193,27 @@ sudo service nfs-kernel-server restart
 Para poder acceder a los archivos de la carpeta compartida es necesario, quizas no, instalar el paquete \texttt{nfs-common} 
 
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 sudo apt update && \
 sudo apt install -y nfs-common
 \end{lstlisting}
 
 Para poder listar las carpetas disponibles por nfs que posee un servidor podemos hacer:
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 sudo showmount -e <ip_servidor>
 \end{lstlisting}
 
 Ya sabiendo qué carpetas se encuentran disponibles en el servidor, necesitamos una carpeta sobre la cual montar nuestro NFS, por lo tanto:
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 sudo mkdir /mnt/nfsshare
 sudo mount -t nfs <ip_servidor>:/nfsshare /mnt/nfsshare
 \end{lstlisting}
 
 Y ya tendremos nuestra carpeta disponible para uso en el cliente. Cuando no se desee usar más la carpeta haciendo \textt{umount} de la carpeta será suficiente:
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 sudo umount /mnt/nfsshare
 \end{lstlisting}
 
@@ -225,14 +225,14 @@ Puede suceder que se disponga de un servidor de archvios corriendo en Windows y,
 
 En el servidor Windows suponemos la existencia de una carpeta ya compartida con permisos de acceso al usuario Everyone (este usuario es como comodín), y que el usuario dueño de la carpeta posee contraseña de acceso. Luego en nuestro cliente Linux debemos instalar \texttt{cifs-utils} con:
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 sudo apt update && \
 sudo apt install -y cifs-utils
 \end{lstlisting}
 
 Una vez instalado corremos:
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 mkdir $HOME/windows-share
 mount.cifs //<ip-servidor-windows>/<Nombre-de-carpeta> $HOME/windows-share -o user=<usuario-dueño>
 \end{lstlisting}
@@ -243,7 +243,7 @@ Y se nos pedirá la contraseña del usuario. Y ya tenemos acceso a los archivos 
 
 En este segundo caso los datos se encuentran en un servidor Linux y queremos acceder dese un cliente Windows. Instalamos sambda y creamos nuestra carpeta a compartir:
 
-\begin{lstlisting}[bash]
+\begin{lstlisting}
 sudo apt update && \
 sudo apt install -y samba && \
 mkdir $HOME/shared
