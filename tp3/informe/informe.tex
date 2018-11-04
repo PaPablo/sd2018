@@ -279,6 +279,26 @@ En el cliente windows creamos un nuevo Acceso Directo y como destino le ponemos:
 
 Y se creará nuestro enlace a la carpeta compartida. Ahora podemos utilizarla de manera transparente en nuestro cliente Windows.
 
+\section{Ejercicio 7 - DNS}
+
+Realizamos visitas a las siguientes paginas, en orden, y realizamos una captura con \texttt{Wireshark} para visibilizar las consultas a DNS realizadas.
+
+\begin{itemize}
+    \item \texttt{www.sra.org.ar} - Sitio de la Sociedad Rural Argentina
+    \item \texttt{https://dm.takaratomy.co.jp/} - Sitio del juego de cartas Duel Masters - Sitio de origen japonés
+\end{itemize}
+
+Luego, de la captura realizada podemos extraer los siguientes tiempos.
+
+Al realizar la primera visita a \texttt{www.sra.org.ar} observamos que entre la petición por la IP del dominio y su respuesta hay una diferencia de 313ms.
+
+Luego, al realizar la visita a \texttt{https://dm.takaratomy.co.jp/}, la diferencia es de 203ms. Pero el tiempo de carga de la página aumentó considerablemente en comparación con la página de la sociedad rural.
+
+En la segunda visita a \texttt{www.sra.org.ar} el tiempo de respuesta fue similar al aterior, pero la página cargó aún más rápido que la vez anterior.
+
+Podemos concluir que en una primera instancia la ubicación física de la referencia en un servidor DNS de la IP correspondiente a un dominio es relevante. Luego de haber realizado una consulta, ese tiempo puede bajar debido a que se almacenó en caché de algún servidor intermedio. 
+
+Aún así, al hacer pedidos sucesivos y cercanos en el tiempo con el navegador a una misma página, los tiempos de carga disminuyen visiblemente debido a que la gran mayoría de la página se almacena en caché del propio navegador.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
