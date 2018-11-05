@@ -5,7 +5,7 @@ from http.cookies import SimpleCookie
 # Sacado de acá:
 # https://recursospython.com/codigos-de-fuente/cookies-autenticacion-cgi/
 
-def _build_cookie(name, domain, username, expiration_days):
+def _build_cookie(name, username, expiration_days):
     """
     Build a SimpleCookie object and returns the HTTP
     Set-Cookie header.
@@ -19,7 +19,6 @@ def _build_cookie(name, domain, username, expiration_days):
     expires = datetime.now() + timedelta(days=expiration_days)
 
     # Morsel objects
-    cookie[name]["domain"] = domain
     cookie[name]["path"] = "/"
     cookie[name]["expires"] = expires.strftime("%a, %d-%b-%Y "
                                                "%H:%M:%S PST")
@@ -56,16 +55,16 @@ def get_cookie_value(name):
         return None
 
 
-def remove_auth_cookie(name, domain):
+def remove_auth_cookie(name):
     """
     Remove a HTTP auth cookie.
     """
     # -1 removes the cookie
-    return _build_cookie(name, domain, "", -1)
+    return _build_cookie(name, "", -1)
 
 
-def set_auth_cookie(name, domain, username, expiration_time=7):
+def set_auth_cookie(name, username, expiration_time=7):
     """
     Set a HTTP auth cookie.
     """
-    return _build_cookie(name, domain, username, expiration_time)
+    return _build_cookie(name, username, expiration_time)
