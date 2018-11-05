@@ -125,14 +125,13 @@ def get_messages(starting=0):
                 # Bloquear archivo
                 fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 _messages = []
-                for i, l in enumerate(f.readlines()):
-                    if i >= starting:
-                        l = l.replace("\n", "").replace("\r", "").split(":")
-                        l = [line.strip() for line in l]
-                        _messages.append({
-                            "user": l[0],
-                            "message": l[1]
-                        })
+                for l in f.readlines()[starting:]:
+                    l = l.replace("\n", "").replace("\r", "").split(":")
+                    l = [line.strip() for line in l]
+                    _messages.append({
+                        "user": l[0],
+                        "message": l[1]
+                    })
                 # Liberar archivo
                 fcntl.flock(f, fcntl.LOCK_UN)
                 return _messages
