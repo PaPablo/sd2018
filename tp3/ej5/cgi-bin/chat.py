@@ -56,7 +56,7 @@ def create_session(username, session_filename):
     _session = {
         "id": str(uuid4()),
         "user": username,
-        "last_line": _get_last_line(CHATFILE)["count"]
+        "last_line": _get_last_line(CHATFILE)["count"]+1
     }
     while True:
         try:

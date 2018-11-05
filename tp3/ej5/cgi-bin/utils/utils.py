@@ -11,7 +11,7 @@ def get_template(template_name, templates_dir="./templates"):
     return ctx.get_template(template_name)
 
 def _get_last_line(filename):
-    """Devuelve la última línea de un archivo"""
+    """Devuelve la última línea de un archivo (comenzando desde 1)"""
     import fcntl
     try:
         with open(filename) as f:
@@ -21,7 +21,7 @@ def _get_last_line(filename):
             # Liberar archivo
             fcntl.flock(f, fcntl.LOCK_UN)
             return {
-                "count": len(lines),
+                "count": len(lines)-1,
                 "line": lines[-1]
             }
     except FileNotFoundError as e:
