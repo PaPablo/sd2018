@@ -54,6 +54,12 @@ def get_cookie_value(name):
         # No cookies available
         return None
 
+def parse_cookie(cookie_value):
+    """Devuelve (session_id, last_line) a partir de la cookie"""
+    try:
+        return cookie_value.split("|")
+    except (TypeError, AttributeError) as e:
+        return None, None
 
 def remove_auth_cookie(name):
     """

@@ -4,12 +4,10 @@ const REFRESH_INTERVAL = 1000 * 2;
 
 const getRefreshInterval = () => { return REFRESH_INTERVAL; };
 
-const addMessage = ({username, message}) => {
+const addMessage = (message) => {
   /* Agrega un mensaje a la ventana de chat */
-  const messagesUl = document.querySelector("#messages-list");
-  const newMessage = document.createElement("li");
-  newMessage.innerHTML = `<b>${username}</b>: ${message.message}`;
-  messagesUl.appendChild(newMessage);
+  console.log({message});
+  document.querySelector("#messages-list").appendChild(message);
 };
 
 
@@ -47,9 +45,12 @@ const onClickMessageSend = (evt) => {
       "Content-type": "application/x-www-form-urlencoded"
     }
   })
-    .then(_ => {
-      const username = document.querySelector("#username").innerText;
-      addMessage({username, message});
+    .then(res => res.text())
+    .then(message => {
+      const parser = new DOMParser();
+      const messageAsLi = parser.parseFromString(message, "text/html")
+        .querySelector("li");
+      addMessage(messageAsLi);
       cleanInput("#message-form input");
       scrollToBottom(".messages");
     })
@@ -61,7 +62,7 @@ const onClickMessageSend = (evt) => {
 const onRefreshMessages = () => { 
   /* Manejador para el refresco de los mensajes */
   const msgsCount = getMessagesCount();
-  fetch(`?starting=${msgsCount}`, {
+  fetch(`?refresh=true`, {
     credentials: "include",
   })
     .then(res => res.text())
@@ -69,14 +70,20 @@ const onRefreshMessages = () => {
       const parser = new DOMParser();
       const html = parser.parseFromString(res, "text/html");
       try {
+
+        //Actualizar mensajes
         const messages = 
-          Array.from(html.querySelector("#messages-list").children);
+          Array.from(html.querySelector("#messages-list").children)
         messages.forEach(msg => {
           document.querySelector("#messages-list").appendChild(msg);
         });
-        scrollToBottom(".messages");
+
+        //Actualizar usuarios
         document.querySelector("#users-list").innerHTML = 
           html.querySelector("#users-list").innerHTML;
+
+        //Scrollear hasta el último mensaje
+        scrollToBottom(".messages");
       } catch (e) {
         //Como la #messages-list puede estar vacía, 
         //va tirar excepción al querer acceder a ".children"
