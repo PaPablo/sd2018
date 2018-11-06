@@ -23,6 +23,17 @@ SESSIONFILE = "data/session.csv"
 USERSFILE = "data/users.txt"
 COOKIE_NAME = "SD-CGI-CHAT"
 
+
+def make_messages_list(messages):
+    """Devuelve un ul con los mensajes como li"""
+    li = [f"<li><b>{message['user']}</b>: {message['message']}</li>" for message in messages]
+    return f"<ul id='messages-list'>{''.join(li)}</ul>"
+
+def make_users_list(users):
+    """Devuelve un ul con los usuarios activos como li"""
+    li = [f"<li>{user}</li>" for user in users]
+    return f"<ul id='users-list'>{''.join(li)}</ul>"
+
 def _get_session_fields():
     """Devuelve los campos del archivo de sesión"""
     return ["id", "user", "last_line"]
@@ -31,15 +42,14 @@ def get_session(session_id, session_filename):
     """Devuelve una sesión a partir de un id"""
     while True:
         try:
-            _id, last_line = session_id.split("|")
             with open(session_filename) as f:
                 reader = csv.DictReader(f)
                 for r in reader:
-                    if r["id"] == _id:
+                    if r["id"] == session_id:
                         return {
                             "id": r["id"],
                             "user": r["user"],
-                            "last_line": last_line
+                            "last_line": r["last_line"]
                         }
                 return None
         except BlockingIOError as e:
@@ -179,6 +189,7 @@ def get_active_users(session_filename):
         except BlockingIOError as e:
             time.sleep(0.1)
 
+
 def get():
     session_id = get_cookie_value(COOKIE_NAME)
     _id, last_line = parse_cookie(session_id)
@@ -187,39 +198,36 @@ def get():
 
     if session:
         # El usuario está logueado
-        user = session["user"]
-        starting = 0
         if form.getvalue("logout"):
             # Se quiere desloguear
             delete_session(session, SESSIONFILE)
             logout_cookie = logout(COOKIE_NAME)
             print(logout_cookie)
             return get_template("login.html").render()
-        if form.getvalue("starting"):
-            starting = int(form.getvalue("starting"))
-
-        # El cliente envía la cantidad de mensajes que ya tiene
-        # La sesión se tiene que actualizar haciendo
-        # session["last_line"] += starting
-        # Y devolverle al cliente los mensajes que no vio todavia
 
         # Actualizar cantidad de mensajes que se le enviaron
-        delete_session(session, SESSIONFILE)
-        session["last_line"] = str(
-            int(session["last_line"]) + starting
-        )
-        add_session(session, SESSIONFILE)
-
         messages = get_messages(int(session["last_line"]))
+
+        if messages:
+            session["last_line"] = str(_get_last_line(CHATFILE)["count"]+1)
+            delete_session(session, SESSIONFILE)
+            add_session(session, SESSIONFILE)
+        if form.getvalue("refresh"):
+            # Si viene el `refresh`, enviar solamente los mensajes,
+            # sin toda la ventana
+            messages_list = make_messages_list(messages)
+            users_list = make_users_list(get_active_users(SESSIONFILE))
+            return messages_list+users_list
+
         # Devolver el chat con los mensajes y los usuarios
         return get_template("index.html").render(
-            user=user,
-            messages=messages,
+            user=session["user"],
+            messages=get_messages(int(last_line)),
             users=get_active_users(SESSIONFILE)
         )
     else:
         # No está logueado - mostrar pantalla de login
-        log(f"get() - NO LOGUEADO")
+        log(f"get() - NO LOGUEADO - DEVOLVER LOGIN")
         logout_cookie = logout(COOKIE_NAME)
         print(logout_cookie)
         return get_template("login.html").render()
@@ -234,15 +242,16 @@ def post():
         # Recuperar el mensaje del form y guardarlo en el archivo
         user = session["user"]
         message = form.getvalue("message")
-        add_message(user, message)
-        return get_template("index.html").render(
-            user=user,
-            messages=get_messages(),
-            users=get_active_users(SESSIONFILE)
-        )
+        if message:
+            add_message(user, message)
+            session["last_line"] = str(_get_last_line(CHATFILE)["count"]+1)
+            delete_session(session, SESSIONFILE)
+            add_session(session, SESSIONFILE)
+
+        return f"<li><b>{user}</b>: {message}</li>"
     else:
         # No está logueado - crear sesión y loguear
-        log(f"post() - NO LOGUEADO")
+        log(f"post() - NO LOGUEADO - LOGUEAR!")
         username = form.getvalue("username")
         session = create_session(username, SESSIONFILE)
         if not session:
