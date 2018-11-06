@@ -14,7 +14,7 @@ from tempfile import NamedTemporaryFile
 from utils.utils import \
     get_template, print_headers, _get_last_line, file_is_empty
 from utils.log import log
-from session.session import get_cookie_value
+from session.session import get_cookie_value, parse_cookie
 from session.login import login, logout
 
 
@@ -181,7 +181,8 @@ def get_active_users(session_filename):
 
 def get():
     session_id = get_cookie_value(COOKIE_NAME)
-    session = get_session(session_id, SESSIONFILE)
+    _id, last_line = parse_cookie(session_id)
+    session = get_session(_id, SESSIONFILE)
     form = cgi.FieldStorage()
 
     if session:
@@ -225,7 +226,8 @@ def get():
 
 def post():
     session_id = get_cookie_value(COOKIE_NAME)
-    session = get_session(session_id, SESSIONFILE)
+    _id, last_line = parse_cookie(session_id)
+    session = get_session(_id, SESSIONFILE)
     form = cgi.FieldStorage()
     if session:
         # El usuario está logueado
