@@ -61,7 +61,7 @@ const onClickMessageSend = (evt) => {
 const onRefreshMessages = () => { 
   /* Manejador para el refresco de los mensajes */
   const msgsCount = getMessagesCount();
-  fetch(`?starting=${msgsCount}`, {
+  fetch(`?refresh=true`, {
     credentials: "include",
   })
     .then(res => res.text())
@@ -69,14 +69,20 @@ const onRefreshMessages = () => {
       const parser = new DOMParser();
       const html = parser.parseFromString(res, "text/html");
       try {
+
+        //Actualizar mensajes
         const messages = 
-          Array.from(html.querySelector("#messages-list").children);
+          Array.from(html.querySelector("#messages-list").children)
         messages.forEach(msg => {
           document.querySelector("#messages-list").appendChild(msg);
         });
-        scrollToBottom(".messages");
+
+        //Actualizar usuarios
         document.querySelector("#users-list").innerHTML = 
           html.querySelector("#users-list").innerHTML;
+
+        //Scrollear hasta el último mensaje
+        scrollToBottom(".messages");
       } catch (e) {
         //Como la #messages-list puede estar vacía, 
         //va tirar excepción al querer acceder a ".children"
