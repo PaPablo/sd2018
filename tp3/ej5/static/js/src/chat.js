@@ -4,12 +4,10 @@ const REFRESH_INTERVAL = 1000 * 2;
 
 const getRefreshInterval = () => { return REFRESH_INTERVAL; };
 
-const addMessage = ({username, message}) => {
+const addMessage = (message) => {
   /* Agrega un mensaje a la ventana de chat */
-  const messagesUl = document.querySelector("#messages-list");
-  const newMessage = document.createElement("li");
-  newMessage.innerHTML = `<b>${username}</b>: ${message.message}`;
-  messagesUl.appendChild(newMessage);
+  console.log({message});
+  document.querySelector("#messages-list").appendChild(message);
 };
 
 
@@ -47,9 +45,12 @@ const onClickMessageSend = (evt) => {
       "Content-type": "application/x-www-form-urlencoded"
     }
   })
-    .then(_ => {
-      const username = document.querySelector("#username").innerText;
-      addMessage({username, message});
+    .then(res => res.text())
+    .then(message => {
+      const parser = new DOMParser();
+      const messageAsLi = parser.parseFromString(message, "text/html")
+        .querySelector("li");
+      addMessage(messageAsLi);
       cleanInput("#message-form input");
       scrollToBottom(".messages");
     })
