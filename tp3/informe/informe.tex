@@ -56,6 +56,14 @@ Content-type: text/html
 
 Comparando la primer línea de cada respueta, se puede ver que la del servidor CGI indica que la respuesta a continuación es lo que devolvió el \emph{script} ejecutado, revelando así que es un servidor CGI.
 
+Ahora bien, si el \emph{script} ejecutado via CGI se ejecuta desde una consola, la salida sería la siguiente:
+
+\begin{lstlisting}
+Content-type: text/html
+
+<h1>Hola! Probando CGI</h1>
+\end{lstlisting}
+
 \section{Ejercicio 2 - Aplicación de alumnos con CGI}
 
 La aplicación desarrollada para el almacenamiento y consulta de los alumnos cuenta con las siguientes características:
@@ -113,7 +121,7 @@ Teniendo el motor de plantillas, se pudo renderizar la tabla presente en la pág
 
 Esta aplicación desarrollada encaja con la definición de Aplicación Web.
 
-Posee una arquitectura cliente-servidor muy común en este tipo de aplicaciónes. En nuestro caso, el usuario utiliza como cliente el navegador, introduciendo la URL de nuestra aplicación, que el servidor interpreta y decide qué contenido devolver. Luego, ya cuando la aplicación está funcionando, el usuario, a través de clics o envíos de formulario realiza pedidos de información o servicios al servidor. El servidor recibe los pedidos, los resuelve y le devuelve al cliente lo requerido, o un mensaje de error de no haber podido completar.
+Posee una arquitectura cliente-servidor muy común en este tipo de aplicaciónes. El usuario utiliza como cliente el navegador, introduciendo la URL de la aplicación; el servidor interpreta y decide qué contenido devolver (esta decisión está fuertemente influenciada por la \emph{cookie} de la petición). Luego, ya cuando la aplicación está funcionando, el usuario a través de clics o envíos de formulario realiza pedidos de información o servicios al servidor. El servidor recibe los pedidos, los resuelve y le devuelve al cliente lo requerido, o un mensaje de error de no haber podido completar la operación.
 
 
 \section{Ejercicio 5 - Chat con CGI}
@@ -142,6 +150,16 @@ En la ventana principal del chat, en la parte izquierda se pueden ver los mensaj
 
 Tanto para el envío de un nuevo mensaje como para la actualización del chat y de los usuarios registrados, se utilizó Ajax. Se definió un intervalo de 2 segundos para ejecutar la actualización. \emph{Para ver el código JavaScript del chat, dirigirse al archivo ej5/static/js/src/chat.js}.
 
+El servidor puede actuar de dos formas distintas frente a una petición \emph{GET}:
+
+\begin{itemize}
+    \item Si la petición no lleva \emph{parámetros de consulta}, el servidor devuelve toda la página principal del chat, con todos los mensajes que puede ver el usuario (los mensajes que se registraron después de que el usuario haya ingresado al sistema), y los usuarios activos en ese momento. 
+    \item Si la petición lleva el parámetro \texttt{refresh}, el servidor devuelve \textbf{solamente} los mensajes nuevos que todavía no se le enviaron al cliente (el servidor llega registro de qué mensajes se le enviaron a cada cliente a través de la sesión), y también devuelve los usuarios conectados. 
+\end{itemize}
+
+Se optó por utilizar los parámetros de consulta como mecanismo para diferenciar de alguna manera una llamada Ajax de una llamada HTTP tradicional debido a que \textbf{se utiliza un único script CGI}.
+
+Por último, cuando un usuario cierra su sesión, se borra del archivo de sesiones que mantiene el servidor. En las sucesivas peticiones que hagan los clientes para refrescar su chat, ese usuario no figurará más.
 
 \section{Ejercicio 6 - DFS}
 
@@ -177,7 +195,7 @@ Luego es necesario modificar el archivo \texttt{/etc/exports} en el cual se list
     \item no\_root\_squash: Permite al usuario \texttt{root} conectarse
 \end{itemize}
 
-    Otras opciones se detallan en la página man para \texttt{export} 
+Otras opciones se detallan en la página man para \texttt{export} 
 
 \begin{lstlisting}
 # Permite a cualquier host conectarse a la carpeta compartida
@@ -248,7 +266,7 @@ mount.cifs //<ip-servidor-windows>/<Nombre-de-carpeta> $HOME/windows-share -o us
 
 Y se nos pedirá la contraseña del usuario. Y ya tenemos acceso a los archivos en la carpeta compartida.
 
-\subsubsection{Servidor Windows - Cliente Linux}
+\subsubsection{Servidor Linux - Cliente Windows}
 
 En este segundo caso los datos se encuentran en un servidor Linux y queremos acceder dese un cliente Windows. Instalamos sambda y creamos nuestra carpeta a compartir:
 
