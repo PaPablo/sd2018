@@ -24,7 +24,7 @@ public class FileReader extends Agent
         // Info necesaria
         String src_filename = (String) arguments[0];
         String[] _split = src_filename.split("/");
-        String dst_filename = _split[_split.length-1];
+        String dst_filename = (String) arguments[1];
 
 
         System.out.println("Se crea al agente --> " + getName());
