@@ -11,23 +11,31 @@ class Main {
             System.exit(0);
         }
 
-        String command,src,dst;
+        String command,src,dst,address;
 
         
         if (args[0] == "help") {
             System.out.println("Argumentos posibles:");
-            System.out.println("write <source-file> <destination-file>");
-            System.out.println("read <source-file> <destination-file>");
+            System.out.println("<ip-main-container> write <source-file> <destination-file>");
+            System.out.println("<ip-main-container> read <source-file> <destination-file>");
             System.exit(0);
         } 
         else if (args.length < 3){
             System.exit(0);
         }
        // Get Command
-        command = args[0];
+        command = args[1];
 
-        src = args[1];
-        dst = args[2];
+        src = args[2];
+        dst = args[3];
+
+        if (args.length == 4) {
+            address = args[0];
+        }
+        else {
+            address = "localhost";
+        }
+
 
 
         // Get a hold on JADE runtime
@@ -41,10 +49,11 @@ class Main {
         // and pass it a reference to an Object
 
         Object reference = new Object();
-        Object agentArgs[] = new Object[2];
+        Object agentArgs[] = new Object[3];
 
         agentArgs[0] = src;
         agentArgs[1] = dst;
+        agentArgs[2] = address;
 
         try {
             //AgentController dummy = cc.createNewAgent("inProcess",

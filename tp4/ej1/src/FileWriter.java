@@ -25,11 +25,18 @@ public class FileWriter extends Agent
         String src_filename = (String) arguments[0];
         String[] _split = src_filename.split("/");
         String dst_filename = (String) arguments[1];
+        String address;
 
 
         System.out.println("Se crea al agente --> " + getName());
         // inicializa origen y destino
         destino = new ContainerID("Container-1", null);
+
+        if (arguments.length > 3) {
+            address = (String)arguments[2];
+            destino.setAddress(address);
+        }
+
         //destino = new ContainerID("Analia", null);
         System.out.println("Destino --> " + destino.getID());
         origen = here();
