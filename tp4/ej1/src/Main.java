@@ -20,8 +20,10 @@ class Main {
 
         agentArgs[0]= new String("/home/pablo/archivito.txt");
         try {
+            //AgentController dummy = cc.createNewAgent("inProcess",
+                    //"FileReader", agentArgs);
             AgentController dummy = cc.createNewAgent("inProcess",
-                    "FileReader", agentArgs);
+                    "FileWriter", agentArgs);
             // Fire up the agent
             dummy.start();
         } catch(Exception e){

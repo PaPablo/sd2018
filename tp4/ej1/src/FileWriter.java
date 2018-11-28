@@ -4,7 +4,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FileReader extends Agent
+public class FileWriter extends Agent
 {
     private final int MAX_BUFFER = 256;
 
@@ -42,17 +42,6 @@ public class FileReader extends Agent
                         // Comienza la migración del agente al destino
                         _state++;
                         System.out.println("Estado 0 Comienza la migración del agente al destino --> " + destino.getID());
-                        try {
-                            doMove(destino);
-                            System.out.println("Despues de doMove en CyclicBehaviour de Estado 0 --> " + destino.getID());
-                        } catch (Exception e) {
-                            System.out.println("fallo al moverse al Container destino");
-                            e.getMessage();
-                        }
-                        break;
-                    case 1:
-                        // el agente llegó al destino, recupera el directorio y regresa
-                        _state++;
 
                         try {
                             if (in == null){
@@ -74,17 +63,14 @@ public class FileReader extends Agent
                         }
 
                         try {
-                            System.out.println("regresando a --> " + origen.getID());
-                            doMove(origen);
-                            System.out.println("despues de domove en CyclicBehaviour estado 1 --> " + here().getID());
+                            doMove(destino);
+                            System.out.println("Despues de doMove en CyclicBehaviour de Estado 0 --> " + destino.getID());
                         } catch (Exception e) {
-                            System.out.println("Falla al mover al regresar al origen");
+                            System.out.println("fallo al moverse al Container destino");
                             e.getMessage();
                         }
                         break;
-                    case 2:
-                        // Regresó al origen, escribe en el archivo
-                        System.out.println("Debería Escribir, estoy en origen estado "+ _state);
+                    case 1:
                         if (length > 0) {
                             try {
                                 if (out == null){
@@ -105,11 +91,20 @@ public class FileReader extends Agent
                         }
                         else {
                             System.out.println("No tengo más para leer");
-                            _state = 3;
+                            _state++;
                         }
 
+
+                        try {
+                            System.out.println("regresando a --> " + origen.getID());
+                            doMove(origen);
+                            System.out.println("despues de domove en CyclicBehaviour estado 1 --> " + here().getID());
+                        } catch (Exception e) {
+                            System.out.println("Falla al mover al regresar al origen");
+                            e.getMessage();
+                        }
                         break;
-                    case 3:
+                    case 2:
                         try {
                             in.close();
                             out.close();
