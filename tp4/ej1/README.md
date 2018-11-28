@@ -7,7 +7,7 @@ Para ejecutar
 * Luego:
 
 ```bash
-java -cp lib/jade.jar:classes Main <write|read> <src_file> <dst_file>
+java -cp lib/jade.jar:classes Main <main-container-address> <write|read> <src-file> <dst-file>
 ```
 
 
