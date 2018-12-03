@@ -6,9 +6,6 @@ services:
       - "1880:1880"
     image: "nodered/node-red-docker"
     restart: "always"
-    networks:
-      iota:
-        ipv4_address: 128.80.0.20
   mosquitto-broker:
     container_name: "mosquitto-broker"
     ports:
@@ -16,14 +13,3 @@ services:
       - "9001:9001"
     image: "eclipse-mosquitto"
     restart: "always"
-    networks:
-      iota:
-        ipv4_address: 128.80.0.10
-
-networks:
-  iota:
-    driver: bridge
-    ipam:
-      driver: default
-      config: 
-        - subnet: 128.80.0.0/24
