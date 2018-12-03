@@ -59,6 +59,29 @@ java -cp lib/jade.jar:classes Main <ip-main-container>\\
 
 En el caso del \texttt{write} el \texttt{src-file} proviene del equipo con el Main Container, y en el caso del \texttt{read} del equipo que se conecta.
 
+\section{Punto 3 - Comparación de soluciones}
+
+Luego de haber movido un archivo bastante grande: \texttt{debian-live-9.5.0-amd64-xfce.iso (1.9 GB)} utilizando las distintas implementaciones realizadas a lo largo de la materia, con el mismo tamaño de buffer 8KB, se observaron los siguientes tiempos.
+
+\begin{center}
+  \begin{tabular}{ | l | c | }
+    \hline
+    Java Sockets & 25,64s \\
+    \hline
+    Java RMI & 6:30+ mins\\
+    \hline
+    JADE & 30,41s \\
+    \hline
+  \end{tabular}
+\end{center}
+
+De los tiempos observados podemos concluir qué:
+
+\begin{itemize}
+    \item La implementación con sockets es la más lenta, aunque sería la más \textit{a mano} que hay.
+    \item Por más que en JADE o RMI el andamiaje es más pesado para poder poner en marcha la funcionalidad, resulta más rápido, porque son soluciones \textit{ya diseñadas}.
+    \item JADE puede estar tardando un poco más debido a que tiene que mover el agente entre los contenedores. 
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
