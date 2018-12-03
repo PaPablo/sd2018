@@ -67,7 +67,7 @@ public class DisplayContainers extends Agent {
                                             here().getName(),
                                             destino.getName()));
                                 try {
-                                    Thread.sleep(2000);
+                                    Thread.sleep(10000);
                                     /*
                                      * ACÁ HACER LAS COSASSS
                                      */

@@ -17,7 +17,7 @@
 
 \lstset{style=MyStyle}
 
-\section{Punto 1 - RFS - Jade}
+\section{RFS con JADE}
 
 Se implementó un Remote File System utilizando JADE. Implementando como funcionalidad expuesta al usuario las operaciones de read y write.
 
@@ -42,7 +42,7 @@ Esta arquitectura dispuesta nos ofrece lo siguiente:
 
 En cuanto a la movilidad de nuestra solución. Podríamos decir que la solución con JADE tiene un peso algo mayor, ya que para poder funcionar es necesaria toda la instalación de JADE en ambos sitios para poder funcionar. En cambio, con las soluciones de RMI era necesaria la infraestructura del \texttt{rmiregistry}. Ni hablar de la implementación con sockets, que requería solamente el binario del cliente o del servidor.
 
-\subsection{Funcionamiento de la Herrameinta}
+\subsection{Funcionamiento de la herrameinta}
 
 \subsubsection{Compilación}
 
@@ -59,16 +59,16 @@ java -cp lib/jade.jar:classes Main <ip-main-container>\\
 
 En el caso del \texttt{write} el \texttt{src-file} proviene del equipo con el Main Container, y en el caso del \texttt{read} del equipo que se conecta.
 
-\section{Punto 3 - Comparación de soluciones}
+\subsection{Comparación de soluciones}
 
 Luego de haber movido un archivo bastante grande: \texttt{debian-live-9.5.0-amd64-xfce.iso (1.9 GB)} utilizando las distintas implementaciones realizadas a lo largo de la materia, con el mismo tamaño de buffer 8KB, se observaron los siguientes tiempos.
 
 \begin{center}
   \begin{tabular}{ | l | c | }
     \hline
-    Java Sockets & 25,64s \\
+    Java Sockets & 6:30+ minutos \\
     \hline
-    Java RMI & 6:30+ mins\\
+    Java RMI & 25,64s\\
     \hline
     JADE & 30,41s \\
     \hline
@@ -82,6 +82,31 @@ De los tiempos observados podemos concluir qué:
     \item Por más que en JADE o RMI el andamiaje es más pesado para poder poner en marcha la funcionalidad, resulta más rápido, porque son soluciones \textit{ya diseñadas}.
     \item JADE puede estar tardando un poco más debido a que tiene que mover el agente entre los contenedores. 
 \end{itemize}
+
+\section{Recorrer varias máquinas con JADE}
+
+Se implementó un agente JADE que viaja entre los distintos contenedores que componene la \emph{AP} (\emph{Agent Platform}), y recupera la siguiente información de la máquina que creó el contenedor:
+
+\begin{itemize}
+    \item Uso del CPU
+    \begin{itemize}
+        \item Porcentaje de uso de la JVM actual
+        \item Porcentaje de uso en total
+    \end{itemize}
+    \item Dirección IP
+    \item \emph{Hostname} 
+    \item Hora del sistema (en milisegundos)
+\end{itemize}
+
+Para ello se creó una clase (\texttt{SystemInfoCollector.java}) que se encarga de recuperar dicha información y persistirla como estado del objeto.
+
+El agente se muda por todos los contenedores, se queda en cada uno un total de 10 segundos; una vez que terminó con el recorrido imprime la información recolectada, y el tiempo total transcurrido desde que comenzó.
+
+\section{MQTT}
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIN DOCUMENTO, AHORA REFERENCIAS
