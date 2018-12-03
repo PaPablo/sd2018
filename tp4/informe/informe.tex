@@ -17,6 +17,47 @@
 
 \lstset{style=MyStyle}
 
+\section{Punto 1 - RFS - Jade}
+
+Se implementó un Remote File System utilizando JADE. Implementando como funcionalidad expuesta al usuario las operaciones de read y write.
+
+En esta versión, debido a cómo opera JADE, ya no tiene sentido hablar de Cliente o Servidor. En cambio se hablará de origen y destino.
+
+En resumen, esta versión de la solución funciona de la siguiente manera:
+
+\begin{itemize}
+    \item El origen, que posee los archivos a ofrecer, crea el \textbf{Contenedor Principal}.
+    \item El destino, se conecta al origen y requiere tal o cual archivo. Ya sea para leer del origen o escribiendo en él.
+\end{itemize}
+
+Para poder leer y escribir, la mecánica consiste en moverse al lugar a operar, leer o escribir un buffer, migrar al otro extremo y hacer la operación inversa.
+
+Esta arquitectura dispuesta nos ofrece lo siguiente:
+
+\begin{itemize}
+    \item La noción de cliente y servidor se pierde.
+    \item En cuanto a la eficiencia, podemos decir que no aprovecha de la mejor manera, ya que está migrando el agente por cada lectura de buffer.
+    \item El hecho de tener un comportamiento cíclico para trabajar hace que se desdibuje toda la arquitectura en capas que se poseía en RMI.
+\end{itemize}
+
+En cuanto a la movilidad de nuestra solución. Podríamos decir que la solución con JADE tiene un peso algo mayor, ya que para poder funcionar es necesaria toda la instalación de JADE en ambos sitios para poder funcionar. En cambio, con las soluciones de RMI era necesaria la infraestructura del \texttt{rmiregistry}. Ni hablar de la implementación con sockets, que requería solamente el binario del cliente o del servidor.
+
+\subsection{Funcionamiento de la Herrameinta}
+
+\subsubsection{Compilación}
+
+Dentro de la carpeta del proyecto, compilar con \texttt{make} 
+
+\subsubsection{Puesta en funcionamiento}
+
+Para la utilización de la herramienta se debe tener en otro equipo corriendo el \textbf{Main Container} y desde el segundo equipo hacer.
+
+\begin{lstlisting}[breaklines=true]
+java -cp lib/jade.jar:classes Main <ip-main-container>\\
+    <read|write> <src-file> <dst-file>
+\end{lstlisting}
+
+En el caso del \texttt{write} el \texttt{src-file} proviene del equipo con el Main Container, y en el caso del \texttt{read} del equipo que se conecta.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
