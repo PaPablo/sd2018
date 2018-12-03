@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public class FileWriter extends Agent
 {
-    private final int MAX_BUFFER = 256;
+    private final int MAX_BUFFER = 1024 * 8;
 
     String[] list;
     ContainerID destino = null;
