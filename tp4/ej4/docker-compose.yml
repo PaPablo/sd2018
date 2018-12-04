@@ -1,0 +1,15 @@
+version: '3'
+services:
+  node-red:
+    build: "./images/node-red-dashboard/"
+    container_name: "node-red"
+    ports:
+      - "1880:1880"
+    restart: "always"
+  mosquitto-broker:
+    container_name: "mosquitto-broker"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    image: "eclipse-mosquitto"
+    restart: "always"

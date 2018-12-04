@@ -104,6 +104,60 @@ El agente se muda por todos los contenedores, se queda en cada uno un total de 1
 
 \section{MQTT}
 
+Para la creación tanto de un tablero de control (\emph{dashboard}), como para la emulación de dispositivos que publican información en varios tópicos, se utilizó la herramiento \textbf{Node-RED}\footnote{Editor \emph{web} basado en flujos de datos\autocite{NodeRED}}. Como \emph{broker} MQTT se utilizó el servidor \textbf{mosquitto}.
+
+Para facilitar la ejecución tanto de Node-RED como del \emph{broker}, se confeccionó un archivo de configuración de \emph{docker-compose}, el cual se encarga de levantar un servicio para el servidor de Node-RED, y otro para el \emph{broker}.   
+
+\subsection{Corriendo los servicios}
+
+\begin{itemize}
+    \item Levantar los contenedores de \emph{Docker} ejecutando el siguiendo comando (dentro del mismo directorio donde se encuentre el archivo \texttt{docker-compose.yml})
+    \begin{itemize}
+        \item \texttt{docker-compose --build -d up} 
+    \end{itemize}
+    \item Dirigirse a la dirección \texttt{localhost:1880} para acceder a la aplicación Node-RED
+    \item Abrir el menú ubicado en la esquina superior derecha \textrightarrow{} Seleccionar la opción \dq{Import...} \textrightarrow{} Seleccionar \dq{Clipboard} y pegar el contenido del archivo \texttt{dashboard.json} 
+    \item Repetir el paso anterior, con el archivo \texttt{mock.json} 
+    \item Dirigirse a la dirección \texttt{localhost:1880/ui} para visualizar el tablero de control 
+\end{itemize}
+
+El primer \emph{flow} que se carga es el correspondiente al tablero de control; define los \emph{inputs MQTT} (elementos MQTT que se suscriben a un tópico determinado, indicando la IP del servidor y el puerto), algunas funciones de transformación de valores, y los elementos de interfaz gráfica (niveles, agujas, mensajes, notificaciones). El segundo \emph{flow} genera valores aleatorios y los publica en los distintos tópicos a los cuales están suscriptos los elementos del tablero de control.  
+
+El tablero de control representa distintos sensores y medidores que pueden estar presentes en una fábrica de cerveza. Tiene tres agujas, midiendo distintos valores de los tanques de elaboración (nivel de presión, temperatura, y brillo). Indica también el nivel del tanque de malta, y el estado de la válvula de malta y de agua (estos últimos dos cambian su mensaje entre \dq{cerrada} y \dq{abierta} si el valor publicado en su tópico correspondiente está por debajo del 30\% de un límite). El indicador de estado de la calefacción varía según el valor recibido del tópico de temperatura (si la temperatura es menor a un valor determinado, la calefacción se encenderá; en caso contrario estará apagada). Por último, el estado de proceso cambia si el valor publicado en el tópico \texttt{parada\_proceso} es 1 (proceso detenido) o 0 (proceso reanudado).
+
+Los tópicos utilizados son los siguientes:
+
+\begin{itemize}
+    \item \texttt{tanque\_malta} 
+    \item \texttt{temp\_tanque\_elab} 
+    \item \texttt{presion\_tanque\_elab} 
+    \item \texttt{brillo\_tanque\_elab} 
+    \item \texttt{valvula\_malta} 
+    \item \texttt{valvula\_agua} 
+    \item \texttt{parada\_proceso} 
+\end{itemize}
+
+\subsection{Análisis del protocolo}
+
+El nivel de \textbf{Calidad del Service} (\emph{\textbf{Quality of Service}}) de MQTT es un acuerdo entre el emisor del mensaje y el receptor que define la garantía de entrega del mensaje \autocite{HiveMQQoS}. 
+
+Un aspecto muy importante del QoS es definir quién va a ser el emisor, y quién el receptor. Cuando se publica un mensaje, el emisor será el nodo que esté publicando el mensaje, mientras que el receptor será el \emph{broker}. Ahora bien, al momento de que el \emph{broker} envíe el mensaje publicado a todos los suscriptos, el emisor pasa a ser el \emph{broker}, y el receptor los clientes suscriptos.   
+El nivel de QoS con el que se enviará un mensaje, es el \textbf{menor disponible} (el nivel de QoS es definido por los clientes que publican o se suscriben). En el caso de que un cliente publique un mensaje con un QoS 2, pero un cliente se haya suscripto con un QoS de 1, el \emph{broker} enviará el mensaje al suscriptor con el QoS de 1.
+
+Los 3 niveles distintos de QoS (0, 1, y 2) se pueden explicar sencillamente como:
+
+\begin{itemize}
+    \item QoS 0 - \textbf{a lo sumo una vez}: el cliente envía el mensaje, sin reconocimiento del receptor (\emph{best effort delivery}) 
+    \item QoS 1 - \textbf{por lo menos una vez}: el mensaje llegará al menos una vez al emisor. El cliente envía el mensaje y espera un reconocimiento del emisor (\texttt{PUBACK}). Si el reconocimiento no llega al cliente en cierto tiempo, envía el mensaje de nuevo con la bandera de duplicado (\texttt{DUP})
+    \item QoS 2 - \textbf{exactamente una vez}: el mensaje llega destino exactamente una vez. Para implementar esto, el receptor envía un \texttt{PUBREC - Publish Receive} cuando recibe el mensaje. El emisor responde con un \texttt{PUBREL - Publish Release}, y por último el emisor envía un \texttt{PUBCOMP - Publish Complete} (se lleva a cabo un \emph{four-way handshake} para enviar un mensaje)    
+\end{itemize}
+
+Para ver la interacción de mensajes MQTT, se utilizó la herramienta \emph{Wireshark} para capturar paquetes. Se realizó el siguiente experimento con los tres niveles de QoS posibles (\emph{las capturas de \emph{Wireshark} se pueden encontrar en el directorio ej4/pcaps}):
+
+\begin{itemize}
+    \item Suscripción al tópico \texttt{tanque\_malta} 
+    \item Publicación al tópico \texttt{tanque\_malta} 
+\end{itemize}
 
 
 
