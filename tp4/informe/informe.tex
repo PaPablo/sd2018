@@ -104,7 +104,24 @@ El agente se muda por todos los contenedores, se queda en cada uno un total de 1
 
 \section{MQTT}
 
+Para la creación tanto de un tablero de control (\emph{dashboard}), como para la emulación de dispositivos que publican información en varios tópicos, se utilizó la herramiento \textbf{Node-RED}\footnote{Editor \emph{web} basado en flujos de datos\autocite{NodeRED}}. Como \emph{broker} MQTT se utilizó el servidor \textbf{mosquitto}.
 
+Para facilitar la ejecución tanto de Node-RED como del \emph{broker}, se confeccionó un archivo de configuración de \emph{docker-compose}, el cual se encarga de levantar un servicio para el servidor de Node-RED, y otro para el \emph{broker}.   
+
+\subsection{Corriendo los servicios}
+
+\begin{itemize}
+    \item Levantar los contenedores de \emph{Docker} ejecutando el siguiendo comando (dentro del mismo directorio donde se encuentre el archivo \texttt{docker-compose.yml})
+    \begin{itemize}
+        \item \texttt{docker-compose --build -d up} 
+    \end{itemize}
+    \item Dirigirse a la dirección \texttt{localhost:1880} para acceder a la aplicación Node-RED
+    \item Abrir el menú ubicado en la esquina superior derecha \textrightarrow Seleccionar la opción \dq{Import...} \textrightarrow Seleccionar \dq{Clipboard} y pegar el contenido del archivo \texttt{dashboard.json} 
+    \item Repetir el paso anterior, con el archivo \texttt{mock.json} 
+    \item Dirigirse a la dirección \texttt{localhost:1880/ui} para visualizar el tablero de control 
+\end{itemize}
+
+El primer \emph{flow} que se carga es el correspondiente al tablero de control; define los \emph{inputs MQTT} (elementos MQTT que se suscriben a un tópico determinado, indicando la IP del servidor y el puerto), algunas funciones de transformación de valores, y los elementos de interfaz gráfica (niveles, agujas, mensajes, notificaciones). El segundo \emph{flow} genera valores aleatorios y los publica en los distintos tópicos a los cuales están suscriptos los elementos del tablero de control.  
 
 
 
